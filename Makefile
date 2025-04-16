@@ -7,7 +7,8 @@ GLFLAGS				=	-lglfw -lGL -lm -ldl -lGLEW -lglut
 NAME				=	ft_vox
 
 # Sources & Includes
-SRCS				=	main.cpp
+SRCS				=	main.cpp \
+						utils/misc_utils.cpp
 OBJ_FOLDER			=	objs
 INCLUDES 			=	-I includes/ -I libs/
 
