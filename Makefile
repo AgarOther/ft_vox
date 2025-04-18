@@ -8,17 +8,26 @@ NAME				=	ft_vox
 
 # Sources & Includes
 SRCS				=	main.cpp \
-						utils/misc_utils.cpp
+						utils/misc_utils.cpp \
+						utils/gl_utils.cpp \
+						utils/shader_utils.cpp \
+						renderer/Shader.cpp \
+						renderer/VBO.cpp \
+						renderer/VAO.cpp \
+						renderer/EBO.cpp \
+						renderer/Texture.cpp
 OBJ_FOLDER			=	objs
 INCLUDES 			=	-I includes/ -I libs/
 
 GLFW_PATH			=	libs/glfw
 GLAD_PATH			=	libs/glad
 GLM_PATH			=	libs/glm
+STB_PATH			=	libs/stb
 
 GLFW				=	$(GLFW_PATH)/libglfw3.a
 GLAD_SRC			=	$(GLAD_PATH)/glad.c
 GLAD				=	$(GLAD_SRC:.c=.o)
+STB					=	$(STB_PATH)/stb_image.cpp
 
 # Objects
 OBJS				=	$(patsubst %.c, $(OBJ_FOLDER)/%.o, $(addprefix srcs/, $(SRCS))) \
@@ -54,7 +63,7 @@ check_relink:
 	fi
 
 $(NAME): $(GLAD)
-	@$(CC) $(CFLAGS) $(OBJS) $(GLAD) $(GLFW) -o $(NAME) $(INCLUDES) $(GLFLAGS)
+	@$(CC) $(CFLAGS) $(OBJS) $(GLAD) $(STB) $(GLFW) -o $(NAME) $(INCLUDES) $(GLFLAGS)
 	$(EXE_DONE)
 
 $(OBJ_FOLDER)/%.o: %.cpp

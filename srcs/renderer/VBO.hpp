@@ -1,30 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Utils.hpp                                          :+:      :+:    :+:   */
+/*   VBO.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/16 21:49:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:45:35 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/04/18 21:36:44 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/04/18 23:36:29 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_HPP
-# define UTILS_HPP
-# include <string>
+#ifndef VBO_HPP
+# define VBO_HPP
 # include <glad/glad.h>
-# define HEIGHT 800
-# define WIDTH 800
 
-class Utils
+class VBO
 {
 	public:
-		static std::string getShaderAsString(const char *name);
-		static int ft_error(int error_id, const std::string &error);
-		static void setupGlfw();
-		static GLuint compileShader(const char *vertSrc, const char *fragSrc);
-		static void unbindAll();
+		VBO(GLfloat *vertices, GLsizeiptr size);
+
+		GLuint getId() const;
+		void bind();
+		void unbind();
+		void free();
+	private:
+		GLuint _id;
 };
 
 #endif

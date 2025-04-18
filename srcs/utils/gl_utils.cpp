@@ -1,30 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Utils.hpp                                          :+:      :+:    :+:   */
+/*   gl_utils.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/16 21:49:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:45:35 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/04/18 20:33:58 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/04/18 23:13:15 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_HPP
-# define UTILS_HPP
-# include <string>
-# include <glad/glad.h>
-# define HEIGHT 800
-# define WIDTH 800
+#include "Utils.hpp"
+#include <GLFW/glfw3.h>
 
-class Utils
+void Utils::setupGlfw()
 {
-	public:
-		static std::string getShaderAsString(const char *name);
-		static int ft_error(int error_id, const std::string &error);
-		static void setupGlfw();
-		static GLuint compileShader(const char *vertSrc, const char *fragSrc);
-		static void unbindAll();
-};
+	glfwInit();
+	
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+}
 
-#endif
+void Utils::unbindAll()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}

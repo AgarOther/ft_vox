@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 22:20:51 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/16 21:50:25 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/18 21:11:19 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static bool endsWith(const std::string &str, const std::string &suffix)
 	return (true);
 }
 
-std::string	Utils::getShaderAsString(const char *name)
+std::string Utils::getShaderAsString(const char *name)
 {
 	std::ifstream	file;
 	std::string		buffer;

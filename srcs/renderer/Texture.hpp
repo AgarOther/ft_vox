@@ -1,30 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Utils.hpp                                          :+:      :+:    :+:   */
+/*   Texture.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/16 21:49:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:45:35 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/04/18 23:20:22 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/04/18 23:38:09 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef UTILS_HPP
-# define UTILS_HPP
-# include <string>
+#ifndef TEXTURE_HPP
+# define TEXTURE_HPP
 # include <glad/glad.h>
-# define HEIGHT 800
-# define WIDTH 800
+# include "Shader.hpp"
 
-class Utils
+class Texture
 {
 	public:
-		static std::string getShaderAsString(const char *name);
-		static int ft_error(int error_id, const std::string &error);
-		static void setupGlfw();
-		static GLuint compileShader(const char *vertSrc, const char *fragSrc);
-		static void unbindAll();
+		Texture(const char *image, GLenum textureType, GLenum slot, GLenum format, GLenum pixeltype);
+
+		GLuint getId() const;
+		GLenum getType() const;
+		void setSlot(Shader &shader, const char *uniform, GLuint unit);
+		void bind();
+		void unbind();
+		void free();
+	private:
+		GLuint _id;
+		GLenum _type;
 };
 
 #endif
