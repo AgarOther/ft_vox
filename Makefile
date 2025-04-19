@@ -19,7 +19,8 @@ SRCS				=	main.cpp \
 						renderer/Texture.cpp \
 						renderer/TextureType.cpp \
 						renderer/Camera.cpp \
-						minecraft/Block.cpp
+						minecraft/Block.cpp \
+						minecraft/Location.cpp
 OBJ_FOLDER			=	objs
 INCLUDES 			=	-I includes/ -I libs/
 

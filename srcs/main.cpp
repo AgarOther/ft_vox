@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 16:12:36 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 17:16:41 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int	main(void)
 	// VAO has to be bound before EBO is made
 
 	Block nylium(Material::WARPED_NYLIUM);
+	Block crimson(Material::CRIMSON_NYLIUM);
 	Block netherrack(Material::NETHERRACK);
 	
 	Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
@@ -60,19 +61,26 @@ int	main(void)
 		shader.use();
 		camera.interceptInputs(window);
 		camera.setupMatrix(120.0f, 0.1f, 100.0f, shader, "camMatrix");
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		shader.setMat4("model", model);
-		nylium.draw(shader);
-		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
-		shader.setMat4("model", model);
-		netherrack.draw(shader);
+		for (float x = 0; x < 16; x++)
+			for (float y = 0; y < 16; y++)
+				for (float z = 0; z < 16; z++)
+				{
+					if (y == 15)
+					{
+						if ((int)x % 2)
+							nylium.placeBlockAt(Location(x, y, z), shader);
+						else
+							crimson.placeBlockAt(Location(x, y, z), shader);
+					}
+					netherrack.placeBlockAt(Location(x, y, z), shader);
+				}
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
 	nylium.free();
 	netherrack.free();
+	crimson.free();
 	shader.free();
 	glfwDestroyWindow(window);
 	glfwTerminate();

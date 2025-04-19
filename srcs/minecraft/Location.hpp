@@ -1,32 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   TextureType.hpp                                    :+:      :+:    :+:   */
+/*   Location.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/19 15:35:10 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 16:26:17 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/04/19 16:59:38 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/04/19 17:12:20 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TEXTURE_TYPE
-# define TEXTURE_TYPE
+#ifndef LOCATION_HPP
+# define LOCATION_HPP
 
-# include "Texture.hpp"
-
-typedef enum e_texture_type
-{
-	CRIMSON_NYLIUM,
-	WARPED_NYLIUM,
-	NETHERRACK
-}	Material;
-
-class TextureType
+class Location
 {
 	public:
-		static std::vector<Texture*> generateTextures(Material material);
-		static const GLuint *getIndices(Material type);
+		Location();
+		Location(float x, float y, float z);
+		
+		float getX() const;
+		float getY() const;
+		float getZ() const;
+
+		void setX(float x);
+		void setY(float y);
+		void setZ(float z);
+	private:
+		float _x;	
+		float _y;	
+		float _z;	
 };
 
 #endif

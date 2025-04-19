@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 16:10:19 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 17:14:43 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include "../renderer/TextureType.hpp"
 # include "../renderer/VAO.hpp"
 # include "../renderer/EBO.hpp"
+# include "Location.hpp"
 # include <vector>
 
 class Block
@@ -26,6 +27,7 @@ class Block
 
 		void free();
 		void draw(Shader &shader);
+		void placeBlockAt(const Location &location, Shader &shader);
 	private:
 		std::vector<Texture *> _textures;
 		VAO _vao;

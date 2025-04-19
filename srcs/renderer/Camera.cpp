@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 15:09:17 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 17:32:38 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	this->_speed = 0.01f;
 	this->_sensitivity = 200.0f;
 	this->_firstClick = true;
+	this->_pitch = 0.0f;
+	this->_yaw = -90.0f;
 }
 
 Camera::~Camera()
@@ -35,7 +37,7 @@ void Camera::setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &
 	glm::mat4 proj = glm::mat4(1.0f);
 
 	view = glm::lookAt(this->_position, this->_position + this->_orientation, this->_altitude);
-	proj = glm::perspective(glm::radians(FOVdeg), (float)(this->_width / this->_height), nearPlane, farPlane);
+	proj = glm::perspective(glm::radians(FOVdeg), static_cast<float>(this->_width) / this->_height, nearPlane, farPlane);
 	glUniformMatrix4fv(glGetUniformLocation(shader.getId(), uniform), 1, GL_FALSE, glm::value_ptr(proj * view));
 }
 
@@ -47,20 +49,37 @@ void Camera::interceptInputs(GLFWwindow *window)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 		return;
 	}
+	// GPT my friend who helps me with the weirdest maths
+	// Calculate forward vector for movement based on pitch (only in X-Z plane)
+	glm::vec3 forward;
+	forward.x = cos(glm::radians(this->_pitch)) * cos(glm::radians(this->_yaw)); // X component based on pitch
+	forward.z = cos(glm::radians(this->_pitch)) * sin(glm::radians(this->_yaw)); // Z component based on pitch
+	forward.y = 0.0f; // No vertical movement based on pitch, set Y to 0
+
+	// Normalize the forward vector to maintain consistent speed
+	forward = glm::normalize(forward);
+
+	// Calculate the right vector (strafe) using yaw, no pitch influence
+	glm::vec3 right = glm::normalize(glm::cross(forward, this->_altitude)); // Right direction is based on forward and altitude (up vector)
+
 	if ((glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP)) == GLFW_PRESS)
-		this->_position += this->_speed * this->_orientation;
+		this->_position += this->_speed * forward;
 	if ((glfwGetKey(window, GLFW_KEY_A) || glfwGetKey(window, GLFW_KEY_LEFT)) == GLFW_PRESS)
-		this->_position += this->_speed * -glm::normalize(glm::cross(this->_orientation, this->_altitude));
+		this->_position += this->_speed * -right;
 	if ((glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN)) == GLFW_PRESS)
-		this->_position += this->_speed * -this->_orientation;
+		this->_position += this->_speed * -forward;
 	if ((glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT)) == GLFW_PRESS)
-		this->_position += this->_speed * glm::normalize(glm::cross(this->_orientation, this->_altitude));
+		this->_position += this->_speed * right;
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+		this->_position += this->_speed * this->_altitude;
+	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		this->_position -= this->_speed * this->_altitude;
 	if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
 		this->_position += this->_speed * this->_altitude;
 	if (glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
 		this->_position += this->_speed * -this->_altitude;
 	if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
-		this->_speed = 0.04f;
+		this->_speed = 0.025f;
 	else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE)
 		this->_speed = 0.01f;
 
@@ -77,14 +96,23 @@ void Camera::interceptInputs(GLFWwindow *window)
 			this->_firstClick = false;
 		}
 		glfwGetCursorPos(window, &mouseX, &mouseY);
-		float rotX = this->_sensitivity * (float)(mouseY - (this->_height / 2)) / this->_height;
-		float rotY = this->_sensitivity * (float)(mouseX - (this->_height / 2)) / this->_height;
 
-		glm::vec3 newOrientation = glm::rotate(this->_orientation, glm::radians(-rotX), glm::normalize(glm::cross(this->_orientation, this->_altitude)));
-		if (abs(glm::angle(newOrientation, this->_altitude) - glm::radians(90.0f)) <= glm::radians(85.0f))
-			this->_orientation = newOrientation;
-		
-		this->_orientation = glm::rotate(this->_orientation, glm::radians(-rotY), this->_altitude);
+		float rotX = this->_sensitivity * (float)(mouseY - (this->_height / 2)) / (float)this->_height;
+		float rotY = this->_sensitivity * (float)(mouseX - (this->_width  / 2)) / (float)this->_width;
+
+		this->_yaw += rotY;
+    	this->_pitch -= rotX;
+
+		if (this->_pitch > 89.0f)
+			this->_pitch = 89.0f;
+		else if (this->_pitch < -89.0f)
+			this->_pitch = -89.0f;
+
+		glm::vec3 direction;
+		direction.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
+		direction.y = sin(glm::radians(this->_pitch));
+		direction.z = sin(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
+		this->_orientation = glm::normalize(direction);
 	
 		glfwSetCursorPos(window, (this->_width / 2), (this->_height / 2));
 	}
@@ -94,24 +122,3 @@ void Camera::interceptInputs(GLFWwindow *window)
 		this->_firstClick = true;
 	}		
 }
-
-// Getters
-glm::vec3 Camera::getPosition() const { return _position; }
-glm::vec3 Camera::getOrientation() const { return _orientation; }
-glm::vec3 Camera::getUp() const { return _altitude; }
-int Camera::getWidth() const { return _width; }
-int Camera::getHeight() const { return _height; }
-float Camera::getSpeed() const { return _speed; }
-float Camera::getSensitivity() const { return _sensitivity; }
-bool Camera::hasClicked() const { return (this->_firstClick); }
-
-// Setters
-void Camera::setPosition(const glm::vec3& position) { _position = position; }
-void Camera::setOrientation(const glm::vec3& orientation) { _orientation = orientation; }
-void Camera::setUp(const glm::vec3& up) { _altitude = up; }
-void Camera::setWidth(int width) { _width = width; }
-void Camera::setHeight(int height) { _height = height; }
-void Camera::setSpeed(float s) { _speed = s; }
-void Camera::setSensitivity(float s) { _sensitivity = s; }
-void Camera::setClicked(bool clicked) { _firstClick = clicked; }
-

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 21:49:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 13:51:34 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 16:44:11 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 # define UTILS_HPP
 # include <string>
 # include <GL/glew.h>
-# define HEIGHT 800
-# define WIDTH 800
+# define HEIGHT 1080
+# define WIDTH 1920
 
 class Utils
 {

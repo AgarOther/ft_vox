@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 16:14:24 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 17:14:38 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ Block::Block(Material material)
 
 	this->_vao = VAO();
 	this->_vao.bind();
-
 	this->_vbo = VBO(vertices, sizeof(vertices));
 	this->_texVbo = VBO(texIds, 24 * sizeof(GLuint));
 	this->_ebo = EBO(indices, sizeof(indices));
@@ -45,6 +44,14 @@ void Block::draw(Shader &shader)
 	}
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 	Texture::resetSlots();
+}
+
+void Block::placeBlockAt(const Location &location, Shader &shader)
+{
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(location.getX(), location.getY(), location.getZ()));
+	shader.setMat4("model", model);
+	this->draw(shader);
 }
 
 void Block::free()
