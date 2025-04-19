@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 17:14:43 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 22:49:24 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Block
 
 		void free();
 		void draw(Shader &shader);
+		void placeBlockAt(const Location &location);
 		void placeBlockAt(const Location &location, Shader &shader);
 	private:
 		std::vector<Texture *> _textures;

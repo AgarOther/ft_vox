@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 21:08:10 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 23:39:48 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,13 @@ int	main(void)
 
 	ImGuiIO &io = Utils::getImGuiIO(window);
 
-	Shader shader("test.vert", "test.frag");
-	// VAO has to be bound before EBO is made
+	Shader shader("block.vert", "block.frag");
 
-	Block nylium(Material::WARPED_NYLIUM);
-	Block crimson(Material::CRIMSON_NYLIUM);
-	Block netherrack(Material::NETHERRACK);
+	Block grassBlock(Material::GRASS_BLOCK);
+	Block dirt(Material::DIRT);
+	Block craftingTable(Material::CRAFTING_TABLE);
 	
-	Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(WIDTH, HEIGHT, glm::vec3(8.0f, 18.0f, 7.0f));
 
 	Utils::unbindAll();
 	
@@ -63,7 +62,7 @@ int	main(void)
 	{
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		Utils::setupImGui(io);
+		Utils::setupImGui(io, camera);
 		shader.use();
 		camera.interceptInputs(window);
 		camera.setupMatrix(120.0f, 0.1f, 100.0f, shader, "camMatrix");
@@ -72,22 +71,19 @@ int	main(void)
 				for (float z = 0; z < 16; z++)
 				{
 					if (y == 15)
-					{
-						if ((int)x % 2 && (int)z % 2 == 0)
-							nylium.placeBlockAt(Location(x, y, z), shader);
-						else
-							crimson.placeBlockAt(Location(x, y, z), shader);
-					}
-					netherrack.placeBlockAt(Location(x, y, z), shader);
+						grassBlock.placeBlockAt(Location(x, y, z));
+					else
+						dirt.placeBlockAt(Location(x, y, z));
 				}
+		craftingTable.placeBlockAt(Location(8.0f, 16.0f, 8.0f));
 		Utils::renderImGui();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-	nylium.free();
-	netherrack.free();
-	crimson.free();
+	grassBlock.free();
+	dirt.free();
+	craftingTable.free();
 	shader.free();
 	Utils::shutdownImGui();
 	glfwDestroyWindow(window);

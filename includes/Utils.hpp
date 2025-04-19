@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 21:49:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 20:32:27 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 22:56:54 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <imgui/imgui.h>
 # include <imgui/imgui_impl_glfw.h>
 # include <imgui/imgui_impl_opengl3.h>
+# include "../srcs/renderer/Camera.hpp"
 # define HEIGHT 1080
 # define WIDTH 1920
 
@@ -29,7 +30,7 @@ class Utils
 		static void setupGlfw();
 		static GLuint compileShader(const char *vertSrc, const char *fragSrc);
 		static void unbindAll();
-		static void setupImGui(ImGuiIO &io);
+		static void setupImGui(ImGuiIO &io, Camera &camera);
 		static void renderImGui();
 		static void shutdownImGui();
 		static ImGuiIO &getImGuiIO(GLFWwindow *window);

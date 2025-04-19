@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:10 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 16:26:17 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 23:37:34 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,11 @@ typedef enum e_texture_type
 {
 	CRIMSON_NYLIUM,
 	WARPED_NYLIUM,
-	NETHERRACK
+	NETHERRACK,
+	CRAFTING_TABLE,
+	GRASS_BLOCK,
+	DIRT,
+	UNKNOWN
 }	Material;
 
 class TextureType

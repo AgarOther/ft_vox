@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 20:51:45 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 23:40:36 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	this->_sensitivity = 200.0f;
 	this->_firstClick = true;
 	this->_pitch = 0.0f;
-	this->_yaw = -90.0f;
+	this->_yaw = 90.0f;
 }
 
 Camera::~Camera()
@@ -43,12 +43,12 @@ void Camera::setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &
 
 void Camera::interceptInputs(GLFWwindow *window)
 {
-	// Keyboard inputs
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE))
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 		return;
 	}
+	
 	// GPT my friend who helps me with the weirdest maths
 	// Calculate forward vector for movement based on pitch (only in X-Z plane)
 	glm::vec3 forward;
@@ -80,7 +80,7 @@ void Camera::interceptInputs(GLFWwindow *window)
 		this->_speed = 0.01f;
 
 	// Mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && glfwGetKey(window, GLFW_KEY_BACKSLASH) == GLFW_PRESS)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		double mouseX, mouseY;
 
@@ -99,10 +99,15 @@ void Camera::interceptInputs(GLFWwindow *window)
 		this->_yaw += rotY;
     	this->_pitch -= rotX;
 
-		if (this->_pitch > 89.0f)
-			this->_pitch = 89.0f;
-		else if (this->_pitch < -89.0f)
-			this->_pitch = -89.0f;
+		if (this->_pitch > 89.99f)
+			this->_pitch = 89.99f;
+		else if (this->_pitch < -89.99f)
+			this->_pitch = -89.99f;
+		
+		if (this->_yaw < -359.99f)
+			this->_yaw = 0;
+		else if (this->_yaw > 359.99f)
+			this->_yaw = 0;
 
 		glm::vec3 direction;
 		direction.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
@@ -118,3 +123,25 @@ void Camera::interceptInputs(GLFWwindow *window)
 		this->_firstClick = true;
 	}		
 }
+
+// Getters
+glm::vec3 Camera::getPosition() const { return this->_position; }
+glm::vec3 Camera::getOrientation() const { return this->_orientation; }
+glm::vec3 Camera::getUp() const { return this->_altitude; }
+int Camera::getWidth() const { return this->_width; }
+int Camera::getHeight() const { return this->_height; }
+float Camera::getSpeed() const { return this->_speed; }
+float Camera::getSensitivity() const { return this->_sensitivity; }
+float Camera::getYaw() const { return this->_yaw; }
+float Camera::getPitch() const { return this->_pitch; }
+bool Camera::hasClicked() const { return (this->_firstClick); }
+
+// Setters
+void Camera::setPosition(const glm::vec3 &position) { this->_position = position; }
+void Camera::setOrientation(const glm::vec3 &orientation) { this->_orientation = orientation; }
+void Camera::setUp(const glm::vec3& up) { this->_altitude = up; }
+void Camera::setWidth(int width) { this->_width = width; }
+void Camera::setHeight(int height) { this->_height = height; }
+void Camera::setSpeed(float s) { this->_speed = s; }
+void Camera::setSensitivity(float s) { this->_sensitivity = s; }
+void Camera::setClicked(bool clicked) { this->_firstClick = clicked; }

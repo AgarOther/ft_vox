@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 21:07:51 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 23:09:43 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ ImGuiIO &Utils::getImGuiIO(GLFWwindow *window)
 	return (io);
 }
 
-void Utils::setupImGui(ImGuiIO &io)
+void Utils::setupImGui(ImGuiIO &io, Camera &camera)
 {
 	static bool vsync = true;
 	static bool vsyncChanged = true;
@@ -35,9 +35,16 @@ void Utils::setupImGui(ImGuiIO &io)
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
 	ImGui::Begin("ft_vox");
 	
-	ImGui::Text("A Project to recreate a voxel world like Minecraft.");
-	ImGui::Checkbox("VSync", &vsync);
+	ImGui::Text("Minecraft 0.00.1 (0.00.1/vanilla)");
 	ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	
+	ImGui::NewLine();
+	
+	glm::vec3 camPos = camera.getPosition();
+	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", camPos.x, camPos.y, camPos.z);
+	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: (%.1f / %.1f)", camera.getYaw(), camera.getPitch());
+
+	ImGui::Checkbox("VSync", &vsync);
 
 	if (vsync != vsyncChanged)
 	{

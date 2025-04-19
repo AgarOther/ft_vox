@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:43:36 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 16:02:02 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 23:24:06 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,16 @@ const GLfloat vertices[] =
 	 0.5f, 0.0f, -0.5f,    0.83f, 0.70f, 0.44f,   1.0f, 0.0f,
 	 0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   1.0f, 1.0f,
 	-0.5f, 0.0f,  0.5f,    0.83f, 0.70f, 0.44f,   0.0f, 1.0f
+};
+
+const GLuint textureId4s[]
+{
+	2, 2, 2, 2, // Front
+	1, 1, 1, 1, // Back
+	1, 1, 1, 1, // Left
+	1, 1, 1, 1, // Right
+	0, 0, 0, 0, // Top
+	3, 3, 3, 3  // Bottom
 };
 
 const GLuint textureId3s[]

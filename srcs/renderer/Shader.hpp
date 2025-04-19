@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:38:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 15:25:18 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 22:47:16 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Shader
 		void free();
 		void setMat4(const char *uniform, glm::mat4 model);
 		void setInt(const char *uniform, int n);
+		static Shader &getCurrentlyBoundShader();
 	private:
 		GLuint _id;
 };
