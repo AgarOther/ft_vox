@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 11:53:46 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 14:12:17 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 20:17:51 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ void	debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsiz
 	std::string	error_type;
 
 	// Ignore-list.
-	// if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
-	// 	return ;
+	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+		return ;
 	if (!userParam)
 		(void) userParam;
 	(void) length;

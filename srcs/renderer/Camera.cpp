@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 17:32:38 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 20:51:45 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,6 @@ void Camera::interceptInputs(GLFWwindow *window)
 		this->_position += this->_speed * -forward;
 	if ((glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT)) == GLFW_PRESS)
 		this->_position += this->_speed * right;
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		this->_position += this->_speed * this->_altitude;
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-		this->_position -= this->_speed * this->_altitude;
 	if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
 		this->_position += this->_speed * this->_altitude;
 	if (glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
@@ -84,7 +80,7 @@ void Camera::interceptInputs(GLFWwindow *window)
 		this->_speed = 0.01f;
 
 	// Mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT))
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && glfwGetKey(window, GLFW_KEY_BACKSLASH) == GLFW_PRESS)
 	{
 		double mouseX, mouseY;
 

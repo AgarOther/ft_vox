@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 17:16:41 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 21:08:10 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw.h>
+#include <imgui/imgui_impl_opengl3.h>
 #include "../includes/Utils.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/VAO.hpp"
@@ -33,7 +36,7 @@ int	main(void)
 
 	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "ft_vox", NULL, NULL);
 	glfwMakeContextCurrent(window);
-	
+
 	glewInit();
 	glViewport(0, 0, WIDTH, HEIGHT);
 	glEnable(GL_DEPTH_TEST);
@@ -42,6 +45,8 @@ int	main(void)
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(debugCallback, nullptr);
 	#endif
+
+	ImGuiIO &io = Utils::getImGuiIO(window);
 
 	Shader shader("test.vert", "test.frag");
 	// VAO has to be bound before EBO is made
@@ -58,6 +63,7 @@ int	main(void)
 	{
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		Utils::setupImGui(io);
 		shader.use();
 		camera.interceptInputs(window);
 		camera.setupMatrix(120.0f, 0.1f, 100.0f, shader, "camMatrix");
@@ -67,13 +73,14 @@ int	main(void)
 				{
 					if (y == 15)
 					{
-						if ((int)x % 2)
+						if ((int)x % 2 && (int)z % 2 == 0)
 							nylium.placeBlockAt(Location(x, y, z), shader);
 						else
 							crimson.placeBlockAt(Location(x, y, z), shader);
 					}
 					netherrack.placeBlockAt(Location(x, y, z), shader);
 				}
+		Utils::renderImGui();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -82,6 +89,7 @@ int	main(void)
 	netherrack.free();
 	crimson.free();
 	shader.free();
+	Utils::shutdownImGui();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

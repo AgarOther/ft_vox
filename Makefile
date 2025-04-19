@@ -1,7 +1,7 @@
 # Compilation
 CC					=	g++
 CFLAGS				=	-Wall -Wextra -Werror --std=c++11 -g
-GLFLAGS				=	-lglfw -lGL -lm -ldl -lGLEW -lglut
+GLFLAGS				=	-lglfw -lGL -lm -ldl -lGLEW -lglut -lpthread
 
 # Names
 NAME				=	ft_vox
@@ -9,8 +9,9 @@ NAME				=	ft_vox
 # Sources & Includes
 SRCS				=	main.cpp \
 						debug.cpp \
-						utils/misc_utils.cpp \
 						utils/gl_utils.cpp \
+						utils/imgui_utils.cpp \
+						utils/misc_utils.cpp \
 						utils/shader_utils.cpp \
 						renderer/Shader.cpp \
 						renderer/VBO.cpp \
@@ -28,11 +29,20 @@ GLFW_PATH			=	libs/glfw
 GLAD_PATH			=	libs/glad
 GLM_PATH			=	libs/glm
 STB_PATH			=	libs/stb
+IMGUI_PATH			=	libs/imgui
+IMGUI_SRCS			=	libs/imgui/imgui_demo.cpp \
+						libs/imgui/imgui_draw.cpp \
+						libs/imgui/imgui_tables.cpp \
+						libs/imgui/imgui_impl_glfw.cpp \
+						libs/imgui/imgui_impl_opengl3.cpp \
+						libs/imgui/imgui_widgets.cpp \
+						libs/imgui/imgui.cpp
 
 GLFW				=	$(GLFW_PATH)/libglfw3.a
 GLAD_SRC			=	$(GLAD_PATH)/glad.c
 GLAD				=	$(GLAD_SRC:.c=.o)
 STB					=	$(STB_PATH)/stb_image.cpp
+IMGUI				=	$(IMGUI_SRCS:.cpp=.o)
 
 # Objects
 OBJS				=	$(patsubst %.c, $(OBJ_FOLDER)/%.o, $(addprefix srcs/, $(SRCS))) \
@@ -67,8 +77,8 @@ check_relink:
 		$(MAKE) $(NAME); \
 	fi
 
-$(NAME): $(GLAD)
-	@$(CC) $(CFLAGS) $(OBJS) $(GLAD) $(STB) $(GLFW) -o $(NAME) $(INCLUDES) $(GLFLAGS)
+$(NAME): $(GLAD) $(IMGUI)
+	@$(CC) $(CFLAGS) $(OBJS) $(GLAD) $(STB) $(GLFW) $(IMGUI) -o $(NAME) $(INCLUDES) $(GLFLAGS)
 	$(EXE_DONE)
 
 $(OBJ_FOLDER)/%.o: %.cpp
@@ -164,6 +174,10 @@ glm:
 	fi
 
 $(GLAD): %.o: %.c
+	@gcc $(INCLUDES) $< -c -o $@
+	@echo "\033[32;1mCompiled " $@ "\033[0m"
+
+$(IMGUI): %.o: %.cpp
 	@gcc $(INCLUDES) $< -c -o $@
 	@echo "\033[32;1mCompiled " $@ "\033[0m"
 

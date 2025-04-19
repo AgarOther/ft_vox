@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 21:49:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 16:44:11 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 20:32:27 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 # define UTILS_HPP
 # include <string>
 # include <GL/glew.h>
+# include <imgui/imgui.h>
+# include <imgui/imgui_impl_glfw.h>
+# include <imgui/imgui_impl_opengl3.h>
 # define HEIGHT 1080
 # define WIDTH 1920
 
@@ -26,6 +29,10 @@ class Utils
 		static void setupGlfw();
 		static GLuint compileShader(const char *vertSrc, const char *fragSrc);
 		static void unbindAll();
+		static void setupImGui(ImGuiIO &io);
+		static void renderImGui();
+		static void shutdownImGui();
+		static ImGuiIO &getImGuiIO(GLFWwindow *window);
 };
 
 void	debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
