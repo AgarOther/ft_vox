@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/16 22:20:51 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 21:11:19 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 13:51:18 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 #include <string>
 #include "Utils.hpp"
 #include "colors.hpp"
+
+std::string Utils::appendInt(std::string str, int n)
+{
+	str += std::to_string(n);
+	return (str);
+}
 
 int Utils::ft_error(int error_id, const std::string &error)
 {

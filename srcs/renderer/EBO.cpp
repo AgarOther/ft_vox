@@ -6,13 +6,18 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:36:56 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:36:07 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 16:02:27 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "EBO.hpp"
 
-EBO::EBO(GLuint *indices, GLsizeiptr size)
+EBO::EBO()
+{
+	
+}
+
+EBO::EBO(const GLuint *indices, GLsizeiptr size)
 {
 	glGenBuffers(1, &this->_id);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->_id);

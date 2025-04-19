@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:36:44 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 13:20:32 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 13:56:22 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 class VBO
 {
 	public:
+		VBO();
 		template<typename T>
 		VBO(T *vertices, GLsizeiptr size)
 		{

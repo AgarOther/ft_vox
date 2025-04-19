@@ -6,12 +6,18 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 23:20:08 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 13:01:07 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 15:36:45 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Texture.hpp"
+#include "TextureType.hpp"
 #include <stb/stb_image.h>
+
+Texture::Texture()
+{
+	
+}
 
 Texture::Texture(const char *image, GLenum textureType, GLenum slot, GLenum format, GLenum pixeltype)
 {
@@ -51,13 +57,6 @@ GLenum Texture::getType() const
 	return (this->_type);
 }
 
-void Texture::setSlot(Shader &shader, const char *uniform, GLuint slot)
-{
-	GLuint texUni = glGetUniformLocation(shader.getId(), uniform);
-	shader.use();
-	glUniform1i(texUni, slot);
-}
-
 void Texture::bind()
 {
 	glBindTexture(this->_type, this->_id);
@@ -72,3 +71,15 @@ void Texture::free()
 {
 	glDeleteTextures(1, &this->_id);
 }
+
+void Texture::resetSlots()
+{
+	for (int i = 0; i < 6; i++)
+	{
+		glActiveTexture(GL_TEXTURE0 + i);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+}
+
+
+

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 12:25:03 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 15:09:07 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ class Camera
 {
 	public:
 		Camera(int width, int height, glm::vec3 position);
+		~Camera();
 
 		void setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &shader, const char *uniform);
 		void interceptInputs(GLFWwindow *window);

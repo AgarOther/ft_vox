@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 03:06:36 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 15:09:17 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,11 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	this->_speed = 0.01f;
 	this->_sensitivity = 200.0f;
 	this->_firstClick = true;
+}
+
+Camera::~Camera()
+{
+	
 }
 
 void Camera::setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &shader, const char *uniform)

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 11:53:46 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 12:53:53 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 14:12:17 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ void	debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsiz
 	if (!userParam)
 		(void) userParam;
 	(void) length;
-	std::cout << severity << std::endl;
 	color = (severity == (GL_DEBUG_SEVERITY_NOTIFICATION) ? WHITE :
 			 severity == (GL_DEBUG_SEVERITY_LOW) ? CYAN :
 			 severity == (GL_DEBUG_SEVERITY_MEDIUM) ? YELLOW : BOLD_RED);

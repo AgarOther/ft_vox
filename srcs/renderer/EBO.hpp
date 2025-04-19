@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:36:28 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 12:24:36 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 16:02:24 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 class EBO
 {
 	public:
-		EBO(GLuint *indices, GLsizeiptr size);
+		EBO();
+		EBO(const GLuint *indices, GLsizeiptr size);
 
 		GLuint getId() const;
 		void bind();

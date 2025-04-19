@@ -1,38 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   VBO.cpp                                            :+:      :+:    :+:   */
+/*   TextureType.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/18 21:37:20 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 13:56:33 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/04/19 15:35:10 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/04/19 16:03:15 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "VBO.hpp"
+#ifndef TEXTURE_TYPE
+# define TEXTURE_TYPE
 
-VBO::VBO()
-{
-	
-}
+# include "Texture.hpp"
 
-GLuint VBO::getId() const
+typedef enum e_texture_type
 {
-	return (this->_id);
-}
+	WARPED_NYLIUM,
+	NETHERRACK
+}	Material;
 
-void VBO::bind()
+class TextureType
 {
-	glBindBuffer(GL_ARRAY_BUFFER, this->_id);
-}
+	public:
+		static std::vector<Texture*> generateTextures(Material material);
+		static const GLuint *getIndices(Material type);
+};
 
-void VBO::unbind()
-{
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void VBO::free()
-{
-	glDeleteBuffers(1, &this->_id);
-}
+#endif

@@ -1,38 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   VBO.cpp                                            :+:      :+:    :+:   */
+/*   Block.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/18 21:37:20 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 13:56:33 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/04/19 16:10:19 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "VBO.hpp"
+#ifndef BLOCK_HPP
+# define BLOCK_HPP
 
-VBO::VBO()
-{
-	
-}
+# include "../renderer/Texture.hpp"
+# include "../renderer/TextureType.hpp"
+# include "../renderer/VAO.hpp"
+# include "../renderer/EBO.hpp"
+# include <vector>
 
-GLuint VBO::getId() const
+class Block
 {
-	return (this->_id);
-}
+	public:
+		Block(Material type);
 
-void VBO::bind()
-{
-	glBindBuffer(GL_ARRAY_BUFFER, this->_id);
-}
+		void free();
+		void draw(Shader &shader);
+	private:
+		std::vector<Texture *> _textures;
+		VAO _vao;
+		VBO _vbo;
+		VBO _texVbo;
+		EBO _ebo;
+};
 
-void VBO::unbind()
-{
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-void VBO::free()
-{
-	glDeleteBuffers(1, &this->_id);
-}
+#endif
