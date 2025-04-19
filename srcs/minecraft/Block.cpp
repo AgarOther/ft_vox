@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 17:14:38 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 17:34:59 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void Block::draw(Shader &shader)
 void Block::placeBlockAt(const Location &location, Shader &shader)
 {
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(location.getX(), location.getY(), location.getZ()));
+	model = glm::translate(model, glm::vec3((int)location.getX(), (int)location.getY(), (int)location.getZ()));
 	shader.setMat4("model", model);
 	this->draw(shader);
 }
