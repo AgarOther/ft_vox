@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 03:04:34 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 12:25:03 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define CAMERA_HPP
 # define GLM_ENABLE_EXPERIMENTAL
 
-# include <glad/glad.h>
+# include <GL/glew.h>
 # include <GLFW/glfw3.h>
 # include <glm/glm.hpp>
 # include <glm/gtc/matrix_transform.hpp>

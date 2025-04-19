@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:37:08 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:36:22 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 13:14:50 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,18 @@ GLuint VAO::getId() const
 	return (this->_id);
 }
 
-void VAO::linkAttrib(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum type, GLsizeiptr stride, void *offset)
+void VAO::linkAttribFloat(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum type, GLsizeiptr stride, void *offset)
 {
 	vbo.bind();
 	glVertexAttribPointer(layout, nbComponents, type, GL_FALSE, stride, offset);
+	glEnableVertexAttribArray(layout);
+	vbo.unbind();
+}
+
+void VAO::linkAttribInt(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum type, GLsizeiptr stride, void *offset)
+{
+	vbo.bind();
+	glVertexAttribIPointer(layout, nbComponents, type, stride, offset);
 	glEnableVertexAttribArray(layout);
 	vbo.unbind();
 }

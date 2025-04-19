@@ -6,13 +6,13 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:36:28 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:36:42 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 12:24:36 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EBO_HPP
 # define EBO_HPP
-# include <glad/glad.h>
+# include <GL/glew.h>
 
 class EBO
 {

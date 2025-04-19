@@ -6,14 +6,14 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:38:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:36:38 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 12:23:19 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SHADER_HPP
 # define SHADER_HPP
 
-#include <glad/glad.h>
+#include <GL/glew.h>
 
 class Shader
 {

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 23:20:08 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:38:12 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 13:01:07 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ Texture::Texture(const char *image, GLenum textureType, GLenum slot, GLenum form
 	
 	glGenTextures(1, &this->_id);
 	// Set the first texture slot
-	glActiveTexture(slot);
+	glActiveTexture(GL_TEXTURE0 + slot);
 	// Bind a texture to the set slot
 	glBindTexture(textureType, this->_id);
 

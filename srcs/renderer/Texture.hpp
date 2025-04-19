@@ -6,13 +6,13 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 23:20:22 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/18 23:38:09 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 12:24:32 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TEXTURE_HPP
 # define TEXTURE_HPP
-# include <glad/glad.h>
+# include <GL/glew.h>
 # include "Shader.hpp"
 
 class Texture

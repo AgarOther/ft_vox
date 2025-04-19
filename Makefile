@@ -8,6 +8,7 @@ NAME				=	ft_vox
 
 # Sources & Includes
 SRCS				=	main.cpp \
+						debug.cpp \
 						utils/misc_utils.cpp \
 						utils/gl_utils.cpp \
 						utils/shader_utils.cpp \
