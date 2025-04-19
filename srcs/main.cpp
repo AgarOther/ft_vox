@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 00:02:30 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/19 02:55:44 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 #include "renderer/VBO.hpp"
 #include "renderer/EBO.hpp"
 #include "renderer/Texture.hpp"
+#include "renderer/Camera.hpp"
 
 int	main(void)
 {
@@ -65,48 +66,22 @@ int	main(void)
 	vao.linkAttrib(vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void *)(3 * sizeof(float)));
 	vao.linkAttrib(vbo, 2, 2, GL_FLOAT, 8 * sizeof(float), (void *)(6 * sizeof(float)));
 
-	GLuint uniID = glGetUniformLocation(shader.getId(), "scale");
-
 	Texture texture("textures/warped_nylium_top.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	texture.setSlot(shader, "tex0", 0);
 	
 	Utils::unbindAll();
 
-	float rotation = 0.0f;
-	double previousTime = glfwGetTime();
-
 	glEnable(GL_DEPTH_TEST);
 
+	Camera camera(WIDTH, HEIGHT, glm::vec3(0.0f, 0.0f, 2.0f));
+	
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		shader.use();
-
-		double currentTime = glfwGetTime();
-		if (currentTime - previousTime >= 1 / 60)
-		{
-			rotation += 0.2f;
-			previousTime = currentTime;
-		}
-
-		// Initializing matrices
-		glm::mat4 model = glm::mat4(1.0f);
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 proj = glm::mat4(1.0f);
-
-		model = glm::rotate(model, glm::radians(rotation), glm::vec3(0.0f, 1.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, -0.5f, -2.0f));
-		proj = glm::perspective(glm::radians(90.0f), (float)(WIDTH / HEIGHT), 0.1f, 100.0f);
-
-		int modelLoc = glGetUniformLocation(shader.getId(), "model");
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		int viewLoc = glGetUniformLocation(shader.getId(), "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		int projLoc = glGetUniformLocation(shader.getId(), "proj");
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(proj));
-		
-		glUniform1f(uniID, 0.5f);
+		camera.interceptInputs(window);
+		camera.setupMatrix(45.0f, 0.1f, 100.0f, shader, "camMatrix");
 		texture.bind();
 		vao.bind();
 		glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);

@@ -15,7 +15,8 @@ SRCS				=	main.cpp \
 						renderer/VBO.cpp \
 						renderer/VAO.cpp \
 						renderer/EBO.cpp \
-						renderer/Texture.cpp
+						renderer/Texture.cpp \
+						renderer/Camera.cpp
 OBJ_FOLDER			=	objs
 INCLUDES 			=	-I includes/ -I libs/
 
