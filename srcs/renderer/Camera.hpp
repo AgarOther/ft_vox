@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 23:02:48 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:12:35 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class Camera
 		int getWidth() const;
 		int getHeight() const;
 		float getSpeed() const;
+		float getBaseSpeed() const;
 		float getSensitivity() const;
 		float getYaw() const;
 		float getPitch() const;
@@ -52,6 +53,7 @@ class Camera
 		void setWidth(int width);
 		void setHeight(int height);
 		void setSpeed(float s);
+		void setBaseSpeed(float s);
 		void setSensitivity(float s);
 		void setClicked(bool clicked);
 	private:
@@ -61,6 +63,7 @@ class Camera
 		int _width;
 		int _height;
 		float _speed;
+		float _baseSpeed;
 		float _sensitivity;
 		float _yaw;
 		float _pitch;

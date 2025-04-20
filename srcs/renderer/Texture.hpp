@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 23:20:22 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 15:38:00 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:22:14 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Texture
 		void bind();
 		void unbind();
 		void free();
+		void addTint(float r, float g, float b);
 
 		static void resetSlots();
 	private:

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 22:58:40 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:33:06 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Block::Block(Material material)
 	this->_texVbo = VBO(texIds, 24 * sizeof(GLuint));
 	this->_ebo = EBO(indices, sizeof(indices));
 	this->_textures = TextureType::generateTextures(material);
+	this->_material = material;
 
 	this->_vao.linkAttribFloat(this->_vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), NULL);
 	this->_vao.linkAttribFloat(this->_vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void *)(3 * sizeof(float)));
@@ -63,7 +64,6 @@ void Block::placeBlockAt(const Location &location, Shader &shader)
 	this->draw(shader);
 }
 
-
 void Block::free()
 {
 	this->_vbo.free();
@@ -75,4 +75,14 @@ void Block::free()
 		this->_textures[i]->free();
 		delete this->_textures[i];
 	}
+}
+
+const Material &Block::getType() const
+{
+	return (this->_material);
+}
+
+void Block::setType(Material &material)
+{
+	this->_material = material;
 }

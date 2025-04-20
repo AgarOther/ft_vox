@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 23:20:08 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 15:36:45 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:33:02 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,14 @@ Texture::Texture()
 {
 	
 }
-
+#include <iostream>
 Texture::Texture(const char *image, GLenum textureType, GLenum slot, GLenum format, GLenum pixeltype)
 {
 	this->_type = textureType;
 	// Loading image
 	int width, height, colorChannels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char *bytes = stbi_load(image, &width, &height, &colorChannels, 0);
+	unsigned char *bytes = stbi_load(image, &width, &height, &colorChannels, 3);
 	
 	glGenTextures(1, &this->_id);
 	// Set the first texture slot
@@ -40,7 +40,7 @@ Texture::Texture(const char *image, GLenum textureType, GLenum slot, GLenum form
 	glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-	glTexImage2D(textureType, 0, GL_RGBA, width, height, 0, format, pixeltype, bytes);
+	glTexImage2D(textureType, 0, GL_RGB, width, height, 0, format, pixeltype, bytes);
 	glGenerateMipmap(textureType);
 
 	stbi_image_free(bytes);
@@ -80,6 +80,3 @@ void Texture::resetSlots()
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
-
-
-

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 23:39:48 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:03:44 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <math.h>
+#include <cstdlib>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -52,6 +53,7 @@ int	main(void)
 
 	Block grassBlock(Material::GRASS_BLOCK);
 	Block dirt(Material::DIRT);
+	Block stone(Material::STONE);
 	Block craftingTable(Material::CRAFTING_TABLE);
 	
 	Camera camera(WIDTH, HEIGHT, glm::vec3(8.0f, 18.0f, 7.0f));
@@ -70,10 +72,13 @@ int	main(void)
 			for (float y = 0; y < 16; y++)
 				for (float z = 0; z < 16; z++)
 				{
+					Location location(x, y, z);
 					if (y == 15)
-						grassBlock.placeBlockAt(Location(x, y, z));
+						grassBlock.placeBlockAt(location);
+					else if (y > 12)
+						dirt.placeBlockAt(location);
 					else
-						dirt.placeBlockAt(Location(x, y, z));
+						stone.placeBlockAt(location);
 				}
 		craftingTable.placeBlockAt(Location(8.0f, 16.0f, 8.0f));
 		Utils::renderImGui();

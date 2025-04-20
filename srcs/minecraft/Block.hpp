@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 22:49:24 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:29:51 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,16 @@ class Block
 		void draw(Shader &shader);
 		void placeBlockAt(const Location &location);
 		void placeBlockAt(const Location &location, Shader &shader);
+
+		const Material &getType() const;
+		void setType(Material &material);
 	private:
 		std::vector<Texture *> _textures;
 		VAO _vao;
 		VBO _vbo;
 		VBO _texVbo;
 		EBO _ebo;
+		Material _material;
 };
 
 #endif

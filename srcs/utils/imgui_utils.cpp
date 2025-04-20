@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 23:09:43 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:19:55 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,11 @@ void Utils::setupImGui(ImGuiIO &io, Camera &camera)
 	glm::vec3 camPos = camera.getPosition();
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", camPos.x, camPos.y, camPos.z);
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: (%.1f / %.1f)", camera.getYaw(), camera.getPitch());
+
+	float cameraSpeed = camera.getBaseSpeed();
+	ImGui::DragFloat("Camera speed", &cameraSpeed, 0.02f, 0.0f, 2.0f);
+	if (cameraSpeed != camera.getBaseSpeed())
+		camera.setBaseSpeed(cameraSpeed);
 
 	ImGui::Checkbox("VSync", &vsync);
 

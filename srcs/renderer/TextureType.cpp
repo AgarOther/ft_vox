@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:41 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 23:37:28 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:26:08 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ std::vector<Texture*> TextureType::generateTextures(Material material)
 			textures.push_back(new Texture("textures/dirt.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
 			break;
 		}
+		case STONE:
+		{
+			textures.push_back(new Texture("textures/stone.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
 		default:
 		{
 			textures.push_back(new Texture("textures/unknown.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
@@ -73,6 +78,7 @@ const GLuint *TextureType::getIndices(Material material)
 	{
 		case UNKNOWN:
 		case DIRT:
+		case STONE:
 		case NETHERRACK: return (textureId1s);
 		case GRASS_BLOCK:
 		case WARPED_NYLIUM:

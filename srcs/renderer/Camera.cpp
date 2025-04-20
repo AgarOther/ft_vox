@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 23:40:36 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 04:13:38 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,21 @@
 
 Camera::Camera(int width, int height, glm::vec3 position)
 {
-	this->_orientation = glm::vec3(0.0f, 0.0f, -1.0f);
 	this->_altitude = glm::vec3(0.0f, 1.0f, 0.0f);
 	this->_width = width;
 	this->_height = height;
 	this->_position = position;
 	this->_speed = 0.01f;
+	this->_baseSpeed = 0.01f;
 	this->_sensitivity = 200.0f;
 	this->_firstClick = true;
 	this->_pitch = 0.0f;
 	this->_yaw = 90.0f;
+	glm::vec3 direction;
+	direction.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
+	direction.y = sin(glm::radians(this->_pitch));
+	direction.z = sin(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
+	this->_orientation = glm::normalize(direction);
 }
 
 Camera::~Camera()
@@ -75,9 +80,9 @@ void Camera::interceptInputs(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
 		this->_position += this->_speed * -this->_altitude;
 	if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
-		this->_speed = 0.025f;
+		this->_speed = this->_baseSpeed + 0.015f;
 	else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE)
-		this->_speed = 0.01f;
+		this->_speed = this->_baseSpeed;
 
 	// Mouse inputs
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
@@ -131,6 +136,7 @@ glm::vec3 Camera::getUp() const { return this->_altitude; }
 int Camera::getWidth() const { return this->_width; }
 int Camera::getHeight() const { return this->_height; }
 float Camera::getSpeed() const { return this->_speed; }
+float Camera::getBaseSpeed() const { return this->_baseSpeed; }
 float Camera::getSensitivity() const { return this->_sensitivity; }
 float Camera::getYaw() const { return this->_yaw; }
 float Camera::getPitch() const { return this->_pitch; }
@@ -143,5 +149,6 @@ void Camera::setUp(const glm::vec3& up) { this->_altitude = up; }
 void Camera::setWidth(int width) { this->_width = width; }
 void Camera::setHeight(int height) { this->_height = height; }
 void Camera::setSpeed(float s) { this->_speed = s; }
+void Camera::setBaseSpeed(float s) { this->_baseSpeed = s; }
 void Camera::setSensitivity(float s) { this->_sensitivity = s; }
 void Camera::setClicked(bool clicked) { this->_firstClick = clicked; }
