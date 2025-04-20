@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 04:12:35 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 15:33:47 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 # include <glm/gtx/rotate_vector.hpp>
 # include <glm/gtx/vector_angle.hpp>
 # include "Shader.hpp"
-
+# include "../minecraft/Location.hpp"
 
 class Camera
 {
@@ -32,11 +32,12 @@ class Camera
 
 		void setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &shader, const char *uniform);
 		void interceptInputs(GLFWwindow *window);
+		void teleport(Location &location, float yaw = -91, float pitch = -361);
 
 		// Getters
 		glm::vec3 getPosition() const;
 		glm::vec3 getOrientation() const;
-		glm::vec3 getUp() const;
+		glm::vec3 getAltitude() const;
 		int getWidth() const;
 		int getHeight() const;
 		float getSpeed() const;
@@ -44,18 +45,24 @@ class Camera
 		float getSensitivity() const;
 		float getYaw() const;
 		float getPitch() const;
+		float getFOV() const;
 		bool hasClicked() const;
+		bool hasGuiOn() const;
 
 		// Setters
 		void setPosition(const glm::vec3 &position);
 		void setOrientation(const glm::vec3 &orientation);
-		void setUp(const glm::vec3 &up);
+		void setAltitude(const glm::vec3 &Altitude);
 		void setWidth(int width);
 		void setHeight(int height);
 		void setSpeed(float s);
 		void setBaseSpeed(float s);
 		void setSensitivity(float s);
+		void setYaw(float s);
+		void setPitch(float s);
+		void setFOV(float s);
 		void setClicked(bool clicked);
+		void setGuiOn(bool guiOn);
 	private:
 		glm::vec3 _position;
 		glm::vec3 _orientation;
@@ -67,7 +74,9 @@ class Camera
 		float _sensitivity;
 		float _yaw;
 		float _pitch;
+		float _FOV;
 		bool _firstClick;
+		bool _guiOn;
 };
 
 #endif

@@ -6,26 +6,34 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 23:20:08 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 04:33:02 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 15:19:25 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Texture.hpp"
 #include "TextureType.hpp"
 #include <stb/stb_image.h>
+#include <string>
 
 Texture::Texture()
 {
 	
 }
-#include <iostream>
+
+static std::string getFilePath(const char *image)
+{
+	std::string path = "resources/textures/block/";
+	path.append(image);
+	return (path);
+}
+
 Texture::Texture(const char *image, GLenum textureType, GLenum slot, GLenum format, GLenum pixeltype)
 {
 	this->_type = textureType;
 	// Loading image
 	int width, height, colorChannels;
 	stbi_set_flip_vertically_on_load(true);
-	unsigned char *bytes = stbi_load(image, &width, &height, &colorChannels, 3);
+	unsigned char *bytes = stbi_load(getFilePath(image).c_str(), &width, &height, &colorChannels, 3);
 	
 	glGenTextures(1, &this->_id);
 	// Set the first texture slot

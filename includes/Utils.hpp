@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 21:49:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 22:56:54 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 15:34:23 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Utils
 		static void setupGlfw();
 		static GLuint compileShader(const char *vertSrc, const char *fragSrc);
 		static void unbindAll();
-		static void setupImGui(ImGuiIO &io, Camera &camera);
+		static void showImGui(ImGuiIO &io, Camera &camera);
 		static void renderImGui();
 		static void shutdownImGui();
 		static ImGuiIO &getImGuiIO(GLFWwindow *window);

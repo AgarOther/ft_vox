@@ -7,23 +7,28 @@ GLFLAGS				=	-lglfw -lGL -lm -ldl -lGLEW -lglut -lpthread
 NAME				=	ft_vox
 
 # Sources & Includes
-SRCS				=	main.cpp \
-						debug.cpp \
-						utils/gl_utils.cpp \
-						utils/imgui_utils.cpp \
-						utils/misc_utils.cpp \
-						utils/shader_utils.cpp \
-						renderer/Shader.cpp \
-						renderer/VBO.cpp \
-						renderer/VAO.cpp \
-						renderer/EBO.cpp \
-						renderer/Texture.cpp \
-						renderer/TextureType.cpp \
-						renderer/Camera.cpp \
-						minecraft/Block.cpp \
-						minecraft/Location.cpp
+SRCS				=	srcs/main.cpp \
+						srcs/debug.cpp \
+						srcs/utils/gl_utils.cpp \
+						srcs/utils/imgui_utils.cpp \
+						srcs/utils/misc_utils.cpp \
+						srcs/utils/shader_utils.cpp \
+						srcs/renderer/Shader.cpp \
+						srcs/renderer/VBO.cpp \
+						srcs/renderer/VAO.cpp \
+						srcs/renderer/EBO.cpp \
+						srcs/renderer/Texture.cpp \
+						srcs/renderer/TextureType.cpp \
+						srcs/renderer/Camera.cpp \
+						srcs/minecraft/Block.cpp \
+						srcs/minecraft/Location.cpp
 OBJ_FOLDER			=	objs
-INCLUDES 			=	-I includes/ -I libs/
+INCLUDES			=	-I includes \
+						-I libs \
+						-I $(GLAD_PATH)/include \
+						-I $(GLM_PATH) \
+						-I $(STB_PATH) \
+						-I $(IMGUI_PATH)
 
 GLFW_PATH			=	libs/glfw
 GLAD_PATH			=	libs/glad
@@ -45,8 +50,9 @@ STB					=	$(STB_PATH)/stb_image.cpp
 IMGUI				=	$(IMGUI_SRCS:.cpp=.o)
 
 # Objects
-OBJS				=	$(patsubst %.c, $(OBJ_FOLDER)/%.o, $(addprefix srcs/, $(SRCS))) \
-						$(patsubst %.c, $(OBJ_FOLDER)/%.o, $(LIBS))
+OBJS				=	$(patsubst srcs/%.cpp, $(OBJ_FOLDER)/%.o, $(SRCS)) \
+						$(patsubst %.c, $(OBJ_FOLDER)/%.o, $(LIBS)) \
+						$(patsubst %.cpp, $(OBJ_FOLDER)/%.o, $(LIBS))
 
 # Custom Makefile Flags
 MAKEFLAGS			+=	--no-print-directory --silent
@@ -65,24 +71,15 @@ ALL_FCLEAN			=	@echo "🧹$(LIGHT_GREEN) Project's objects & Executables cleaned
 
 # Rules
 
-all : glfw glad glm check_relink
+all : glfw glad glm $(NAME)
 
-check_relink:
-	@if [ ! -d $(OBJ_FOLDER) ]; then \
-		mkdir $(OBJ_FOLDER); \
-	fi
-	@if [ -f $(NAME) ]; then \
-		echo '✅$(LIGHT_GREEN) Nothing to be done for "all"! ✅$(RESET)\n'; \
-	else \
-		$(MAKE) $(NAME); \
-	fi
-
-$(NAME): $(GLAD) $(IMGUI)
+$(NAME): $(GLAD) $(IMGUI) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(GLAD) $(STB) $(GLFW) $(IMGUI) -o $(NAME) $(INCLUDES) $(GLFLAGS)
 	$(EXE_DONE)
 
-$(OBJ_FOLDER)/%.o: %.cpp
-	@$(CC) $(CFLAGS) -c $< -o $@
+$(OBJ_FOLDER)/%.o: srcs/%.cpp
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean :
 	@rm -rf $(OBJ_FOLDER)
@@ -117,14 +114,10 @@ download_glfw:
 
 glfw:
 	@mkdir -p libs
-	@if ls ./libs/glfw 2>/dev/null | grep -q "glfw3.h" ; then \
-		echo "\033[32;1;4mglfw Header Found\033[0m"; \
-	else \
+	@if ! ls ./libs/glfw 2>/dev/null | grep -q "glfw3.h" ; then \
 		make --no-print-directory download_glfw; \
 	fi
-	@if ls ./libs/glfw 2>/dev/null | grep -q "libglfw3.a" ; then \
-		echo "\033[32;1;4mglfw Library Found\033[0m"; \
-	else \
+	@if ! ls ./libs/glfw 2>/dev/null | grep -q "libglfw3.a" ; then \
 		make --no-print-directory download_glfw; \
 	fi
 
@@ -143,14 +136,10 @@ download_glad:
 
 glad:
 	@mkdir -p libs
-	@if ls ./libs/glad 2>/dev/null | grep -q "glad.h" ; then \
-		echo "\033[32;1;4mglad Header Found\033[0m"; \
-	else \
+	@if ! ls ./libs/glad 2>/dev/null | grep -q "glad.h" ; then \
 		make --no-print-directory download_glad; \
 	fi
-	@if ls ./libs/glad 2>/dev/null | grep -q "glad.c" ; then \
-		echo "\033[32;1;4mglad File Found\033[0m"; \
-	else \
+	@if ! ls ./libs/glad 2>/dev/null | grep -q "glad.c" ; then \
 		make --no-print-directory download_glad; \
 	fi
 
@@ -167,9 +156,7 @@ download_glm:
 
 glm:
 	@mkdir -p libs
-	@if ls ./libs/glm 2>/dev/null | grep -q "glm.hpp" ; then \
-		echo "\033[32;1;4mglm Header Found\033[0m"; \
-	else \
+	@if ! ls ./libs/glm 2>/dev/null | grep -q "glm.hpp" ; then \
 		make --no-print-directory download_glm; \
 	fi
 
@@ -181,4 +168,4 @@ $(IMGUI): %.o: %.cpp
 	@gcc $(INCLUDES) $< -c -o $@
 	@echo "\033[32;1mCompiled " $@ "\033[0m"
 
-.PHONY: all clean fclean re f debug
+.PHONY: all clean fclean re debug

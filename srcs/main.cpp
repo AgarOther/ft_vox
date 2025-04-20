@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 04:03:44 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 18:00:43 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <imgui/imgui.h>
-#include <imgui/imgui_impl_glfw.h>
-#include <imgui/imgui_impl_opengl3.h>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 #include "../includes/Utils.hpp"
 #include "renderer/Shader.hpp"
 #include "renderer/VAO.hpp"
@@ -53,6 +53,7 @@ int	main(void)
 
 	Block grassBlock(Material::GRASS_BLOCK);
 	Block dirt(Material::DIRT);
+	Block bedrock(Material::BEDROCK);
 	Block stone(Material::STONE);
 	Block craftingTable(Material::CRAFTING_TABLE);
 	
@@ -62,12 +63,14 @@ int	main(void)
 	
 	while (!glfwWindowShouldClose(window))
 	{
+		bool hasGui = camera.hasGuiOn();
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		Utils::setupImGui(io, camera);
+		if (hasGui)
+			Utils::showImGui(io, camera);
 		shader.use();
 		camera.interceptInputs(window);
-		camera.setupMatrix(120.0f, 0.1f, 100.0f, shader, "camMatrix");
+		camera.setupMatrix(camera.getFOV(), 0.1f, 100.0f, shader, "camMatrix");
 		for (float x = 0; x < 16; x++)
 			for (float y = 0; y < 16; y++)
 				for (float z = 0; z < 16; z++)
@@ -77,17 +80,22 @@ int	main(void)
 						grassBlock.placeBlockAt(location);
 					else if (y > 12)
 						dirt.placeBlockAt(location);
+					else if (y == 0)
+						bedrock.placeBlockAt(location);
 					else
 						stone.placeBlockAt(location);
 				}
 		craftingTable.placeBlockAt(Location(8.0f, 16.0f, 8.0f));
-		Utils::renderImGui();
+		if (hasGui)
+			Utils::renderImGui();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
 	grassBlock.free();
 	dirt.free();
+	bedrock.free();
+	stone.free();
 	craftingTable.free();
 	shader.free();
 	Utils::shutdownImGui();

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:10 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 03:57:41 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/20 17:42:31 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ typedef enum e_texture_type
 	GRASS_BLOCK,
 	DIRT,
 	STONE,
+	BEDROCK,
 	UNKNOWN
 }	Material;
 
