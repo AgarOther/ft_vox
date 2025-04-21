@@ -6,12 +6,12 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 23:20:08 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 15:19:25 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 02:47:05 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Texture.hpp"
 #include "TextureType.hpp"
+#include "Shader.hpp"
 #include <stb/stb_image.h>
 #include <string>
 

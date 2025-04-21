@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:10 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 17:42:31 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 02:19:41 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include "Texture.hpp"
 
-typedef enum e_texture_type
+typedef enum e_material
 {
 	CRIMSON_NYLIUM,
 	WARPED_NYLIUM,

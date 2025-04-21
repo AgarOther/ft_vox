@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 17:30:01 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 02:44:42 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,17 @@ Block::Block(Material material)
 
 	this->_vao = VAO();
 	this->_vao.bind();
-	this->_vbo = VBO(vertices, sizeof(vertices));
+	this->_vbo = VBO(vertices, 120 * sizeof(GLfloat));
 	this->_texVbo = VBO(texIds, 24 * sizeof(GLuint));
-	this->_ebo = EBO(indices, sizeof(indices));
+	this->_blockFacesVbo = VBO(blockFaces, 24 * sizeof(GLuint));
+	this->_ebo = EBO(indices, 36 * sizeof(GLuint));
 	this->_textures = TextureType::generateTextures(material);
 	this->_material = material;
 
-	this->_vao.linkAttribFloat(this->_vbo, 0, 3, GL_FLOAT, 8 * sizeof(float), NULL);
-	this->_vao.linkAttribFloat(this->_vbo, 1, 3, GL_FLOAT, 8 * sizeof(float), (void *)(3 * sizeof(float)));
-	this->_vao.linkAttribFloat(this->_vbo, 2, 2, GL_FLOAT, 8 * sizeof(float), (void *)(6 * sizeof(float)));
-	this->_vao.linkAttribInt(this->_texVbo, 3, 1, GL_UNSIGNED_INT, sizeof(GLuint), NULL);
+	this->_vao.linkAttribFloat(this->_vbo, 0, 3, GL_FLOAT, 5 * sizeof(GLfloat), NULL);
+	this->_vao.linkAttribFloat(this->_vbo, 1, 2, GL_FLOAT, 5 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+	this->_vao.linkAttribInt(this->_texVbo, 2, 1, GL_UNSIGNED_INT, sizeof(GLuint), NULL);
+	this->_vao.linkAttribInt(this->_blockFacesVbo, 3, 1, GL_UNSIGNED_INT, sizeof(GLuint), NULL);
 	this->_vao.unbind();
 }
 
@@ -37,6 +38,7 @@ void Block::draw(Shader &shader)
 {
 	this->_vao.bind();
 	shader.setInt("texCount", (int)this->_textures.size());
+	shader.setTint(this->_material);
 	for (int i = 0; i < (int)this->_textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);

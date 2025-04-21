@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:41 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 17:49:06 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 02:43:23 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ std::vector<Texture*> TextureType::generateTextures(Material material)
 		}
 		case GRASS_BLOCK:
 		{
-			textures.push_back(new Texture("bebou.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			textures.push_back(new Texture("grass_block_top.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
 			textures.push_back(new Texture("grass_block_side.png", GL_TEXTURE_2D, 1, GL_RGB, GL_UNSIGNED_BYTE));
 			textures.push_back(new Texture("dirt.png", GL_TEXTURE_2D, 2, GL_RGB, GL_UNSIGNED_BYTE));
 			break;

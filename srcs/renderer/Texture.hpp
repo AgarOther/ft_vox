@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 23:20:22 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 04:22:14 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 02:47:11 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 # define TEXTURE_HPP
 # include <GL/glew.h>
 # include <vector>
-# include "Shader.hpp"
 
 class Texture
 {
@@ -27,7 +26,6 @@ class Texture
 		void bind();
 		void unbind();
 		void free();
-		void addTint(float r, float g, float b);
 
 		static void resetSlots();
 	private:
