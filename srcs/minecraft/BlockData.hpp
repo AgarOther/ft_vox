@@ -6,13 +6,15 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:43:36 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 02:35:02 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 03:18:11 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BLOCK_DATA
 # define BLOCK_DATA
 # include <GL/glew.h>
+
+const int chunkSize = 16;
 
 // Vertices coordinates
 const GLfloat vertices[] =

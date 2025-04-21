@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:38:11 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 02:46:32 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 03:03:52 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,14 @@ void Shader::setInt(const char *uniform, int n)
 
 void Shader::setTint(Material material)
 {
-	this->setInt("tintFace", 0);
-	this->setVec4("tintCol", glm::vec4(1.0f));
 	if (material == Material::GRASS_BLOCK)
 	{
 		this->setInt("tintFace", 5);
-		this->setVec4("tintCol", glm::vec4(0.498f, 0.698f, 0.219f, 1.0f));
+		this->setVec4("tintCol", glm::vec4(0.633f, 1.00f, 0.355f, 1.0f));
+	}
+	else
+	{
+		this->setInt("tintFace", 0);
+		this->setVec4("tintCol", glm::vec4(1.0f));
 	}
 }

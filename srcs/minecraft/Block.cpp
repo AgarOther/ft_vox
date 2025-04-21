@@ -6,13 +6,18 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 02:44:42 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 03:28:29 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Block.hpp"
 #include "BlockData.hpp"
 #include "Utils.hpp"
+
+Block::Block()
+{
+	
+}
 
 Block::Block(Material material)
 {
@@ -32,6 +37,21 @@ Block::Block(Material material)
 	this->_vao.linkAttribInt(this->_texVbo, 2, 1, GL_UNSIGNED_INT, sizeof(GLuint), NULL);
 	this->_vao.linkAttribInt(this->_blockFacesVbo, 3, 1, GL_UNSIGNED_INT, sizeof(GLuint), NULL);
 	this->_vao.unbind();
+}
+
+Block &Block::operator=(const Block &obj)
+{
+	if (&obj == this)
+		return (*this);
+	this->_vao = obj._vao;
+	this->_vao.bind();
+	this->_vbo = obj._vbo;
+	this->_texVbo = obj._texVbo;
+	this->_blockFacesVbo = obj._blockFacesVbo;
+	this->_ebo = obj._ebo;
+	this->_textures = obj._textures;
+	this->_material = obj._material;
+	return (*this);
 }
 
 void Block::draw(Shader &shader)

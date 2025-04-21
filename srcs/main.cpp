@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 18:00:43 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 03:33:51 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #include "renderer/Texture.hpp"
 #include "renderer/Camera.hpp"
 #include "renderer/TextureType.hpp"
-#include "minecraft/Block.hpp"
+#include "minecraft/Chunk.hpp"
 
 int	main(void)
 {
@@ -60,6 +60,9 @@ int	main(void)
 	Camera camera(WIDTH, HEIGHT, glm::vec3(8.0f, 18.0f, 7.0f));
 
 	Utils::unbindAll();
+
+	Chunk chunk(0, 0);
+	chunk.generate(grassBlock, dirt, bedrock, stone);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -71,20 +74,7 @@ int	main(void)
 		shader.use();
 		camera.interceptInputs(window);
 		camera.setupMatrix(camera.getFOV(), 0.1f, 100.0f, shader, "camMatrix");
-		for (float x = 0; x < 16; x++)
-			for (float y = 0; y < 16; y++)
-				for (float z = 0; z < 16; z++)
-				{
-					Location location(x, y, z);
-					if (y == 15)
-						grassBlock.placeBlockAt(location);
-					else if (y > 12)
-						dirt.placeBlockAt(location);
-					else if (y == 0)
-						bedrock.placeBlockAt(location);
-					else
-						stone.placeBlockAt(location);
-				}
+		chunk.draw();
 		craftingTable.placeBlockAt(Location(8.0f, 16.0f, 8.0f));
 		if (hasGui)
 			Utils::renderImGui();

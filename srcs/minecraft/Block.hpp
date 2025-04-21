@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 02:47:34 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 03:26:16 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,9 @@
 class Block
 {
 	public:
+		Block();
 		Block(Material type);
+		Block &operator=(const Block &obj);
 
 		void free();
 		void draw(Shader &shader);
