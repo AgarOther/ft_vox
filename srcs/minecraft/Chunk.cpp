@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 03:20:02 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 03:52:38 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 04:13:43 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void Chunk::draw()
 		for (float y = 0; y < 16; y++)
 			for (float z = 0; z < 16; z++)
 			{
-				Location loc(x, y, z);
+				Location loc(x + this->_chunkX, y, z + this->_chunkZ);
 				int index = x + y * chunkSize + z * chunkSize * chunkSize;
 				Block &block = _blocks[index];
 				// Lol strat to optimize before culling optimization

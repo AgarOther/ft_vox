@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:10 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 02:19:41 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 04:54:06 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ typedef enum e_material
 	DIRT,
 	STONE,
 	BEDROCK,
+	EMERALD_BLOCK,
+	CHERRY_LOG,
 	UNKNOWN
 }	Material;
 

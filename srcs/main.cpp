@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 03:33:51 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 05:01:48 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,21 @@ int	main(void)
 	Block bedrock(Material::BEDROCK);
 	Block stone(Material::STONE);
 	Block craftingTable(Material::CRAFTING_TABLE);
+	Block emeraldBlock(Material::EMERALD_BLOCK);
+	Block cherryLog(Material::CHERRY_LOG);
 	
 	Camera camera(WIDTH, HEIGHT, glm::vec3(8.0f, 18.0f, 7.0f));
 
 	Utils::unbindAll();
 
 	Chunk chunk(0, 0);
+	Chunk chunk1(15, 15);
+	Chunk chunk2(0, 15);
+	Chunk chunk3(15, 0);
 	chunk.generate(grassBlock, dirt, bedrock, stone);
+	chunk1.generate(grassBlock, dirt, bedrock, stone);
+	chunk2.generate(grassBlock, dirt, bedrock, stone);
+	chunk3.generate(grassBlock, dirt, bedrock, stone);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -75,7 +83,12 @@ int	main(void)
 		camera.interceptInputs(window);
 		camera.setupMatrix(camera.getFOV(), 0.1f, 100.0f, shader, "camMatrix");
 		chunk.draw();
+		chunk1.draw();
+		chunk2.draw();
+		chunk3.draw();
 		craftingTable.placeBlockAt(Location(8.0f, 16.0f, 8.0f));
+		emeraldBlock.placeBlockAt(Location(10.0f, 16.0f, 8.0f));
+		cherryLog.placeBlockAt(Location(12.0f, 16.0f, 8.0f));
 		if (hasGui)
 			Utils::renderImGui();
 		glfwSwapBuffers(window);
@@ -87,6 +100,8 @@ int	main(void)
 	bedrock.free();
 	stone.free();
 	craftingTable.free();
+	emeraldBlock.free();
+	cherryLog.free();
 	shader.free();
 	Utils::shutdownImGui();
 	glfwDestroyWindow(window);

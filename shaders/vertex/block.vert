@@ -14,7 +14,7 @@ uniform mat4 model;
 
 void main()
 {
-	gl_Position = camMatrix * model * vec4(aPos, 1.0);
+	gl_Position = camMatrix * model * vec4(aPos, 1);
 	texCoord = aTex;
 	texID = aTexID;
 	blockFace = aBlockFace;

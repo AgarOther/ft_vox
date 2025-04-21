@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 17:37:06 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 04:21:30 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@ bool Camera::hasGuiOn() const { return (this->_guiOn); }
 // Setters
 void Camera::setPosition(const glm::vec3 &position) { this->_position = position; }
 void Camera::setOrientation(const glm::vec3 &orientation) { this->_orientation = orientation; }
-void Camera::setAltitude(const glm::vec3& altitude) { this->_altitude = altitude; }
+void Camera::setAltitude(const glm::vec3 &altitude) { this->_altitude = altitude; }
 void Camera::setWidth(int width) { this->_width = width; }
 void Camera::setHeight(int height) { this->_height = height; }
 void Camera::setSpeed(float s) { this->_speed = s; }

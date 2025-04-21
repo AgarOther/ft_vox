@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:41 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 02:43:23 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 04:58:48 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,17 @@ std::vector<Texture*> TextureType::generateTextures(Material material)
 			textures.push_back(new Texture("bedrock.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
 			break;
 		}
+		case EMERALD_BLOCK:
+		{
+			textures.push_back(new Texture("emerald_block.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
+		case CHERRY_LOG:
+		{
+			textures.push_back(new Texture("cherry_log_top.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			textures.push_back(new Texture("cherry_log.png", GL_TEXTURE_2D, 1, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
 		default:
 		{
 			textures.push_back(new Texture("unknown.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
@@ -85,7 +96,9 @@ const GLuint *TextureType::getIndices(Material material)
 		case DIRT:
 		case STONE:
 		case BEDROCK:
+		case EMERALD_BLOCK:
 		case NETHERRACK: return (textureId1s);
+		case CHERRY_LOG: return (textureId2s);
 		case GRASS_BLOCK:
 		case WARPED_NYLIUM:
 		case CRIMSON_NYLIUM: return (textureId3s);

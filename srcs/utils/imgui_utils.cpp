@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 17:47:40 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 03:58:23 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void Utils::showImGui(ImGuiIO &io, Camera &camera)
 	ImGui::Begin("ft_vox");
 	
 	// FPS
-	ImGui::Text("BEBOUcraft 0.00.1 (0.00.1/vanilla)");
+	ImGui::Text("Minecraft 0.00.1 (0.00.1/vanilla)");
 	ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	
 	ImGui::NewLine();
