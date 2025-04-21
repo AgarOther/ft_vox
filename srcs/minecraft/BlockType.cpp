@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 00:46:56 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 01:31:24 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ void BlockType::draw(Material &material, Shader &shader)
 	}
 	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
 	Texture::resetSlots();
+	block._vao.unbind();
 }
 
 void BlockType::free()

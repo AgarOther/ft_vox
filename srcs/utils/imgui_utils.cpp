@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:00:06 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 01:54:19 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,17 @@ void Utils::showImGui(ImGuiIO &io, Camera &camera, GLFWwindow *window)
 		else
 			glfwSetWindowMonitor(window, nullptr, windowPosX, windowPosY, windowWidth, windowHeight, 0);
 		fullscreenChanged = fullscreen;
+	}
+
+	// Key lock
+	static bool lock = false;
+	static bool lockChanged = false;
+	ImGui::SameLine();
+	ImGui::Checkbox("Lock keys", &lock);
+	if (lock != lockChanged)
+	{
+		camera.setLocked(lock);
+		lockChanged = lock;
 	}
 
 	ImGui::NewLine();

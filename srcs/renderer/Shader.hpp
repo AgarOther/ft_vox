@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:38:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 22:26:20 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 01:36:33 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@
 class Shader
 {
 	public:
-		Shader(const char *vertFile, const char *fragFile);
+		Shader();
+		Shader(const char *vertFile, const char *fragFile, bool changeBound);
 
 		GLuint getId() const;
 		void use();

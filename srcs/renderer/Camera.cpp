@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 00:59:29 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 01:53:16 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,31 +84,34 @@ void Camera::interceptInputs(GLFWwindow *window)
 	/* End GPT Code*/
 
 	// Key management
-	if ((glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP)) == GLFW_PRESS)
-		this->_position += this->_speed * forward;
-	if ((glfwGetKey(window, GLFW_KEY_A) || glfwGetKey(window, GLFW_KEY_LEFT)) == GLFW_PRESS)
-		this->_position += this->_speed * -right;
-	if ((glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN)) == GLFW_PRESS)
-		this->_position += this->_speed * -forward;
-	if ((glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT)) == GLFW_PRESS)
-		this->_position += this->_speed * right;
-	if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
-		this->_position += this->_speed * this->_altitude;
-	if (glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
-		this->_position += this->_speed * -this->_altitude;
-	if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
-		this->_speed = this->_baseSpeed * 1.5f;
-	else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE)
-		this->_speed = this->_baseSpeed;
+	if (!this->_locked)
+	{
+		if ((glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP)) == GLFW_PRESS)
+			this->_position += this->_speed * forward;
+		if ((glfwGetKey(window, GLFW_KEY_A) || glfwGetKey(window, GLFW_KEY_LEFT)) == GLFW_PRESS)
+			this->_position += this->_speed * -right;
+		if ((glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN)) == GLFW_PRESS)
+			this->_position += this->_speed * -forward;
+		if ((glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT)) == GLFW_PRESS)
+			this->_position += this->_speed * right;
+		if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+			this->_position += this->_speed * this->_altitude;
+		if (glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
+			this->_position += this->_speed * -this->_altitude;
+		if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
+			this->_speed = this->_baseSpeed * 1.5f;
+		else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE)
+			this->_speed = this->_baseSpeed;
+	}
 
 	// Prevents toggling every frame
 	static bool lastFramePressed = false;
-	bool keyPressed = glfwGetKey(window, GLFW_KEY_M);
+	bool keyPressed = glfwGetKey(window, GLFW_KEY_F3);
 	if (keyPressed && !lastFramePressed)
 		this->_guiOn = !this->_guiOn;
 
 	// Mouse inputs
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+	if (!this->_locked && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		double mouseX, mouseY;
 
@@ -176,6 +179,7 @@ float Camera::getPitch() const { return this->_pitch; }
 float Camera::getFOV() const { return this->_FOV; }
 bool Camera::hasClicked() const { return (this->_firstClick); }
 bool Camera::hasGuiOn() const { return (this->_guiOn); }
+bool Camera::isLocked() const { return (this->_locked); }
 
 // Setters
 void Camera::setPosition(const glm::vec3 &position) { this->_position = position; }
@@ -191,3 +195,4 @@ void Camera::setPitch(float s) { this->_pitch = s; }
 void Camera::setFOV(float s) { this->_FOV = s; }
 void Camera::setClicked(bool clicked) { this->_firstClick = clicked; }
 void Camera::setGuiOn(bool guiOn) { this->_guiOn = guiOn; }
+void Camera::setLocked(bool lock) { this->_locked = lock; }

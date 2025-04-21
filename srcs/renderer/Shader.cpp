@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:38:11 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 22:26:24 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 01:36:26 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 
 static Shader *currentlyBound;
 
-Shader &Shader::getCurrentlyBoundShader()
+Shader::Shader()
 {
-	return (*currentlyBound);
+	
 }
 
-Shader::Shader(const char *vertFile, const char *fragFile)
+Shader::Shader(const char *vertFile, const char *fragFile, bool changeBound)
 {
 	std::string vertSrc = Utils::getShaderAsString(vertFile);
 	std::string fragSrc = Utils::getShaderAsString(fragFile);
 	this->_id = Utils::compileShader(vertSrc.c_str(), fragSrc.c_str());
-	if (this->_id != 0)
+	if (this->_id != 0 && changeBound)
 		currentlyBound = this;
 }
 
@@ -74,4 +74,9 @@ void Shader::setTint(Material material)
 		this->setInt("tintFace", 0);
 		this->setVec4("tintCol", glm::vec4(1.0f));
 	}
+}
+
+Shader &Shader::getCurrentlyBoundShader()
+{
+	return (*currentlyBound);
 }

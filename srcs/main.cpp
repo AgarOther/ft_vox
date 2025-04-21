@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 23:11:16 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 01:36:51 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 #include "renderer/Texture.hpp"
 #include "renderer/Camera.hpp"
 #include "renderer/TextureType.hpp"
+#include "renderer/Crosshair.hpp"
 #include "minecraft/Chunk.hpp"
 
 int	main(void)
@@ -44,7 +45,9 @@ int	main(void)
 
 	ImGuiIO &io = Utils::getImGuiIO(window);
 
-	Shader shader("block.vert", "block.frag");
+	Shader shader("block.vert", "block.frag", true);
+	Crosshair crosshair;
+	(void) crosshair;
 	
 	Camera camera(WIDTH, HEIGHT, glm::vec3(8.0f, 18.0f, 7.0f));
 	BlockType::init();
@@ -56,6 +59,7 @@ int	main(void)
 		bool hasGui = camera.hasGuiOn();
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		crosshair.draw();
 		if (hasGui)
 			Utils::showImGui(io, camera, window);
 		shader.use();

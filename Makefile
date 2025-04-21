@@ -15,6 +15,7 @@ SRCS				=	srcs/main.cpp \
 						srcs/utils/misc_utils.cpp \
 						srcs/utils/shader_utils.cpp \
 						srcs/renderer/Shader.cpp \
+						srcs/renderer/Crosshair.cpp \
 						srcs/renderer/VBO.cpp \
 						srcs/renderer/VAO.cpp \
 						srcs/renderer/EBO.cpp \
