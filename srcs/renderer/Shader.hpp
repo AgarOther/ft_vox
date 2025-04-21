@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:38:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 02:46:35 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 22:26:20 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Shader
 		void setVec4(const char *uniform, glm::vec4 vec);
 		void setInt(const char *uniform, int n);
 		void setTint(Material material);
+
 		static Shader &getCurrentlyBoundShader();
 	private:
 		GLuint _id;

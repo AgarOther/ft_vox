@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/20 15:33:47 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 00:51:11 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Camera
 
 		void setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &shader, const char *uniform);
 		void interceptInputs(GLFWwindow *window);
-		void teleport(Location &location, float yaw = -91, float pitch = -361);
+		void teleport(Location location, float yaw = -91, float pitch = -361);
 
 		// Getters
 		glm::vec3 getPosition() const;

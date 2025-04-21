@@ -1,37 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Chunk.hpp                                          :+:      :+:    :+:   */
+/*   World.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/21 03:10:34 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 00:27:43 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/04/22 00:06:40 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/04/22 00:42:54 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CHUNK_HPP
-# define CHUNK_HPP
+#ifndef WORLD_HPP
+# define WORLD_HPP
 
-# include "Block.hpp"
-# include <vector>
+#include "Chunk.hpp"
 
-class Chunk
-{
-	public:
-		Chunk(int chunkX, int chunkZ);
-		
-		int getChunkX() const;
-		int getChunkZ() const;
-		static Chunk *getChunk(int chunkX, int chunkZ);
-
-		void addBlock(Block &block);
-		void generate();
-		void draw();
-	private:
-		std::vector<Block> _blocks;
-		int _chunkX;
-		int _chunkZ;
-};
+std::vector<Chunk *> chunkList;
 
 #endif

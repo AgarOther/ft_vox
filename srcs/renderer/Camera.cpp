@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 04:21:30 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 00:59:29 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,15 @@ void Camera::setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &
 	this->_FOV = FOVdeg;
 }
 
+static glm::vec3 translateDirection(float yaw, float pitch)
+{
+	glm::vec3 direction;
+	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.y = sin(glm::radians(pitch));
+	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	return (direction);
+}
+
 void Camera::interceptInputs(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE))
@@ -88,7 +97,7 @@ void Camera::interceptInputs(GLFWwindow *window)
 	if (glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
 		this->_position += this->_speed * -this->_altitude;
 	if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
-		this->_speed = this->_baseSpeed + 0.015f;
+		this->_speed = this->_baseSpeed * 1.5f;
 	else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE)
 		this->_speed = this->_baseSpeed;
 
@@ -128,11 +137,7 @@ void Camera::interceptInputs(GLFWwindow *window)
 		else if (this->_yaw > 179.99f)
 			this->_yaw = -180.0f;
 
-		glm::vec3 direction;
-		direction.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
-		direction.y = sin(glm::radians(this->_pitch));
-		direction.z = sin(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
-		this->_orientation = glm::normalize(direction);
+		this->_orientation = translateDirection(this->_yaw, this->_pitch);
 	
 		glfwSetCursorPos(window, (this->_width / 2), (this->_height / 2));
 	}
@@ -144,7 +149,7 @@ void Camera::interceptInputs(GLFWwindow *window)
 	lastFramePressed = keyPressed;
 }
 
-void Camera::teleport(Location &location, float yaw, float pitch)
+void Camera::teleport(Location location, float yaw, float pitch)
 {
 	glm::vec3 newPos;
 
@@ -152,10 +157,9 @@ void Camera::teleport(Location &location, float yaw, float pitch)
 	newPos.y = location.getY();
 	newPos.z = location.getZ();
 	this->_position = newPos;
-	if (yaw >= -90)
-		this->_yaw = yaw;
-	if (pitch >= -180)
-		this->_pitch = pitch;
+	this->_yaw = yaw;
+	this->_pitch = pitch;
+	this->_orientation = translateDirection(this->_yaw, this->_pitch);
 }
 
 // Getters

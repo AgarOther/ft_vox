@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 16:59:38 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/19 17:12:20 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 00:41:07 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ class Location
 	public:
 		Location();
 		Location(float x, float y, float z);
+
+		bool operator==(const Location &obj);
 		
 		float getX() const;
 		float getY() const;

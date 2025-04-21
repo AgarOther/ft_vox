@@ -6,14 +6,14 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 21:38:11 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 04:32:21 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/21 22:26:24 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Shader.hpp"
 #include "Utils.hpp"
 
-Shader *currentlyBound;
+static Shader *currentlyBound;
 
 Shader &Shader::getCurrentlyBoundShader()
 {

@@ -9,6 +9,7 @@ NAME				=	ft_vox
 # Sources & Includes
 SRCS				=	srcs/main.cpp \
 						srcs/debug.cpp \
+						srcs/utils/command_utils.cpp \
 						srcs/utils/gl_utils.cpp \
 						srcs/utils/imgui_utils.cpp \
 						srcs/utils/misc_utils.cpp \
@@ -20,6 +21,7 @@ SRCS				=	srcs/main.cpp \
 						srcs/renderer/Texture.cpp \
 						srcs/renderer/TextureType.cpp \
 						srcs/renderer/Camera.cpp \
+						srcs/minecraft/BlockType.cpp \
 						srcs/minecraft/Block.cpp \
 						srcs/minecraft/Location.cpp \
 						srcs/minecraft/Chunk.cpp

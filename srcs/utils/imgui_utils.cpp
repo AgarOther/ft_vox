@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 03:58:23 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 01:00:06 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static std::string getAxisDirectionAsString(float yaw)
         return "negative X";
 }
 
-void Utils::showImGui(ImGuiIO &io, Camera &camera)
+void Utils::showImGui(ImGuiIO &io, Camera &camera, GLFWwindow *window)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -106,20 +106,39 @@ void Utils::showImGui(ImGuiIO &io, Camera &camera)
 		vsyncChanged = vsync;
 	}
 
-	// Teleport
-	static float camX = 0.0f;
-	static float camY = 0.0f;
-	static float camZ = 0.0f;
-	float *camCoords[3] = { &camX, &camY, &camZ };
-	ImGui::NewLine();
-	ImGui::NewLine();
+	// Fullscreen
+	static bool fullscreen = false;
+	static bool fullscreenChanged = false;
+	static int windowPosX = 0;
+	static int windowPosY = 0;
+	static int windowWidth = 0;
+	static int windowHeight = 0;
 	ImGui::SameLine();
-	ImGui::Text("Teleport Coordinates");
-	ImGui::InputFloat3("", *camCoords, "%.3f");
-	if (ImGui::Button("Teleport"))
+	ImGui::Checkbox("Fullscreen", &fullscreen);
+	if (fullscreen != fullscreenChanged)
 	{
-		Location loc(camX, camY, camZ);
-		camera.teleport(loc);
+		if (fullscreen)
+		{
+			glfwGetWindowPos(window, &windowPosX, &windowPosY);
+			glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+			GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+			const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+			glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		}
+		else
+			glfwSetWindowMonitor(window, nullptr, windowPosX, windowPosY, windowWidth, windowHeight, 0);
+		fullscreenChanged = fullscreen;
+	}
+
+	ImGui::NewLine();
+	ImGui::NewLine();
+	static char buffer[100] = {};
+	ImGui::InputText("Command line", buffer, 100);
+	if (ImGui::Button("Enter"))
+	{
+		Utils::dispatchCommand(camera, buffer);
+		buffer[0] = 0;
 	}
 
 	ImGui::End();

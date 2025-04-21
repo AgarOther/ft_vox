@@ -5,45 +5,41 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 03:26:16 by scraeyme         ###   ########.fr       */
+/*   Created: 2025/04/21 22:27:31 by scraeyme          #+#    #+#             */
+/*   Updated: 2025/04/21 23:49:01 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef BLOCK_HPP
 # define BLOCK_HPP
 
-# include "../renderer/Texture.hpp"
+# include "BlockType.hpp"
 # include "../renderer/TextureType.hpp"
-# include "../renderer/VAO.hpp"
-# include "../renderer/EBO.hpp"
-# include "../renderer/Shader.hpp"
-# include "Location.hpp"
-# include <vector>
 
 class Block
 {
 	public:
 		Block();
-		Block(Material type);
+		Block(Material material, Location location, int chunkX, int chunkZ);
 		Block &operator=(const Block &obj);
 
-		void free();
-		void draw(Shader &shader);
 		void placeBlockAt(const Location &location);
-		void placeBlockAt(const Location &location, Shader &shader);
+		void place();
+		
+		Location getLocation() const;
+		Location getChunkLocation() const;
+		Material getType() const;
+		bool isSolid() const;
 
-		const Material &getType() const;
-		void setType(Material &material);
+		void setType(Material material);
 	private:
-		std::vector<Texture *> _textures;
-		VAO _vao;
-		VBO _vbo;
-		VBO _texVbo;
-		VBO _blockFacesVbo;
-		VBO _texDataVbo;
-		EBO _ebo;
+		int _x;
+		int _y;
+		int _z;
+		int _chunkX;
+		int _chunkZ;
 		Material _material;
+		bool _isSolid;
 };
 
 #endif
