@@ -6,12 +6,13 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 14:18:35 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 18:48:14 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BlockType.hpp"
 #include "BlockData.hpp"
+#include "Block.hpp"
 #include "Utils.hpp"
 
 std::unordered_map<Material, BlockType> blockMap;
@@ -56,22 +57,25 @@ BlockType &BlockType::operator=(const BlockType &obj)
 	return (*this);
 }
 
-void BlockType::draw(Material &material, Shader &shader)
+void BlockType::draw(Block &block, Material &material, Shader &shader)
 {
-	BlockType &block = blockMap[material];
-	block._vao.bind();
-	shader.setInt("texCount", (int)block._textures.size());
-	shader.setTint(block._material);
-	for (int i = 0; i < (int)block._textures.size(); i++)
+	BlockType &blockType = blockMap[material];
+	blockType._vao.bind();
+	shader.setInt("texCount", (int)blockType._textures.size());
+	shader.setTint(blockType._material);
+	for (int i = 0; i < (int)blockType._textures.size(); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
-		block._textures[i]->bind();
+		blockType._textures[i]->bind();
 		shader.setInt(("textures[" + std::to_string(i) + "]").c_str(), i);
 	}
 	for (int i = 0; i < static_cast<int>(BlockFace::DOWN) + 1; i++)
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLuint *) (i * 6 * sizeof(GLuint)));
+	{
+		if (block.getRelative((BlockFace)i) == nullptr)
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLuint *) (i * 6 * sizeof(GLuint)));
+	}
 	Texture::resetSlots();
-	block._vao.unbind();
+	blockType._vao.unbind();
 }
 
 void BlockType::free()

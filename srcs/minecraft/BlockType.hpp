@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 13:53:43 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 18:25:16 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ typedef enum e_blockface
 	DOWN
 }			BlockFace;
 
+class Block;
+
 class BlockType
 {
 	public:
@@ -42,7 +44,7 @@ class BlockType
 	static void init();
 	static void shutdown();
 	void free();
-	static void draw(Material &material, Shader &shader);
+	static void draw(Block &block, Material &material, Shader &shader);
 	
 	const Material &getType() const;
 	private:

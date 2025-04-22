@@ -6,12 +6,12 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 03:20:02 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 13:33:31 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 19:00:39 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Chunk.hpp"
 #include "BlockData.hpp"
+#include "Block.hpp"
 #include "World.hpp"
 
 Chunk::Chunk(int chunkX, int chunkZ)
@@ -59,7 +59,7 @@ void Chunk::generate()
 					material = Material::DIRT;
 				else
 					material = Material::STONE;
-				_blocks.push_back(Block(material, Location(this->_chunkX + x, y, this->_chunkZ + z), x, z));
+				_blocks.push_back(Block(material, Location(this->_chunkX + x, y, this->_chunkZ + z), x, z, *this));
 			}
 }
 

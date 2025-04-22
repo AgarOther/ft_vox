@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 03:30:37 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 17:30:35 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void Utils::dispatchCommand(Camera &camera, char *buffer)
 		Block block(getMaterialFromString(args[4]), Location(atoi(args[1].c_str()), atoi(args[2].c_str()), atoi(args[3].c_str())), chunkX, chunkZ);
 		Chunk::getChunk(chunkX, chunkZ)->addBlock(block);
 	}
-	else if ((args.size() == 4 || args.size() == 6) && command.rfind("teleport ", 0) == 0)
+	else if ((args.size() == 4 || args.size() == 6) && command.rfind("tp ", 0) == 0)
 	{
 		if (args.size() == 4)
 			camera.teleport(Location(atof(args[1].c_str()), atof(args[2].c_str()), atof(args[3].c_str())), camera.getYaw(), camera.getPitch());
