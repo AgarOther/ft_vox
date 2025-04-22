@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 17:30:35 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 20:19:07 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,15 @@ void Utils::dispatchCommand(Camera &camera, char *buffer)
 			chunkX /= chunkSize;
 		else if (chunkX < chunkSize)
 			chunkX /= -chunkSize;
-		Block block(getMaterialFromString(args[4]), Location(atoi(args[1].c_str()), atoi(args[2].c_str()), atoi(args[3].c_str())), chunkX, chunkZ);
-		Chunk::getChunk(chunkX, chunkZ)->addBlock(block);
+		Chunk *chunk = Chunk::getChunk(chunkX, chunkZ);
+		Block block(getMaterialFromString(args[4]), Location(atoi(args[1].c_str()), atoi(args[2].c_str()), atoi(args[3].c_str())), chunkX, chunkZ, chunk);
+		chunk->addBlock(block);
 	}
 	else if ((args.size() == 4 || args.size() == 6) && command.rfind("tp ", 0) == 0)
 	{
 		if (args.size() == 4)
-			camera.teleport(Location(atof(args[1].c_str()), atof(args[2].c_str()), atof(args[3].c_str())), camera.getYaw(), camera.getPitch());
+			camera.teleport(Location((double)atof(args[1].c_str()), (double)atof(args[2].c_str()), (double)atof(args[3].c_str())), camera.getYaw(), camera.getPitch());
 		else
-			camera.teleport(Location(atof(args[1].c_str()), atof(args[2].c_str()), atof(args[3].c_str())), atof(args[4].c_str()), atof(args[5].c_str()));
+			camera.teleport(Location((double)atof(args[1].c_str()), (double)atof(args[2].c_str()), (double)atof(args[3].c_str())), (double)atof(args[4].c_str()), (double)atof(args[5].c_str()));
 	}
 }

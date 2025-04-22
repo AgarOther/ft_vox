@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 17:08:15 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 19:44:09 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(void)
 	const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 	GLFWwindow *window = glfwCreateWindow(mode->width, mode->height, "ft_vox", NULL, NULL);
 	glfwMakeContextCurrent(window);
+	glfwSwapBuffers(window);
 
 	glewInit();
 	glViewport(0, 0, mode->width, mode->height);

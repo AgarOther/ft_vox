@@ -6,19 +6,14 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 22:27:24 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 19:01:59 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 20:20:09 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Block.hpp"
 #include "Chunk.hpp"
 
-Block::Block()
-{
-	
-}
-
-Block::Block(Material material, Location location, int chunkX, int chunkZ, Chunk chunk)
+Block::Block(Material material, Location location, int chunkX, int chunkZ, Chunk *chunk)
 {
 	this->_x = location.getX();
 	this->_y = location.getY();
@@ -49,9 +44,9 @@ Location Block::getLocation() const
 	return (Location(this->_x, this->_y, this->_z));
 }
 
-Chunk &Block::getChunk() const
+Chunk Block::getChunk() const
 {
-	return (this->_chunk);
+	return (*this->_chunk);
 }
 
 Material Block::getType() const
@@ -93,13 +88,15 @@ void Block::place()
 	BlockType::draw(*this, this->_material, shader);
 }
 
+
 Block *Block::getBlockInChunk(Chunk &chunk, int chunkX, int y, int chunkZ)
 {
-	std::vector<Block> chunkBlocks = chunk.getBlocks();
+	std::vector<Block> &chunkBlocks = chunk.getBlocks();
+	Location loc;
 
 	for (Block &block : chunkBlocks)
 	{
-		Location loc = block.getChunkLocation();
+		loc = block.getChunkLocation();
 		if (chunkX == loc.getX() && y == loc.getY() && chunkZ == loc.getZ())
 			return (&block);
 	}
@@ -108,12 +105,12 @@ Block *Block::getBlockInChunk(Chunk &chunk, int chunkX, int y, int chunkZ)
 
 Block *Block::getRelative(BlockFace face)
 {
-	Chunk chunk = this->_chunk;
+	Chunk &chunk = *this->_chunk;
 
 	switch (face)
 	{
-		case BlockFace::UP: return (Block::getBlockInChunk(chunk, this->_chunkX, this->_y + 1, this->_chunkZ + 1));
-		case BlockFace::DOWN: return (Block::getBlockInChunk(chunk, this->_chunkX, this->_y - 1, this->_chunkZ + 1));
+		case BlockFace::UP: return (Block::getBlockInChunk(chunk, this->_chunkX, this->_y + 1, this->_chunkZ));
+		case BlockFace::DOWN: return (Block::getBlockInChunk(chunk, this->_chunkX, this->_y - 1, this->_chunkZ));
 		case BlockFace::NORTH: return (Block::getBlockInChunk(chunk, this->_chunkX, this->_y, this->_chunkZ + 1));
 		case BlockFace::SOUTH: return (Block::getBlockInChunk(chunk, this->_chunkX, this->_y, this->_chunkZ - 1));
 		case BlockFace::EAST: return (Block::getBlockInChunk(chunk, this->_chunkX + 1, this->_y, this->_chunkZ));

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 17:08:56 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 20:05:34 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	this->_pitch = 0.0f;
 	this->_yaw = 90.0f;
 	this->_fullScreen = false;
+	this->_locked = false;
 
 	glm::vec3 direction;
 	direction.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 03:10:34 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 19:01:13 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 19:51:03 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 class Chunk
 {
 	public:
+		Chunk();
 		Chunk(int chunkX, int chunkZ);
 		
 		int getChunkX() const;
@@ -30,7 +31,7 @@ class Chunk
 		void generate();
 		void draw();
 		
-		std::vector<Block> getBlocks() const;
+		std::vector<Block> &getBlocks();
 	private:
 		std::vector<Block> _blocks;
 		int _chunkX;
