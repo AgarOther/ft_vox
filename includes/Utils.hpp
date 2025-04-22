@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 21:49:29 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:25:55 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 03:10:53 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ class Utils
 		static void setupGlfw();
 		static GLuint compileShader(const char *vertSrc, const char *fragSrc);
 		static void unbindAll();
-		static void showImGui(ImGuiIO &io, Camera &camera, GLFWwindow *window);
+		static void showImGui(ImGuiIO &io, Camera &camera);
 		static void renderImGui();
 		static void shutdownImGui();
 		static ImGuiIO &getImGuiIO(GLFWwindow *window);
 		static void dispatchCommand(Camera &camera, char *buffer);
+		static void toggleFullscreen(GLFWwindow *window, Camera &camera);
 };
 
 void	debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);

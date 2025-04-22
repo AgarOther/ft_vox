@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 02:34:45 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 03:40:09 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,7 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 #include "../includes/Utils.hpp"
-#include "renderer/Shader.hpp"
-#include "renderer/VAO.hpp"
-#include "renderer/VBO.hpp"
-#include "renderer/EBO.hpp"
-#include "renderer/Texture.hpp"
 #include "renderer/Camera.hpp"
-#include "renderer/TextureType.hpp"
 #include "renderer/Crosshair.hpp"
 #include "minecraft/Chunk.hpp"
 
@@ -36,11 +30,13 @@ int	main(void)
 {
 	Utils::setupGlfw();
 
-	GLFWwindow *window = glfwCreateWindow(WIDTH, HEIGHT, "ft_vox", NULL, NULL);
+	GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+	GLFWwindow *window = glfwCreateWindow(mode->width, mode->height, "ft_vox", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
 	glewInit();
-	glViewport(0, 0, WIDTH, HEIGHT);
+	glViewport(0, 0, mode->width, mode->height);
 	glEnable(GL_DEPTH_TEST);
 
 	#ifdef ELEO_DEBUG
@@ -53,10 +49,11 @@ int	main(void)
 	Shader shader("block.vert", "block.frag", true);
 	Crosshair crosshair;
 	
-	Camera camera(WIDTH, HEIGHT, glm::vec3(8.0f, 18.0f, 7.0f));
+	Camera camera(mode->width, mode->height, glm::vec3(8.0f, 18.0f, 7.0f));
 	BlockType::init();
 
 	Chunk chunk(0, 0);
+	chunk.generate();
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -64,13 +61,13 @@ int	main(void)
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
-			Utils::showImGui(io, camera, window);
+			Utils::showImGui(io, camera);
 		shader.use();
 		camera.interceptInputs(window);
 		camera.setupMatrix(camera.getFOV(), 0.1f, 100.0f, shader, "camMatrix");
 		
 		// Draw calls
-		chunk.draw();
+		Chunk::drawAll();
 
 		if (hasGui)
 			Utils::renderImGui();

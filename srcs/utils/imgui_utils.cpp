@@ -6,12 +6,35 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:54:19 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 03:10:47 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Utils.hpp"
 #include <GLFW/glfw3.h>
+
+void Utils::toggleFullscreen(GLFWwindow *window, Camera &camera)
+{
+	static bool isFullscreen = false;
+	static int windowPosX = 0;
+	static int windowPosY = 0;
+	static int windowWidth = 0;
+	static int windowHeight = 0;
+
+	isFullscreen = !isFullscreen;
+	if (isFullscreen)
+	{
+		glfwGetWindowPos(window, &windowPosX, &windowPosY);
+		glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
+		glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+	}
+	else
+		glfwSetWindowMonitor(window, nullptr, windowPosX, windowPosY, windowWidth, windowHeight, 0);
+	camera.setFullscreen(isFullscreen);
+}
 
 ImGuiIO &Utils::getImGuiIO(GLFWwindow *window)
 {
@@ -57,7 +80,7 @@ static std::string getAxisDirectionAsString(float yaw)
         return "negative X";
 }
 
-void Utils::showImGui(ImGuiIO &io, Camera &camera, GLFWwindow *window)
+void Utils::showImGui(ImGuiIO &io, Camera &camera)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -104,31 +127,6 @@ void Utils::showImGui(ImGuiIO &io, Camera &camera, GLFWwindow *window)
 	{
 		glfwSwapInterval(vsync);
 		vsyncChanged = vsync;
-	}
-
-	// Fullscreen
-	static bool fullscreen = false;
-	static bool fullscreenChanged = false;
-	static int windowPosX = 0;
-	static int windowPosY = 0;
-	static int windowWidth = 0;
-	static int windowHeight = 0;
-	ImGui::SameLine();
-	ImGui::Checkbox("Fullscreen", &fullscreen);
-	if (fullscreen != fullscreenChanged)
-	{
-		if (fullscreen)
-		{
-			glfwGetWindowPos(window, &windowPosX, &windowPosY);
-			glfwGetWindowSize(window, &windowWidth, &windowHeight);
-
-			GLFWmonitor *monitor = glfwGetPrimaryMonitor();
-			const GLFWvidmode *mode = glfwGetVideoMode(monitor);
-			glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
-		}
-		else
-			glfwSetWindowMonitor(window, nullptr, windowPosX, windowPosY, windowWidth, windowHeight, 0);
-		fullscreenChanged = fullscreen;
 	}
 
 	// Key lock

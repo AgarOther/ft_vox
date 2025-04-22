@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:52:16 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 03:07:56 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ class Camera
 		bool hasClicked() const;
 		bool hasGuiOn() const;
 		bool isLocked() const;
+		bool isFullscreen() const;
 
 		// Setters
 		void setPosition(const glm::vec3 &position);
@@ -65,6 +66,7 @@ class Camera
 		void setClicked(bool clicked);
 		void setGuiOn(bool guiOn);
 		void setLocked(bool lock);
+		void setFullscreen(bool fullScreen);
 	private:
 		glm::vec3 _position;
 		glm::vec3 _orientation;
@@ -80,6 +82,7 @@ class Camera
 		bool _firstClick;
 		bool _guiOn;
 		bool _locked;
+		bool _fullScreen;
 };
 
 #endif

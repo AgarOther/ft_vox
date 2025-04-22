@@ -6,11 +6,12 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:53:16 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 03:09:43 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Camera.hpp"
+#include "Utils.hpp"
 
 Camera::Camera(int width, int height, glm::vec3 position)
 {
@@ -25,6 +26,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	this->_pitch = 0.0f;
 	this->_yaw = 90.0f;
 	this->_FOV = 90.0f;
+	this->_fullScreen = false;
 
 	glm::vec3 direction;
 	direction.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
@@ -68,7 +70,7 @@ void Camera::interceptInputs(GLFWwindow *window)
 		return;
 	}
 	
-	/* GPT Code*/
+	/* GPT Code */
 	// GPT my friend who helps me with the weirdest maths
 	// Calculate forward vector for movement based on pitch (only in X-Z plane)
 	glm::vec3 forward;
@@ -81,7 +83,7 @@ void Camera::interceptInputs(GLFWwindow *window)
 
 	// Calculate the right vector (strafe) using yaw, no pitch influence
 	glm::vec3 right = glm::normalize(glm::cross(forward, this->_altitude)); // Right direction is based on forward and altitude (up vector)
-	/* End GPT Code*/
+	/* End GPT Code */
 
 	// Key management
 	if (!this->_locked)
@@ -99,23 +101,30 @@ void Camera::interceptInputs(GLFWwindow *window)
 		if (glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
 			this->_position += this->_speed * -this->_altitude;
 		if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
-			this->_speed = this->_baseSpeed * 1.5f;
+			this->_speed = this->_baseSpeed * 2.5f;
 		else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE)
 			this->_speed = this->_baseSpeed;
 	}
 
+	
+
 	// Prevents toggling every frame
-	static bool lastFramePressed = false;
-	bool keyPressed = glfwGetKey(window, GLFW_KEY_F3);
-	if (keyPressed && !lastFramePressed)
+	static bool lastFramePressedF3 = false;
+	bool keyPressedF3 = glfwGetKey(window, GLFW_KEY_F3);
+	if (keyPressedF3 && !lastFramePressedF3)
 		this->_guiOn = !this->_guiOn;
+	
+	static bool lastFramePressedF11 = false;
+	bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
+	if (keyPressedF11 && !lastFramePressedF11)
+		Utils::toggleFullscreen(window, *this);
 
 	// Mouse inputs
 	if (!this->_locked && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		double mouseX, mouseY;
 
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		if (this->_firstClick)
 		{
@@ -146,10 +155,15 @@ void Camera::interceptInputs(GLFWwindow *window)
 	}
 	else
 	{
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetCursorPos(window, (this->_width / 2), (this->_height / 2));
+		}
 		this->_firstClick = true;
 	}
-	lastFramePressed = keyPressed;
+	lastFramePressedF3 = keyPressedF3;
+	lastFramePressedF11 = keyPressedF11;
 }
 
 void Camera::teleport(Location location, float yaw, float pitch)
@@ -180,6 +194,7 @@ float Camera::getFOV() const { return this->_FOV; }
 bool Camera::hasClicked() const { return (this->_firstClick); }
 bool Camera::hasGuiOn() const { return (this->_guiOn); }
 bool Camera::isLocked() const { return (this->_locked); }
+bool Camera::isFullscreen() const { return (this->_fullScreen); }
 
 // Setters
 void Camera::setPosition(const glm::vec3 &position) { this->_position = position; }
@@ -196,3 +211,4 @@ void Camera::setFOV(float s) { this->_FOV = s; }
 void Camera::setClicked(bool clicked) { this->_firstClick = clicked; }
 void Camera::setGuiOn(bool guiOn) { this->_guiOn = guiOn; }
 void Camera::setLocked(bool lock) { this->_locked = lock; }
+void Camera::setFullscreen(bool fullscreen) { this->_fullScreen = fullscreen; }

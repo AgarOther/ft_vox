@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 03:20:02 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:05:47 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 03:40:48 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ Chunk::Chunk(int chunkX, int chunkZ)
 {
 	this->_chunkX = chunkX;
 	this->_chunkZ = chunkZ;
-	this->generate();
 	chunkList.push_back(this);
 }
 
@@ -66,6 +65,12 @@ void Chunk::draw()
 		block.place();
 }
 
+void Chunk::drawAll()
+{
+	for (Chunk *chunk : chunkList)
+		chunk->draw();
+}
+
 void Chunk::addBlock(Block &block)
 {
 	for (Block &chunkBlock : this->_blocks)
@@ -76,6 +81,11 @@ void Chunk::addBlock(Block &block)
 	_blocks.push_back(block);
 }
 
+std::vector<Block> Chunk::getBlocks() const
+{
+	return (this->_blocks);
+}
+
 Chunk *Chunk::getChunk(int chunkX, int chunkZ)
 {
 	for (Chunk *chunk : chunkList)
@@ -83,5 +93,8 @@ Chunk *Chunk::getChunk(int chunkX, int chunkZ)
 		if (chunk->getChunkX() == chunkX && chunk->getChunkZ() == chunkZ)
 			return (chunk);
 	}
-	return (nullptr);
+	// Leak
+	Chunk *chunk = new Chunk(chunkX, chunkZ);
+	chunkList.push_back(chunk);
+	return (chunk);
 }
