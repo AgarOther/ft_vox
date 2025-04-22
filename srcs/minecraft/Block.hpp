@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 22:27:31 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 20:18:50 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/23 00:42:48 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,13 @@ class Chunk;
 class Block
 {
 	public:
-		Block(Material material, Location location, int chunkX, int chunkZ, Chunk *chunk);
+		Block(Material material, Location location, int chunkX, int chunkZ);
 		Block &operator=(const Block &obj);
 
 		void placeBlockAt(const Location &location);
 		void place();
-
-		static Block *getBlockInChunk(Chunk &chunk, int chunkX, int y, int chunkZ);
-		Block *getRelative(BlockFace face);
 		
 		Location getLocation() const;
-		Chunk getChunk() const;
 		Location getChunkLocation() const;
 		Material getType() const;
 		bool isSolid() const;
@@ -45,7 +41,6 @@ class Block
 		int _chunkZ;
 		Material _material;
 		bool _isSolid;
-		Chunk *_chunk;
 };
 
 #endif

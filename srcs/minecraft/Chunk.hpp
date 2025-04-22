@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 03:10:34 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 19:51:03 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/23 00:43:21 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 # define CHUNK_HPP
 
 # include "Block.hpp"
-# include <vector>
+# include <unordered_map>
 
 class Chunk
 {
 	public:
-		Chunk();
 		Chunk(int chunkX, int chunkZ);
 		
 		int getChunkX() const;

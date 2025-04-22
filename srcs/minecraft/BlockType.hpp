@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 18:25:16 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 23:50:59 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,25 +37,25 @@ class Block;
 class BlockType
 {
 	public:
-	BlockType();
-	BlockType(Material type);
-	BlockType &operator=(const BlockType &obj);
-	
-	static void init();
-	static void shutdown();
-	void free();
-	static void draw(Block &block, Material &material, Shader &shader);
-	
-	const Material &getType() const;
+		BlockType();
+		BlockType(Material type);
+		BlockType &operator=(const BlockType &obj);
+		
+		static void init();
+		static void shutdown();
+		void free();
+		static void draw(Material &material, Shader &shader);
+		
+		const Material &getType() const;
 	private:
-	std::vector<Texture *> _textures;
-	VAO _vao;
-	VBO _vbo;
-	VBO _texVbo;
-	VBO _blockFacesVbo;
-	VBO _texDataVbo;
-	EBO _ebo;
-	Material _material;
+		std::vector<Texture *> _textures;
+		VAO _vao;
+		VBO _vbo;
+		VBO _texVbo;
+		VBO _blockFacesVbo;
+		VBO _texDataVbo;
+		EBO _ebo;
+		Material _material;
 };
 
 extern std::unordered_map<Material, BlockType> blockMap;

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:43:36 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 13:40:44 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/23 00:17:42 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 # include <GL/glew.h>
 
 const int chunkSize = 16;
+const int chunkHeight = 16;
 
 // Vertices coordinates
 const GLfloat vertices[] =

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 20:05:54 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/23 00:07:31 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ BlockType &BlockType::operator=(const BlockType &obj)
 	return (*this);
 }
 
-void BlockType::draw(Block &block, Material &material, Shader &shader)
+void BlockType::draw(Material &material, Shader &shader)
 {
 	BlockType &blockType = blockMap[material];
 	blockType._vao.bind();
@@ -70,10 +70,7 @@ void BlockType::draw(Block &block, Material &material, Shader &shader)
 		shader.setInt(("textures[" + std::to_string(i) + "]").c_str(), i);
 	}
 	for (int i = 0; i < static_cast<int>(BlockFace::DOWN) + 1; i++)
-	{
-		if (block.getRelative((BlockFace)i) == nullptr)
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLuint *) (i * 6 * sizeof(GLuint)));
-	}
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *) (i * 6 * sizeof(GLuint)));
 	Texture::resetSlots();
 	blockType._vao.unbind();
 }
