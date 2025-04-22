@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 13:29:43 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 13:50:38 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	main(void)
 
 	Chunk chunk(0, 0);
 	Chunk chunk1(15, 0);
-	Chunk chunk2(0, 16);
+	Chunk chunk2(0, 15);
 	Chunk chunk3(15, 15);
 	chunk.generate();
 	chunk1.generate();

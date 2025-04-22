@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:40:25 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:31:24 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:18:35 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ void BlockType::draw(Material &material, Shader &shader)
 		block._textures[i]->bind();
 		shader.setInt(("textures[" + std::to_string(i) + "]").c_str(), i);
 	}
-	glDrawElements(GL_TRIANGLES, sizeof(indices) / sizeof(int), GL_UNSIGNED_INT, 0);
+	for (int i = 0; i < static_cast<int>(BlockFace::DOWN) + 1; i++)
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (GLuint *) (i * 6 * sizeof(GLuint)));
 	Texture::resetSlots();
 	block._vao.unbind();
 }
@@ -93,7 +94,7 @@ const Material &BlockType::getType() const
 
 void BlockType::init()
 {
-	for (int i = 0; i < static_cast<int>(Material::UNKNOWN) + 1; ++i) {
+	for (int i = 0; i < static_cast<int>(Material::UNKNOWN) + 1; i++) {
 		Material m = static_cast<Material>(i);
 		blockMap.insert({m, BlockType(m)});
 	}
@@ -101,7 +102,7 @@ void BlockType::init()
 
 void BlockType::shutdown()
 {
-	for (int i = 0; i < static_cast<int>(Material::UNKNOWN) + 1; ++i) {
+	for (int i = 0; i < static_cast<int>(Material::UNKNOWN) + 1; i++) {
 		Material m = static_cast<Material>(i);
 		blockMap[m].free();
 	}

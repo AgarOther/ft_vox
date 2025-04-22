@@ -1,6 +1,6 @@
 # Compilation
 CC					=	g++
-CFLAGS				=	-Wall -Wextra -Werror --std=c++11 -g
+CFLAGS				=	-Wall -Wextra -Werror --std=c++11
 GLFLAGS				=	-lglfw -lGL -lm -ldl -lGLEW -lglut -lpthread
 
 # Names

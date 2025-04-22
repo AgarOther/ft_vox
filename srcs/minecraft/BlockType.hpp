@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 13:35:01 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 23:00:14 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 13:53:43 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,15 @@
 # include <unordered_map>
 # include <vector>
 
+typedef enum e_blockface
+{
+	NORTH,
+	SOUTH,
+	WEST,
+	EAST,
+	UP,
+	DOWN
+}			BlockFace;
 
 class BlockType
 {
