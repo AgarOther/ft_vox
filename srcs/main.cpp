@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:36:51 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 02:34:45 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,15 @@ int	main(void)
 	glViewport(0, 0, WIDTH, HEIGHT);
 	glEnable(GL_DEPTH_TEST);
 
+	#ifdef ELEO_DEBUG
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(debugCallback, nullptr);
+	#endif
+
 	ImGuiIO &io = Utils::getImGuiIO(window);
 
 	Shader shader("block.vert", "block.frag", true);
 	Crosshair crosshair;
-	(void) crosshair;
 	
 	Camera camera(WIDTH, HEIGHT, glm::vec3(8.0f, 18.0f, 7.0f));
 	BlockType::init();
@@ -59,7 +63,6 @@ int	main(void)
 		bool hasGui = camera.hasGuiOn();
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		crosshair.draw();
 		if (hasGui)
 			Utils::showImGui(io, camera, window);
 		shader.use();
@@ -68,9 +71,10 @@ int	main(void)
 		
 		// Draw calls
 		chunk.draw();
-		
+
 		if (hasGui)
 			Utils::renderImGui();
+		crosshair.draw();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

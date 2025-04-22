@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:33:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 01:15:17 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 02:34:42 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,6 @@ void Utils::setupGlfw()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	#ifdef ELEO_DEBUG
-	glEnable(GL_DEBUG_OUTPUT);
-	glDebugMessageCallback(debugCallback, nullptr);
-	#endif
 }
 
 void Utils::unbindAll()
