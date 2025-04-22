@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:10 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 22:15:54 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 13:15:14 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ typedef enum e_material
 	BEDROCK,
 	EMERALD_BLOCK,
 	CHERRY_LOG,
+	DIAMOND_ORE,
+	GOLD_ORE,
+	IRON_ORE,
+	COAL_ORE,
+	COPPER_ORE,
+	EMERALD_ORE,
 	UNKNOWN
 }	Material;
 

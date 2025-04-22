@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 03:10:47 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 13:06:14 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,13 +111,22 @@ void Utils::showImGui(ImGuiIO &io, Camera &camera)
 	float FOV = camera.getFOV();
 	ImGui::SliderFloat("FOV", &FOV, 30.0f, 120.0f, "%.0f", ImGuiSliderFlags_AlwaysClamp);
 	if (FOV != camera.getFOV())
-		camera.setupMatrix(FOV, 0.1f, 100.0f, Shader::getCurrentlyBoundShader(), "matrix");
+	{
+		camera.setFOV(FOV);
+		camera.setupMatrix(Shader::getCurrentlyBoundShader());
+	}
 
 	// Sensitivity
 	float sensitivity = camera.getSensitivity();
 	ImGui::SliderFloat("Sensitivity", &sensitivity, 0.0f, 1000.0f, "%.0f", ImGuiSliderFlags_AlwaysClamp);
 	if (sensitivity != camera.getSensitivity())
 		camera.setSensitivity(sensitivity);
+
+	// Render Distance
+	int farPlane = (int)camera.getFarPlane();
+	ImGui::SliderInt("Render Distance", &farPlane, 10, 300, "%d Blocks", ImGuiSliderFlags_AlwaysClamp);
+	if (farPlane != (int)camera.getFarPlane())
+		camera.setFarPlane(farPlane);
 
 	// VSync
 	static bool vsync = true;

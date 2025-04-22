@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 15:35:41 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/21 04:58:48 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 13:15:34 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,36 @@ std::vector<Texture*> TextureType::generateTextures(Material material)
 			textures.push_back(new Texture("emerald_block.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
 			break;
 		}
+		case DIAMOND_ORE:
+		{
+			textures.push_back(new Texture("diamond_ore.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
+		case GOLD_ORE:
+		{
+			textures.push_back(new Texture("gold_ore.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
+		case IRON_ORE:
+		{
+			textures.push_back(new Texture("iron_ore.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
+		case COAL_ORE:
+		{
+			textures.push_back(new Texture("coal_ore.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
+		case COPPER_ORE:
+		{
+			textures.push_back(new Texture("copper_ore.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
+		case EMERALD_ORE:
+		{
+			textures.push_back(new Texture("emerald_ore.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
+			break;
+		}
 		case CHERRY_LOG:
 		{
 			textures.push_back(new Texture("cherry_log_top.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE));
@@ -97,6 +127,10 @@ const GLuint *TextureType::getIndices(Material material)
 		case STONE:
 		case BEDROCK:
 		case EMERALD_BLOCK:
+		case DIAMOND_ORE:
+		case GOLD_ORE:
+		case IRON_ORE:
+		case COAL_ORE:
 		case NETHERRACK: return (textureId1s);
 		case CHERRY_LOG: return (textureId2s);
 		case GRASS_BLOCK:

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 03:07:56 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 13:01:04 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ class Camera
 		Camera(int width, int height, glm::vec3 position);
 		~Camera();
 
-		void setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &shader, const char *uniform);
+		void setupMatrix(Shader &shader);
 		void interceptInputs(GLFWwindow *window);
 		void teleport(Location location, float yaw = -91, float pitch = -361);
 
@@ -46,6 +46,7 @@ class Camera
 		float getYaw() const;
 		float getPitch() const;
 		float getFOV() const;
+		float getFarPlane() const;
 		bool hasClicked() const;
 		bool hasGuiOn() const;
 		bool isLocked() const;
@@ -63,6 +64,7 @@ class Camera
 		void setYaw(float s);
 		void setPitch(float s);
 		void setFOV(float s);
+		void setFarPlane(float farPlane);
 		void setClicked(bool clicked);
 		void setGuiOn(bool guiOn);
 		void setLocked(bool lock);
@@ -79,6 +81,7 @@ class Camera
 		float _yaw;
 		float _pitch;
 		float _FOV;
+		float _farPlane;
 		bool _firstClick;
 		bool _guiOn;
 		bool _locked;

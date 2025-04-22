@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 02:31:27 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 03:09:43 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 13:03:03 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,10 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	this->_baseSpeed = 0.01f;
 	this->_sensitivity = 200.0f;
 	this->_firstClick = true;
+	this->_farPlane = 100.0f;
+	this->_FOV = 90.0f;
 	this->_pitch = 0.0f;
 	this->_yaw = 90.0f;
-	this->_FOV = 90.0f;
 	this->_fullScreen = false;
 
 	glm::vec3 direction;
@@ -42,15 +43,14 @@ Camera::~Camera()
 	
 }
 
-void Camera::setupMatrix(float FOVdeg, float nearPlane, float farPlane, Shader &shader, const char *uniform)
+void Camera::setupMatrix(Shader &shader)
 {
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 proj = glm::mat4(1.0f);
 
 	view = glm::lookAt(this->_position, this->_position + this->_orientation, this->_altitude);
-	proj = glm::perspective(glm::radians(FOVdeg), static_cast<float>(this->_width) / this->_height, nearPlane, farPlane);
-	glUniformMatrix4fv(glGetUniformLocation(shader.getId(), uniform), 1, GL_FALSE, glm::value_ptr(proj * view));
-	this->_FOV = FOVdeg;
+	proj = glm::perspective(glm::radians(this->_FOV), static_cast<float>(this->_width) / this->_height, 0.01f, this->_farPlane);
+	glUniformMatrix4fv(glGetUniformLocation(shader.getId(), "camMatrix"), 1, GL_FALSE, glm::value_ptr(proj * view));
 }
 
 static glm::vec3 translateDirection(float yaw, float pitch)
@@ -191,6 +191,7 @@ float Camera::getSensitivity() const { return this->_sensitivity; }
 float Camera::getYaw() const { return this->_yaw; }
 float Camera::getPitch() const { return this->_pitch; }
 float Camera::getFOV() const { return this->_FOV; }
+float Camera::getFarPlane() const { return this->_farPlane; }
 bool Camera::hasClicked() const { return (this->_firstClick); }
 bool Camera::hasGuiOn() const { return (this->_guiOn); }
 bool Camera::isLocked() const { return (this->_locked); }
@@ -208,6 +209,7 @@ void Camera::setSensitivity(float s) { this->_sensitivity = s; }
 void Camera::setYaw(float s) { this->_yaw = s; }
 void Camera::setPitch(float s) { this->_pitch = s; }
 void Camera::setFOV(float s) { this->_FOV = s; }
+void Camera::setFarPlane(float farPlane) { this->_farPlane = farPlane; }
 void Camera::setClicked(bool clicked) { this->_firstClick = clicked; }
 void Camera::setGuiOn(bool guiOn) { this->_guiOn = guiOn; }
 void Camera::setLocked(bool lock) { this->_locked = lock; }

@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 03:20:02 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 03:40:48 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/22 13:33:31 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,18 @@ void Chunk::generate()
 				Material material;
 				if (y == 0)
 					material = Material::BEDROCK;
+				else if (y == 1)
+					material = Material::DIAMOND_ORE;
+				else if (y == 2)
+					material = Material::GOLD_ORE;
+				else if (y == 3)
+					material = Material::IRON_ORE;
+				else if (y == 4)
+					material = Material::COAL_ORE;
+				else if (y == 5)
+					material = Material::COPPER_ORE;
+				else if (y == 6)
+					material = Material::EMERALD_ORE;
 				else if (y == 15)
 					material = Material::GRASS_BLOCK;
 				else if (y > 12)

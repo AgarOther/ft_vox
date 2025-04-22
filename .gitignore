@@ -4,3 +4,4 @@ objs/
 .vscode/
 ft_vox_debug
 imgui.ini
+compile_commands.json
