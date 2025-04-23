@@ -19,7 +19,7 @@ class Location
 		Location();
 		Location(double x, double y, double z);
 
-		bool operator==(const Location &obj);
+		bool operator==(const Location &obj) const;
 		
 		double getX() const;
 		double getY() const;

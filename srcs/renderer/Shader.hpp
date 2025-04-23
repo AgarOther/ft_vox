@@ -30,6 +30,7 @@ class Shader
 		void setMat4(const char *uniform, glm::mat4 model);
 		void setVec4(const char *uniform, glm::vec4 vec);
 		void setInt(const char *uniform, int n);
+		void setFloat(const char *uniform, float f);
 		void setTint(Material material);
 
 		static Shader &getCurrentlyBoundShader();

@@ -18,7 +18,6 @@
 # include "../renderer/VAO.hpp"
 # include "../renderer/EBO.hpp"
 # include "../renderer/Shader.hpp"
-# include "Location.hpp"
 # include <unordered_map>
 # include <vector>
 

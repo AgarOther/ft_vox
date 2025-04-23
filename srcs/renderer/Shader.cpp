@@ -62,6 +62,12 @@ void Shader::setInt(const char *uniform, int n)
 	glUniform1i(id, n);
 }
 
+void Shader::setFloat(const char *uniform, float f)
+{
+	GLuint id = glGetUniformLocation(this->_id, uniform);
+	glUniform1f(id, f);
+}
+
 void Shader::setTint(Material material)
 {
 	if (material == Material::GRASS_BLOCK)

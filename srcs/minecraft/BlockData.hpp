@@ -14,8 +14,9 @@
 # define BLOCK_DATA
 # include <GL/glew.h>
 
-const int chunkSize = 16;
-const int chunkHeight = 16;
+constexpr int chunkSize = 16;
+constexpr int chunkHeight = 16;
+constexpr int chunkVolume = chunkSize * chunkHeight * chunkSize;
 
 // Vertices coordinates
 const GLfloat vertices[] =

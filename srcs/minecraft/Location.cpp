@@ -26,7 +26,7 @@ Location::Location(double x, double y, double z)
 	this->_z = z;
 }
 
-bool Location::operator==(const Location &obj)
+bool Location::operator==(const Location &obj) const
 {
 	return (this->_x == obj._x && this->_y == obj._y && this->_z == obj._z);
 }

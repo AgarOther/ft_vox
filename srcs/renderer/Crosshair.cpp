@@ -15,10 +15,10 @@
 
 const float crosshairVertices[] =
 {
-    -0.015f,  0.0f,
-     0.015f,  0.0f,
-     0.0f, -0.015f,
-     0.0f,  0.015f,
+	-0.015f,  0.0f,
+	 0.015f,  0.0f,
+	 0.0f, -0.015f,
+	 0.0f,  0.015f,
 };
 
 Crosshair::Crosshair()

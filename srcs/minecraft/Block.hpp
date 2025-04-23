@@ -13,7 +13,7 @@
 #ifndef BLOCK_HPP
 # define BLOCK_HPP
 
-# include "BlockType.hpp"
+#include "Location.hpp"
 # include "../renderer/TextureType.hpp"
 
 class Chunk;
@@ -21,6 +21,7 @@ class Chunk;
 class Block
 {
 	public:
+		Block();
 		Block(Material material, Location location, int chunkX, int chunkZ);
 		Block &operator=(const Block &obj);
 

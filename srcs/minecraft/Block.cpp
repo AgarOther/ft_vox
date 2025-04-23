@@ -11,9 +11,22 @@
 /* ************************************************************************** */
 
 #include "Block.hpp"
-#include "Chunk.hpp"
-#include "colors.hpp"
+
 #include <iostream>
+#include <bits/ostream.tcc>
+
+#include "BlockType.hpp"
+#include "srcs/renderer/Shader.hpp"
+
+Block::Block() {
+	this->_x = 0;
+	this->_y = 0;
+	this->_z = 0;
+	this->_isSolid = false;
+	this->_material = AIR;
+	this->_chunkX = 0;
+	this->_chunkZ = 0;
+}
 
 Block::Block(Material material, Location location, int chunkX, int chunkZ)
 {

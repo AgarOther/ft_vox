@@ -13,6 +13,9 @@
 #include "Utils.hpp"
 #include <GLFW/glfw3.h>
 
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 void Utils::toggleFullscreen(GLFWwindow *window, Camera &camera)
 {
 	static bool isFullscreen = false;

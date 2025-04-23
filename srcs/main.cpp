@@ -16,6 +16,7 @@
 #include <glm/glm.hpp>
 #include <imgui.h>
 #include "../includes/Utils.hpp"
+#include "minecraft/BlockType.hpp"
 #include "renderer/Camera.hpp"
 #include "renderer/Crosshair.hpp"
 #include "minecraft/Chunk.hpp"

@@ -10,19 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <iostream>
+
 #include "Block.hpp"
+#include "Location.hpp"
+#include "Utils.hpp"
 #include "World.hpp"
 
-Chunk::Chunk(int chunkX, int chunkZ)
+Chunk::Chunk(const int chunkX, const int chunkZ)
 {
 	this->_chunkX = chunkX;
 	this->_chunkZ = chunkZ;
+	int i = 0;
+	for (int x = 0; x < chunkSize; x++)
+		for (int y = 0; y < chunkHeight; y++)
+			for (int z = 0; z < chunkSize; z++) {
+				const int index = Utils::getBlockIndex(x, y, z);
+				this->_blocks[index] = Block(AIR, Location(this->_chunkX + x, y, this->_chunkZ + z), x, z);
+				this->_faceMasks[index] = 0;
+				i++;
+			}
 	chunkList.push_back(this);
 }
 
 Chunk::~Chunk()
 {
-	for (Chunk *chunk : chunkList)
+	for (const Chunk *chunk : chunkList)
 		delete chunk;
 }
 
@@ -39,9 +52,9 @@ int Chunk::getChunkZ() const
 // Upon program launch, generate all blocks then use placeBlockAt with its material
 void Chunk::generate()
 {
-	for (int x = 0; x < 16; x++)
-		for (int y = 0; y < 16; y++)
-			for (int z = 0; z < 16; z++)
+	for (int x = 0; x < chunkSize; x++)
+		for (int y = 0; y < chunkHeight; y++)
+			for (int z = 0; z < chunkSize; z++)
 			{
 				Material material;
 				if (y == 0)
@@ -64,7 +77,7 @@ void Chunk::generate()
 					material = DIRT;
 				else
 					material = STONE;
-				this->_blocks.push_back(Block(material, Location(this->_chunkX + x, y, this->_chunkZ + z), x, z));
+				this->_blocks[Utils::getBlockIndex(x, y, z)].setType(material);
 			}
 }
 
@@ -78,14 +91,16 @@ void Chunk::generate()
 // int indexSouth = x + y * chunkSize + (z - 1) * chunkSize * chunkSize;
 void Chunk::draw()
 {
-	for (Block &block : _blocks)
+	for (Block &block : this->_blocks) {
 		block.place();
+	}
 }
 
 void Chunk::drawAll()
 {
-	for (Chunk *chunk : chunkList)
+	for (Chunk *chunk : chunkList) {
 		chunk->draw();
+	}
 }
 
 void Chunk::addBlock(Block &block)
@@ -95,10 +110,11 @@ void Chunk::addBlock(Block &block)
 		if (chunkBlock.getLocation() == block.getLocation())
 			return (chunkBlock.setType(block.getType()));
 	}
-	_blocks.push_back(block);
+	Location loc = block.getLocation();
+	this->_blocks[Utils::getBlockIndex(loc.getX(), loc.getY(), loc.getZ())] = block;
 }
 
-std::vector<Block> &Chunk::getBlocks()
+std::array<Block, chunkVolume> &Chunk::getBlocks()
 {
 	return (this->_blocks);
 }

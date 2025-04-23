@@ -13,8 +13,10 @@
 #ifndef CHUNK_HPP
 # define CHUNK_HPP
 
+#include <array>
+
 # include "Block.hpp"
-# include <unordered_map>
+# include "BlockData.hpp"
 
 class Chunk
 {
@@ -31,9 +33,10 @@ class Chunk
 		void generate();
 		void draw();
 		
-		std::vector<Block> &getBlocks();
+		std::array<Block, chunkVolume> &getBlocks();
 	private:
-		std::vector<Block> _blocks;
+		std::array<Block, chunkVolume> _blocks;
+		std::array<uint8_t, chunkVolume> _faceMasks;
 		int _chunkX;
 		int _chunkZ;
 };

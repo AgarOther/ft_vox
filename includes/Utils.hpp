@@ -15,8 +15,6 @@
 # include <string>
 # include <GL/glew.h>
 # include <imgui/imgui.h>
-# include <imgui/imgui_impl_glfw.h>
-# include <imgui/imgui_impl_opengl3.h>
 # include "../srcs/renderer/Camera.hpp"
 # define HEIGHT 1080
 # define WIDTH 1920
@@ -36,6 +34,7 @@ class Utils
 		static ImGuiIO &getImGuiIO(GLFWwindow *window);
 		static void dispatchCommand(Camera &camera, char *buffer);
 		static void toggleFullscreen(GLFWwindow *window, Camera &camera);
+		static int getBlockIndex(int x, int y, int z);
 };
 
 void	debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);

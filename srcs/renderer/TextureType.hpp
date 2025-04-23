@@ -17,6 +17,7 @@
 
 typedef enum e_material
 {
+	AIR,
 	CRIMSON_NYLIUM,
 	WARPED_NYLIUM,
 	NETHERRACK,

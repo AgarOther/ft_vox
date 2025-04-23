@@ -15,6 +15,11 @@
 #include <string>
 #include "Utils.hpp"
 #include "colors.hpp"
+#include "srcs/minecraft/BlockData.hpp"
+
+int Utils::getBlockIndex(const int x, const int y, const int z) {
+	return (x + z * chunkSize + y * chunkSize * chunkSize);
+}
 
 std::string Utils::appendInt(std::string str, int n)
 {
