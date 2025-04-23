@@ -34,8 +34,8 @@ INCLUDES			=	-I includes \
 						-I $(STB_PATH) \
 						-I $(IMGUI_PATH)
 
-GLFW_PATH			=	libs/glfw
-GLAD_PATH			=	libs/glad
+GLFW_PATH			=	libs/GLFW
+GLEW_PATH			=	libs/GL
 GLM_PATH			=	libs/glm
 STB_PATH			=	libs/stb
 IMGUI_PATH			=	libs/imgui
@@ -48,8 +48,7 @@ IMGUI_SRCS			=	libs/imgui/imgui_demo.cpp \
 						libs/imgui/imgui.cpp
 
 GLFW				=	$(GLFW_PATH)/libglfw3.a
-GLAD_SRC			=	$(GLAD_PATH)/glad.c
-GLAD				=	$(GLAD_SRC:.c=.o)
+GLEW				=	$(GLAD_PATH)/libGLEW.a
 STB					=	$(STB_PATH)/stb_image.cpp
 IMGUI				=	$(IMGUI_SRCS:.cpp=.o)
 
@@ -75,10 +74,10 @@ ALL_FCLEAN			=	@echo "🧹$(LIGHT_GREEN) Project's objects & Executables cleaned
 
 # Rules
 
-all : glfw glad glm $(NAME)
+all : glfw glm $(NAME)
 
-$(NAME): $(GLAD) $(IMGUI) $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(GLAD) $(STB) $(GLFW) $(IMGUI) -o $(NAME) $(INCLUDES) $(GLFLAGS)
+$(NAME): $(IMGUI) $(OBJS)
+	@$(CC) $(CFLAGS) $(OBJS) $(STB) $(GLFW) $(GLAD) $(IMGUI) -o $(NAME) $(INCLUDES) $(GLFLAGS)
 	$(EXE_DONE)
 
 $(OBJ_FOLDER)/%.o: srcs/%.cpp
@@ -104,49 +103,26 @@ debug : fclean
 # Libraries
 download_glfw:
 	@cd libs; \
-	rm -rf glfw 2>/dev/null; \
+	rm -rf GLFW 2>/dev/null; \
 	echo "\033[31;1;4mglfw Not Found\033[0m"; \
 	echo "\033[31;1mDownloading it from github\033[0m"; \
-	git clone https://github.com/glfw/glfw.git GLFW; \
+	git clone https://github.com/glfw/glfw.git GLFW_DOWNLOADED; \
 	echo "\033[31;1mCompiling it\033[0m"; \
-	cmake -S GLFW -B GLFW/build; \
-	cmake --build GLFW/build; \
-	mkdir -p glfw; \
-	cp GLFW/include/GLFW/glfw3.h glfw/.; \
-	cp GLFW/build/src/libglfw3.a glfw/.; \
-	rm -rf GLFW
+	cmake -S GLFW_DOWNLOADED -B GLFW_DOWNLOADED/build; \
+	cmake --build GLFW_DOWNLOADED/build; \
+	mkdir -p GLFW; \
+	cp GLFW_DOWNLOADED/include/GLFW/glfw3.h GLFW/.; \
+	cp GLFW_DOWNLOADED/build/src/libglfw3.a GLFW/.; \
+	rm -rf GLFW_DOWNLOADED
 
 glfw:
 	@mkdir -p libs
-	@if ! ls ./libs/glfw 2>/dev/null | grep -q "glfw3.h" ; then \
+	@if ! ls ./libs/GLFW 2>/dev/null | grep -q "glfw3.h" ; then \
 		make --no-print-directory download_glfw; \
 	fi
-	@if ! ls ./libs/glfw 2>/dev/null | grep -q "libglfw3.a" ; then \
+	@if ! ls ./libs/GLFW 2>/dev/null | grep -q "libglfw3.a" ; then \
 		make --no-print-directory download_glfw; \
 	fi
-
-download_glad:
-	@cd libs; \
-	echo "\033[31;1;4mglad Not Found\033[0m"; \
-	echo "\033[31;1mDownloading it from github\033[0m"; \
-	git clone https://github.com/Dav1dde/glad.git glad; \
-	echo "\033[31;1mCompiling it\033[0m"; \
-	python3 -m glad --out-path=glad/build --generator=c; \
-	mkdir -p glad2; \
-	cp glad/build/include/glad/glad.h glad2/.; \
-	cp glad/build/src/glad.c glad2/.; \
-	rm -rf glad; \
-	mv glad2 glad
-
-glad:
-	@mkdir -p libs
-	@if ! ls ./libs/glad 2>/dev/null | grep -q "glad.h" ; then \
-		make --no-print-directory download_glad; \
-	fi
-	@if ! ls ./libs/glad 2>/dev/null | grep -q "glad.c" ; then \
-		make --no-print-directory download_glad; \
-	fi
-
 
 download_glm:
 	@cd libs; \
@@ -163,10 +139,6 @@ glm:
 	@if ! ls ./libs/glm 2>/dev/null | grep -q "glm.hpp" ; then \
 		make --no-print-directory download_glm; \
 	fi
-
-$(GLAD): %.o: %.c
-	@gcc $(INCLUDES) $< -c -o $@
-	@echo "\033[32;1mCompiled " $@ "\033[0m"
 
 $(IMGUI): %.o: %.cpp
 	@gcc $(INCLUDES) $< -c -o $@

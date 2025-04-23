@@ -6,11 +6,10 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 03:20:02 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/23 00:43:47 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/23 17:47:26 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "BlockData.hpp"
 #include "Block.hpp"
 #include "World.hpp"
 
@@ -19,6 +18,12 @@ Chunk::Chunk(int chunkX, int chunkZ)
 	this->_chunkX = chunkX;
 	this->_chunkZ = chunkZ;
 	chunkList.push_back(this);
+}
+
+Chunk::~Chunk()
+{
+	for (Chunk *chunk : chunkList)
+		delete chunk;
 }
 
 int Chunk::getChunkX() const
@@ -40,25 +45,25 @@ void Chunk::generate()
 			{
 				Material material;
 				if (y == 0)
-					material = Material::BEDROCK;
+					material = BEDROCK;
 				else if (y == 1)
-					material = Material::DIAMOND_ORE;
+					material = DIAMOND_ORE;
 				else if (y == 2)
-					material = Material::GOLD_ORE;
+					material = GOLD_ORE;
 				else if (y == 3)
-					material = Material::IRON_ORE;
+					material = IRON_ORE;
 				else if (y == 4)
-					material = Material::COAL_ORE;
+					material = COAL_ORE;
 				else if (y == 5)
-					material = Material::COPPER_ORE;
+					material = COPPER_ORE;
 				else if (y == 6)
-					material = Material::EMERALD_ORE;
+					material = EMERALD_ORE;
 				else if (y == 15)
-					material = Material::GRASS_BLOCK;
+					material = GRASS_BLOCK;
 				else if (y > 12)
-					material = Material::DIRT;
+					material = DIRT;
 				else
-					material = Material::STONE;
+					material = STONE;
 				this->_blocks.push_back(Block(material, Location(this->_chunkX + x, y, this->_chunkZ + z), x, z));
 			}
 }
@@ -106,7 +111,6 @@ Chunk *Chunk::getChunk(int chunkX, int chunkZ)
 		if (chunk->getChunkX() == chunkX && chunk->getChunkZ() == chunkZ)
 			return (chunk);
 	}
-	// Leak
 	Chunk *chunk = new Chunk(chunkX, chunkZ);
 	chunkList.push_back(chunk);
 	return (chunk);

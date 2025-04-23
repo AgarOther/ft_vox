@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 03:10:34 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/23 00:43:21 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/23 17:45:53 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ class Chunk
 {
 	public:
 		Chunk(int chunkX, int chunkZ);
+		~Chunk();
 		
 		int getChunkX() const;
 		int getChunkZ() const;

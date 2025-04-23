@@ -16,7 +16,7 @@ void main()
 	if (texID >= 0 && texID < texCount)
 	{
 		if (tintFace > 0 && tintFace == blockFace)
-			FragColor = texture(textures[texID], texCoord) * tintCol;
+			FragColor = texture(textures[texID], texCoord) * tintCol * 1;
 		else
     		FragColor = texture(textures[texID], texCoord);
 	}
