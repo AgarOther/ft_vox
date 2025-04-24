@@ -28,6 +28,7 @@ class Chunk
 		int getChunkZ() const;
 		static Chunk *getChunk(int chunkX, int chunkZ);
 		static void drawAll();
+		static void deleteAll();
 		
 		void addBlock(Block &block);
 		void generate();

@@ -15,35 +15,35 @@
 # include <GL/glew.h>
 
 constexpr int chunkSize = 16;
-constexpr int chunkHeight = 16;
+constexpr int chunkHeight = 32;
 constexpr int chunkVolume = chunkSize * chunkHeight * chunkSize;
 
 // Vertices coordinates
 const GLfloat vertices[] =
-{  //    Position        /   TexCoord  /
+{  //    Position         /   TexCoord  /
 	// Front face
-	-0.5f, 0.0f,  0.5f,   0.0f, 0.0f,
-	 0.5f, 0.0f,  0.5f,   1.0f, 0.0f,
-	 0.5f, 1.0f,  0.5f,   1.0f, 1.0f,
-	-0.5f, 1.0f,  0.5f,   0.0f, 1.0f,
+	-0.5f, 0.0f,  0.5f,    0.0f, 0.0f,
+	 0.5f, 0.0f,  0.5f,    1.0f, 0.0f,
+	 0.5f, 1.0f, 0.5f,    1.0f, 1.0f,
+	-0.5f, 1.0f, 0.5f,    0.0f, 1.0f,
 
 	// Back face
-	 0.5f, 0.0f, -0.5f,   0.0f, 0.0f,
-	-0.5f, 0.0f, -0.5f,   1.0f, 0.0f,
+	 0.5f, 0.0f, -0.5f,    0.0f, 0.0f,
+	-0.5f, 0.0f, -0.5f,    1.0f, 0.0f,
 	-0.5f, 1.0f, -0.5f,   1.0f, 1.0f,
 	 0.5f, 1.0f, -0.5f,   0.0f, 1.0f,
 
 	// Left face
-	-0.5f, 0.0f, -0.5f,   0.0f, 0.0f,
-	-0.5f, 0.0f,  0.5f,   1.0f, 0.0f,
-	-0.5f, 1.0f,  0.5f,   1.0f, 1.0f,
+	-0.5f, 0.0f, -0.5f,    0.0f, 0.0f,
+	-0.5f, 0.0f,  0.5f,    1.0f, 0.0f,
+	-0.5f, 1.0f, 0.5f,    1.0f, 1.0f,
 	-0.5f, 1.0f, -0.5f,   0.0f, 1.0f,
 
 	// Right face
-	 0.5f, 0.0f,  0.5f,   0.0f, 0.0f,
-	 0.5f, 0.0f, -0.5f,   1.0f, 0.0f,
+	 0.5f, 0.0f,  0.5f,    0.0f, 0.0f,
+	 0.5f, 0.0f, -0.5f,    1.0f, 0.0f,
 	 0.5f, 1.0f, -0.5f,   1.0f, 1.0f,
-	 0.5f, 1.0f,  0.5f,   0.0f, 1.0f,
+	 0.5f, 1.0f, 0.5f,    0.0f, 1.0f,
 
 	// Top face
 	-0.5f, 1.0f,  0.5f,   0.0f, 0.0f,
@@ -52,11 +52,14 @@ const GLfloat vertices[] =
 	-0.5f, 1.0f, -0.5f,   0.0f, 1.0f,
 
 	// Bottom face
-	-0.5f, 0.0f, -0.5f,   0.0f, 0.0f,
-	 0.5f, 0.0f, -0.5f,   1.0f, 0.0f,
-	 0.5f, 0.0f,  0.5f,   1.0f, 1.0f,
-	-0.5f, 0.0f,  0.5f,   0.0f, 1.0f
+	-0.5f, 0.0f, -0.5f,    0.0f, 0.0f,
+	 0.5f, 0.0f, -0.5f,    1.0f, 0.0f,
+	 0.5f, 0.0f,  0.5f,    1.0f, 1.0f,
+	-0.5f, 0.0f,  0.5f,    0.0f, 1.0f
 };
+
+
+
 
 const GLuint blockFaces[]
 {

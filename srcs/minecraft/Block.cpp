@@ -80,6 +80,8 @@ Location Block::getChunkLocation() const
 
 void Block::placeBlockAt(const Location &location)
 {
+	if (this->_material == AIR)
+		return;
 	Shader &shader = Shader::getCurrentlyBoundShader();
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3((int)location.getX(), (int)location.getY(), (int)location.getZ()));
@@ -89,6 +91,8 @@ void Block::placeBlockAt(const Location &location)
 
 void Block::place()
 {
+	if (this->_material == AIR)
+		return;
 	Location location(this->_x, this->_y, this->_z);
 	Shader &shader = Shader::getCurrentlyBoundShader();
 	glm::mat4 model = glm::mat4(1.0f);

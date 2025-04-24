@@ -34,6 +34,7 @@ int	main()
 	glewInit();
 	glViewport(0, 0, mode->width, mode->height);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	#ifdef ELEO_DEBUG
 	glEnable(GL_DEBUG_OUTPUT);

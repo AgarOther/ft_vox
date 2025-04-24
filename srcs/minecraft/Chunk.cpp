@@ -73,10 +73,12 @@ void Chunk::generate()
 					material = EMERALD_ORE;
 				else if (y == 15)
 					material = GRASS_BLOCK;
-				else if (y > 12)
+				else if (y > 12 && y < 16)
 					material = DIRT;
-				else
+				else if (y < 16)
 					material = STONE;
+				else
+					material = AIR;
 				this->_blocks[Utils::getBlockIndex(x, y, z)].setType(material);
 			}
 }
@@ -91,16 +93,20 @@ void Chunk::generate()
 // int indexSouth = x + y * chunkSize + (z - 1) * chunkSize * chunkSize;
 void Chunk::draw()
 {
-	for (Block &block : this->_blocks) {
+	for (Block &block : this->_blocks)
 		block.place();
-	}
 }
 
 void Chunk::drawAll()
 {
-	for (Chunk *chunk : chunkList) {
+	for (Chunk *chunk : chunkList)
 		chunk->draw();
-	}
+}
+
+void Chunk::deleteAll()
+{
+	for (Chunk *chunk : chunkList)
+		delete chunk;
 }
 
 void Chunk::addBlock(Block &block)
@@ -118,7 +124,6 @@ std::array<Block, chunkVolume> &Chunk::getBlocks()
 {
 	return (this->_blocks);
 }
-
 
 Chunk *Chunk::getChunk(int chunkX, int chunkZ)
 {
