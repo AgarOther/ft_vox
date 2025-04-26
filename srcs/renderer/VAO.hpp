@@ -21,11 +21,11 @@ class VAO
 		VAO();
 
 		GLuint getId() const;
-		void linkAttribFloat(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum type, GLsizeiptr stride, void *offset);
-		void linkAttribInt(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum type, GLsizeiptr stride, void *offset);
-		void bind();
-		void unbind();
-		void free();
+		void linkAttribFloat(VBO &vbo, GLuint layout, GLint nbComponents, GLenum type, GLsizei stride, const void *offset) const;
+		void linkAttribInt(VBO &vbo, GLuint layout, GLint nbComponents, GLenum type, GLsizei stride, const void *offset) const;
+		void bind() const;
+		void unbind() const;
+		void free() const;
 	private:
 		GLuint _id;
 };

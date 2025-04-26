@@ -15,19 +15,25 @@
 #include <string>
 #include "Utils.hpp"
 #include "colors.hpp"
+#include "srcs/minecraft/Block.hpp"
 #include "srcs/minecraft/BlockData.hpp"
 
-int Utils::getBlockIndex(const int x, const int y, const int z) {
-	return (x + z * chunkSize + y * chunkSize * chunkSize);
+int Utils::getBlockIndex(const Block &block) {
+	const Location& loc = block.getLocation();
+	return static_cast<int>(loc.getX() + loc.getY() * chunkSize + loc.getZ() * chunkSize * chunkHeight);
 }
 
-std::string Utils::appendInt(std::string str, int n)
+int Utils::getBlockIndex(const int x, const int y, const int z) {
+	return x + y * chunkSize + z * chunkSize * chunkHeight;
+}
+
+std::string Utils::appendInt(std::string str, const int n)
 {
 	str += std::to_string(n);
 	return (str);
 }
 
-int Utils::ft_error(int error_id, const std::string &error)
+int Utils::ft_error(const int error_id, const std::string &error)
 {
 	std::cerr << RED << error << RESET << std::endl;
 	return (error_id);
@@ -35,11 +41,8 @@ int Utils::ft_error(int error_id, const std::string &error)
 
 static bool endsWith(const std::string &str, const std::string &suffix)
 {
-	int	i;
-	int	j;
-
-	i = str.length() - 1;
-	j = suffix.length() - 1;
+	int i = static_cast<int>(str.length() - 1);
+	int j = static_cast<int>(suffix.length() - 1);
 	if (i < j)
 		return (false);
 	while (i >= 0 && j >= 0)

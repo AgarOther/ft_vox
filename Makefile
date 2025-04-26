@@ -24,10 +24,9 @@ SRCS				=	srcs/main.cpp \
 						srcs/renderer/Camera.cpp \
 						srcs/minecraft/BlockType.cpp \
 						srcs/minecraft/Block.cpp \
-						srcs/minecraft/Location.cpp \
-						srcs/minecraft/Chunk.cpp
+						srcs/minecraft/Location.cpp
 OBJ_FOLDER			=	objs
-INCLUDES			=	-I includes \
+INCLUDES			=	-I srcs \
 						-I libs \
 						-I $(GLAD_PATH)/include \
 						-I $(GLM_PATH) \

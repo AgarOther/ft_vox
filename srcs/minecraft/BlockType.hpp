@@ -37,13 +37,13 @@ class BlockType
 {
 	public:
 		BlockType();
-		BlockType(Material type);
+		BlockType(Material material);
 		BlockType &operator=(const BlockType &obj);
 		
 		static void init();
 		static void shutdown();
 		void free();
-		static void draw(Material &material, Shader &shader);
+		static void draw(const Material &material, Shader &shader);
 		
 		const Material &getType() const;
 	private:

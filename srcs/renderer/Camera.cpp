@@ -10,33 +10,34 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <GL/glew.h>
 #include "Camera.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 Camera::Camera(int width, int height, glm::vec3 position)
 {
-	this->_altitude = glm::vec3(0.0f, 1.0f, 0.0f);
-	this->_width = width;
-	this->_height = height;
-	this->_position = position;
-	this->_speed = 0.01f;
-	this->_baseSpeed = 0.01f;
-	this->_sensitivity = 200.0f;
-	this->_firstClick = true;
-	this->_farPlane = 100.0f;
-	this->_FOV = 90.0f;
-	this->_pitch = 0.0f;
-	this->_yaw = 90.0f;
-	this->_fullScreen = false;
-	this->_locked = false;
+	_altitude = glm::vec3(0.0f, 1.0f, 0.0f);
+	_width = width;
+	_height = height;
+	_position = position;
+	_speed = 0.01f;
+	_baseSpeed = _speed;
+	_sensitivity = 200.0f;
+	_firstClick = true;
+	_farPlane = 100.0f;
+	_FOV = 120.0f;
+	_pitch = 0.0f;
+	_yaw = 90.0f;
+	_fullScreen = false;
+	_locked = false;
 
 	glm::vec3 direction;
-	direction.x = cos(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
-	direction.y = sin(glm::radians(this->_pitch));
-	direction.z = sin(glm::radians(this->_yaw)) * cos(glm::radians(this->_pitch));
-	this->_orientation = glm::normalize(direction);
+	direction.x = cosf(glm::radians(_yaw)) * cosf(glm::radians(_pitch));
+	direction.y = sinf(glm::radians(_pitch));
+	direction.z = sinf(glm::radians(_yaw)) * cosf(glm::radians(_pitch));
+	_orientation = glm::normalize(direction);
 
-	this->_guiOn = false;
+	_guiOn = false;
 }
 
 Camera::~Camera()
@@ -44,22 +45,19 @@ Camera::~Camera()
 	
 }
 
-void Camera::setupMatrix(Shader &shader)
+void Camera::setupMatrix(const Shader &shader) const
 {
-	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 proj = glm::mat4(1.0f);
-
-	view = glm::lookAt(this->_position, this->_position + this->_orientation, this->_altitude);
-	proj = glm::perspective(glm::radians(this->_FOV), static_cast<float>(this->_width) / this->_height, 0.01f, this->_farPlane);
+	const glm::mat4 view = glm::lookAt(_position, _position + _orientation, _altitude);
+	const glm::mat4 proj = glm::perspective(glm::radians(_FOV), static_cast<float>(_width) / static_cast<float>(_height), 0.01f, _farPlane);
 	glUniformMatrix4fv(glGetUniformLocation(shader.getId(), "camMatrix"), 1, GL_FALSE, glm::value_ptr(proj * view));
 }
 
-static glm::vec3 translateDirection(float yaw, float pitch)
+static glm::vec3 translateDirection(const float yaw, const float pitch)
 {
 	glm::vec3 direction;
-	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.x = cosf(glm::radians(yaw)) * cosf(glm::radians(pitch));
+	direction.y = sinf(glm::radians(pitch));
+	direction.z = sinf(glm::radians(yaw)) * cosf(glm::radians(pitch));
 	return (direction);
 }
 
@@ -75,143 +73,143 @@ void Camera::interceptInputs(GLFWwindow *window)
 	// GPT my friend who helps me with the weirdest maths
 	// Calculate forward vector for movement based on pitch (only in X-Z plane)
 	glm::vec3 forward;
-	forward.x = cos(glm::radians(this->_pitch)) * cos(glm::radians(this->_yaw)); // X component based on pitch
-	forward.z = cos(glm::radians(this->_pitch)) * sin(glm::radians(this->_yaw)); // Z component based on pitch
+	forward.x = cosf(glm::radians(_pitch)) * cosf(glm::radians(_yaw)); // X component based on pitch
+	forward.z = cosf(glm::radians(_pitch)) * sinf(glm::radians(_yaw)); // Z component based on pitch
 	forward.y = 0.0f; // No vertical movement based on pitch, set Y to 0
 
 	// Normalize the forward vector to maintain consistent speed
 	forward = glm::normalize(forward);
 
 	// Calculate the right vector (strafe) using yaw, no pitch influence
-	glm::vec3 right = glm::normalize(glm::cross(forward, this->_altitude)); // Right direction is based on forward and altitude (up vector)
+	const glm::vec3 right = glm::normalize(glm::cross(forward, _altitude)); // Right direction is based on forward and altitude (up vector)
 	/* End GPT Code */
 
 	// Key management
-	if (!this->_locked)
+	if (!_locked)
 	{
 		if ((glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP)) == GLFW_PRESS)
-			this->_position += this->_speed * forward;
+			_position += _speed * forward;
 		if ((glfwGetKey(window, GLFW_KEY_A) || glfwGetKey(window, GLFW_KEY_LEFT)) == GLFW_PRESS)
-			this->_position += this->_speed * -right;
+			_position += _speed * -right;
 		if ((glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN)) == GLFW_PRESS)
-			this->_position += this->_speed * -forward;
+			_position += _speed * -forward;
 		if ((glfwGetKey(window, GLFW_KEY_D) || glfwGetKey(window, GLFW_KEY_RIGHT)) == GLFW_PRESS)
-			this->_position += this->_speed * right;
-		if (glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
-			this->_position += this->_speed * this->_altitude;
-		if (glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
-			this->_position += this->_speed * -this->_altitude;
-		if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
-			this->_speed = this->_baseSpeed * 2.5f;
-		else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_RELEASE)
-			this->_speed = this->_baseSpeed;
+			_position += _speed * right;
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+			_position += _speed * _altitude;
+		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			_position += _speed * -_altitude;
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+			_speed = _baseSpeed * 2.5f;
+		else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
+			_speed = _baseSpeed;
 	}
 
 	
 
 	// Prevents toggling every frame
 	static bool lastFramePressedF3 = false;
-	bool keyPressedF3 = glfwGetKey(window, GLFW_KEY_F3);
+	const bool keyPressedF3 = glfwGetKey(window, GLFW_KEY_F3);
 	if (keyPressedF3 && !lastFramePressedF3)
-		this->_guiOn = !this->_guiOn;
+		_guiOn = !_guiOn;
 	
 	static bool lastFramePressedF11 = false;
-	bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
+	const bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
 	if (keyPressedF11 && !lastFramePressedF11)
 		Utils::toggleFullscreen(window, *this);
 
 	// Mouse inputs
-	if (!this->_locked && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+	if (!_locked && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		double mouseX, mouseY;
 
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		if (this->_firstClick)
+		if (_firstClick)
 		{
-			glfwSetCursorPos(window, (this->_width / 2), (this->_height / 2));
-			this->_firstClick = false;
+			glfwSetCursorPos(window, (static_cast<float>(_width) / 2), (static_cast<float>(_height) / 2));
+			_firstClick = false;
 		}
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
-		float rotX = this->_sensitivity * (float)(mouseY - (this->_height / 2)) / (float)this->_height;
-		float rotY = this->_sensitivity * (float)(mouseX - (this->_width  / 2)) / (float)this->_width;
+		const float rotX = _sensitivity * static_cast<float>(mouseY - (static_cast<float>(_height) / 2)) / static_cast<float>(_height);
+		const float rotY = _sensitivity * static_cast<float>(mouseX - (static_cast<float>(_width) / 2)) / static_cast<float>(_width);
 
-		this->_yaw += rotY;
-    	this->_pitch -= rotX;
+		_yaw += rotY;
+    	_pitch -= rotX;
 
-		if (this->_pitch > 89.99f)
-			this->_pitch = 89.99f;
-		else if (this->_pitch < -89.99f)
-			this->_pitch = -89.99f;
+		if (_pitch > 89.99f)
+			_pitch = 89.99f;
+		else if (_pitch < -89.99f)
+			_pitch = -89.99f;
 		
-		if (this->_yaw < -179.99f)
-			this->_yaw = 180.0f;
-		else if (this->_yaw > 179.99f)
-			this->_yaw = -180.0f;
+		if (_yaw < -179.99f)
+			_yaw = 180.0f;
+		else if (_yaw > 179.99f)
+			_yaw = -180.0f;
 
-		this->_orientation = translateDirection(this->_yaw, this->_pitch);
+		_orientation = translateDirection(_yaw, _pitch);
 	
-		glfwSetCursorPos(window, (this->_width / 2), (this->_height / 2));
+		glfwSetCursorPos(window, (static_cast<float>(_width) / 2), (static_cast<float>(_height) / 2));
 	}
 	else
 	{
 		if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
 		{
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			glfwSetCursorPos(window, (this->_width / 2), (this->_height / 2));
+			glfwSetCursorPos(window, (static_cast<float>(_width) / 2), (static_cast<float>(_height) / 2));
 		}
-		this->_firstClick = true;
+		_firstClick = true;
 	}
 	lastFramePressedF3 = keyPressedF3;
 	lastFramePressedF11 = keyPressedF11;
 }
 
-void Camera::teleport(Location location, float yaw, float pitch)
+void Camera::teleport(const Location &location, const float yaw, const float pitch)
 {
 	glm::vec3 newPos;
 
-	newPos.x = location.getX();
-	newPos.y = location.getY();
-	newPos.z = location.getZ();
-	this->_position = newPos;
-	this->_yaw = yaw;
-	this->_pitch = pitch;
-	this->_orientation = translateDirection(this->_yaw, this->_pitch);
+	newPos.x = static_cast<float>(location.getX());
+	newPos.y = static_cast<float>(location.getY());
+	newPos.z = static_cast<float>(location.getZ());
+	_position = newPos;
+	_yaw = yaw;
+	_pitch = pitch;
+	_orientation = translateDirection(_yaw, _pitch);
 }
 
 // Getters
-glm::vec3 Camera::getPosition() const { return this->_position; }
-glm::vec3 Camera::getOrientation() const { return this->_orientation; }
-glm::vec3 Camera::getAltitude() const { return this->_altitude; }
-int Camera::getWidth() const { return this->_width; }
-int Camera::getHeight() const { return this->_height; }
-float Camera::getSpeed() const { return this->_speed; }
-float Camera::getBaseSpeed() const { return this->_baseSpeed; }
-float Camera::getSensitivity() const { return this->_sensitivity; }
-float Camera::getYaw() const { return this->_yaw; }
-float Camera::getPitch() const { return this->_pitch; }
-float Camera::getFOV() const { return this->_FOV; }
-float Camera::getFarPlane() const { return this->_farPlane; }
-bool Camera::hasClicked() const { return (this->_firstClick); }
-bool Camera::hasGuiOn() const { return (this->_guiOn); }
-bool Camera::isLocked() const { return (this->_locked); }
-bool Camera::isFullscreen() const { return (this->_fullScreen); }
+glm::vec3 Camera::getPosition() const { return _position; }
+glm::vec3 Camera::getOrientation() const { return _orientation; }
+glm::vec3 Camera::getAltitude() const { return _altitude; }
+int Camera::getWidth() const { return _width; }
+int Camera::getHeight() const { return _height; }
+float Camera::getSpeed() const { return _speed; }
+float Camera::getBaseSpeed() const { return _baseSpeed; }
+float Camera::getSensitivity() const { return _sensitivity; }
+float Camera::getYaw() const { return _yaw; }
+float Camera::getPitch() const { return _pitch; }
+float Camera::getFOV() const { return _FOV; }
+float Camera::getFarPlane() const { return _farPlane; }
+bool Camera::hasClicked() const { return (_firstClick); }
+bool Camera::hasGuiOn() const { return (_guiOn); }
+bool Camera::isLocked() const { return (_locked); }
+bool Camera::isFullscreen() const { return (_fullScreen); }
 
 // Setters
-void Camera::setPosition(const glm::vec3 &position) { this->_position = position; }
-void Camera::setOrientation(const glm::vec3 &orientation) { this->_orientation = orientation; }
-void Camera::setAltitude(const glm::vec3 &altitude) { this->_altitude = altitude; }
-void Camera::setWidth(int width) { this->_width = width; }
-void Camera::setHeight(int height) { this->_height = height; }
-void Camera::setSpeed(float s) { this->_speed = s; }
-void Camera::setBaseSpeed(float s) { this->_baseSpeed = s; }
-void Camera::setSensitivity(float s) { this->_sensitivity = s; }
-void Camera::setYaw(float s) { this->_yaw = s; }
-void Camera::setPitch(float s) { this->_pitch = s; }
-void Camera::setFOV(float s) { this->_FOV = s; }
-void Camera::setFarPlane(float farPlane) { this->_farPlane = farPlane; }
-void Camera::setClicked(bool clicked) { this->_firstClick = clicked; }
-void Camera::setGuiOn(bool guiOn) { this->_guiOn = guiOn; }
-void Camera::setLocked(bool lock) { this->_locked = lock; }
-void Camera::setFullscreen(bool fullscreen) { this->_fullScreen = fullscreen; }
+void Camera::setPosition(const glm::vec3 &position) { _position = position; }
+void Camera::setOrientation(const glm::vec3 &orientation) { _orientation = orientation; }
+void Camera::setAltitude(const glm::vec3 &altitude) { _altitude = altitude; }
+void Camera::setWidth(const int width) { _width = width; }
+void Camera::setHeight(const int height) { _height = height; }
+void Camera::setSpeed(const float s) { _speed = s; }
+void Camera::setBaseSpeed(const float s) { _baseSpeed = s; }
+void Camera::setSensitivity(const float s) { _sensitivity = s; }
+void Camera::setYaw(const float s) { _yaw = s; }
+void Camera::setPitch(const float s) { _pitch = s; }
+void Camera::setFOV(const float s) { _FOV = s; }
+void Camera::setFarPlane(const float farPlane) { _farPlane = farPlane; }
+void Camera::setClicked(const bool clicked) { _firstClick = clicked; }
+void Camera::setGuiOn(const bool guiOn) { _guiOn = guiOn; }
+void Camera::setLocked(const bool lock) { _locked = lock; }
+void Camera::setFullscreen(const bool fullscreen) { _fullScreen = fullscreen; }

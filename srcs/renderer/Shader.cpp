@@ -11,19 +11,16 @@
 /* ************************************************************************** */
 
 #include "Shader.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 static Shader *currentlyBound;
 
-Shader::Shader()
-{
-	
-}
+Shader::Shader(): _id(-1) {}
 
-Shader::Shader(const char *vertFile, const char *fragFile, bool changeBound)
+Shader::Shader(const char *vertFile, const char *fragFile, const bool changeBound)
 {
-	std::string vertSrc = Utils::getShaderAsString(vertFile);
-	std::string fragSrc = Utils::getShaderAsString(fragFile);
+	const std::string vertSrc = Utils::getShaderAsString(vertFile);
+	const std::string fragSrc = Utils::getShaderAsString(fragFile);
 	this->_id = Utils::compileShader(vertSrc.c_str(), fragSrc.c_str());
 	if (this->_id != 0 && changeBound)
 		currentlyBound = this;
@@ -34,41 +31,41 @@ GLuint Shader::getId() const
 	return (this->_id);
 }
 
-void Shader::use()
+void Shader::use() const
 {
 	glUseProgram(this->_id);
 }
 
-void Shader::free()
+void Shader::free() const
 {
 	glDeleteProgram(this->_id);
 }
 
-void Shader::setMat4(const char *uniform, glm::mat4 model)
+void Shader::setMat4(const char *uniform, const glm::mat4 &model) const
 {
-	GLuint id = glGetUniformLocation(this->_id, uniform);
+	const GLint id = glGetUniformLocation(this->_id, uniform);
 	glUniformMatrix4fv(id, 1, GL_FALSE, glm::value_ptr(model));
 }
 
-void Shader::setVec4(const char *uniform, glm::vec4 vec)
+void Shader::setVec4(const char *uniform, const glm::vec4 &vec) const
 {
-	GLuint id = glGetUniformLocation(this->_id, uniform);
+	const GLint id = glGetUniformLocation(this->_id, uniform);
 	glUniform4fv(id, 1, glm::value_ptr(vec));
 }
 
-void Shader::setInt(const char *uniform, int n)
+void Shader::setInt(const char *uniform, const int n) const
 {
-	GLuint id = glGetUniformLocation(this->_id, uniform);
+	const GLint id = glGetUniformLocation(this->_id, uniform);
 	glUniform1i(id, n);
 }
 
-void Shader::setFloat(const char *uniform, float f)
+void Shader::setFloat(const char *uniform, const float f) const
 {
-	GLuint id = glGetUniformLocation(this->_id, uniform);
+	const GLint id = glGetUniformLocation(this->_id, uniform);
 	glUniform1f(id, f);
 }
 
-void Shader::setTint(Material material)
+void Shader::setTint(const Material material) const
 {
 	if (material == Material::GRASS_BLOCK)
 	{

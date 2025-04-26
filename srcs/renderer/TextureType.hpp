@@ -14,9 +14,11 @@
 # define TEXTURE_TYPE
 
 # include "Texture.hpp"
+# include <vector>
 
 typedef enum e_material
 {
+	NONE,
 	AIR,
 	CRIMSON_NYLIUM,
 	WARPED_NYLIUM,
@@ -41,7 +43,7 @@ class TextureType
 {
 	public:
 		static std::vector<Texture*> generateTextures(Material material);
-		static const GLuint *getIndices(Material type);
+		static const GLuint *getIndices(Material material);
 };
 
 #endif

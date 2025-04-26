@@ -18,13 +18,12 @@ static bool didShaderCompile(GLuint id, int type)
 {
 	int				result;
 	int				error_length;
-	char			*error_message;
 
 	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
 	if (!result)
 	{
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &error_length);
-		error_message = (char *) alloca(error_length * sizeof(char));
+		char *error_message = static_cast<char *>(alloca(error_length * sizeof(char)));
 		glGetShaderInfoLog(id, error_length, &error_length, error_message);
 		std::cout << BOLD_RED << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment") << " shader failed to compile:" << std::endl;
 		std::cout << error_message << RESET << std::endl;
@@ -37,13 +36,13 @@ static bool didShaderCompile(GLuint id, int type)
 GLuint Utils::compileShader(const char *vertSrc, const char *fragSrc)
 {	
 	GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertShader, 1, &vertSrc, NULL);
+	glShaderSource(vertShader, 1, &vertSrc, nullptr);
 	glCompileShader(vertShader);
 	if (!didShaderCompile(vertShader, GL_VERTEX_SHADER))
 		return (0);
 	
 	GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragShader, 1, &fragSrc, NULL);
+	glShaderSource(fragShader, 1, &fragSrc, nullptr);
 	glCompileShader(fragShader);
 	if (!didShaderCompile(vertShader, GL_FRAGMENT_SHADER))
 		return (0);

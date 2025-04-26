@@ -13,19 +13,17 @@
 #ifndef TEXTURE_HPP
 # define TEXTURE_HPP
 # include <GL/glew.h>
-# include <vector>
 
 class Texture
 {
 	public:
-		Texture();
 		Texture(const char *image, GLenum textureType, GLenum slot, GLenum format, GLenum pixeltype);
 
 		GLuint getId() const;
 		GLenum getType() const;
-		void bind();
-		void unbind();
-		void free();
+		void bind() const;
+		void unbind() const;
+		void free() const;
 
 		static void resetSlots();
 	private:

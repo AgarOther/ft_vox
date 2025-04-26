@@ -59,31 +59,29 @@ ImGuiIO &Utils::getImGuiIO(GLFWwindow *window)
 	return (io);
 }
 
-static std::string getDirectionAsString(float yaw)
+static std::string getDirectionAsString(const float yaw)
 {
     if (yaw >= -45 && yaw < 45)
         return "north";
-    else if (yaw >= 45 && yaw < 135)
+    if (yaw >= 45 && yaw < 135)
         return "east";
-    else if (yaw >= -135 && yaw < -45)
+    if (yaw >= -135 && yaw < -45)
         return "south";
-    else
-        return "west";
+    return "west";
 }
 
-static std::string getAxisDirectionAsString(float yaw)
+static std::string getAxisDirectionAsString(const float yaw)
 {
     if (yaw >= -45 && yaw < 45)
         return "positive Z";
-    else if (yaw >= 45 && yaw < 135)
+    if (yaw >= 45 && yaw < 135)
         return "positive X";
-    else if (yaw >= 135 || yaw < -135)
+    if (yaw >= 135 || yaw < -135)
         return "negative Z";
-    else
-        return "negative X";
+    return "negative X";
 }
 
-void Utils::showImGui(ImGuiIO &io, Camera &camera)
+void Utils::showImGui(const ImGuiIO &io, Camera &camera)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -99,7 +97,7 @@ void Utils::showImGui(ImGuiIO &io, Camera &camera)
 	ImGui::NewLine();
 	
 	// Position infos
-	glm::vec3 camPos = camera.getPosition();
+	const glm::vec3 camPos = camera.getPosition();
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", camPos.x, camPos.y, camPos.z);
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: %s (Towards %s) (%.1f / %.1f)",
 		getDirectionAsString(camera.getYaw()).c_str(), getAxisDirectionAsString(camera.getYaw()).c_str(), camera.getYaw(), camera.getPitch());
@@ -126,10 +124,10 @@ void Utils::showImGui(ImGuiIO &io, Camera &camera)
 		camera.setSensitivity(sensitivity);
 
 	// Render Distance
-	int farPlane = (int)camera.getFarPlane();
+	int farPlane = static_cast<int>(camera.getFarPlane());
 	ImGui::SliderInt("Render Distance", &farPlane, 10, 300, "%d Blocks", ImGuiSliderFlags_AlwaysClamp);
-	if (farPlane != (int)camera.getFarPlane())
-		camera.setFarPlane(farPlane);
+	if (farPlane != static_cast<int>(camera.getFarPlane()))
+		camera.setFarPlane(static_cast<float>(farPlane));
 
 	// VSync
 	static bool vsync = true;

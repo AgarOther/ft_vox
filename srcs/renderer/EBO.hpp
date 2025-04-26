@@ -21,9 +21,9 @@ class EBO
 		EBO(const GLuint *indices, GLsizeiptr size);
 
 		GLuint getId() const;
-		void bind();
-		void unbind();
-		void free();
+		void bind() const;
+		void unbind() const;
+		void free() const;
 	private:
 		GLuint _id;
 };

@@ -22,11 +22,11 @@ class Block
 {
 	public:
 		Block();
-		Block(Material material, Location location, int chunkX, int chunkZ);
+		Block(Material material, const Location &location, int chunkX, int chunkZ);
 		Block &operator=(const Block &obj);
 
-		void placeBlockAt(const Location &location);
-		void place();
+		void placeBlockAt(const Location &location) const;
+		void place() const;
 		
 		Location getLocation() const;
 		Location getChunkLocation() const;

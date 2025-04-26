@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 01:15:58 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/23 17:50:03 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/04/26 21:53:16 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,15 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <imgui.h>
-#include "../includes/Utils.hpp"
+
+#include "utils/Utils.hpp"
+#include "minecraft/Block.hpp"
 #include "minecraft/BlockType.hpp"
 #include "renderer/Camera.hpp"
 #include "renderer/Crosshair.hpp"
-#include "minecraft/Chunk.hpp"
+
+int	WIDTH = 0;
+int HEIGHT = 0;
 
 int	main()
 {
@@ -28,6 +32,8 @@ int	main()
 	GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 	GLFWwindow *window = glfwCreateWindow(mode->width, mode->height, "ft_vox", nullptr, nullptr);
+	WIDTH = mode->width;
+	HEIGHT = mode->height;
 	glfwMakeContextCurrent(window);
 	glfwSwapBuffers(window);
 
@@ -41,42 +47,33 @@ int	main()
 	glDebugMessageCallback(debugCallback, nullptr);
 	#endif
 
-	ImGuiIO &io = Utils::getImGuiIO(window);
+	const ImGuiIO &io = Utils::getImGuiIO(window);
 
-	Shader shader("block.vert", "block.frag", true);
+	const Shader shader("block.vert", "block.frag", true);
 	Crosshair crosshair;
 
-	Camera camera(mode->width, mode->height, glm::vec3(8.0f, 18.0f, 7.0f));
+	Camera camera(mode->width, mode->height, glm::vec3(0.0f, 0.0f, 0.0f));
 	BlockType::init();
 
-	Chunk *chunk = new Chunk(0, 0);
-	Chunk *chunk1 = new Chunk(15, 0);
-	Chunk *chunk2 = new Chunk(0, 15);
-	Chunk *chunk3 = new Chunk(15, 15);
-	chunk->generate();
-	chunk1->generate();
-	chunk2->generate();
-	chunk3->generate();
+	const Block test(Material::CHERRY_LOG, Location(0, 0, 0), 0, 0);
 	
 	while (!glfwWindowShouldClose(window))
 	{
-		bool hasGui = camera.hasGuiOn();
+		const bool hasGui = camera.hasGuiOn();
+		camera.interceptInputs(window);
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
 			Utils::showImGui(io, camera);
 		shader.use();
-		camera.interceptInputs(window);
 		camera.setupMatrix(shader);
-		
-		// Draw calls
-		Chunk::drawAll();
+		test.place();
 
 		if (hasGui)
 			Utils::renderImGui();
 		crosshair.draw();
-		glfwSwapBuffers(window);
 		glfwPollEvents();
+		glfwSwapBuffers(window);
 	}
 
 	shader.free();

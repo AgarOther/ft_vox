@@ -12,27 +12,28 @@
 
 #include "VBO.hpp"
 
-VBO::VBO()
-{
-	
-}
+VBO::VBO(): _id(0) {}
 
 GLuint VBO::getId() const
 {
 	return (this->_id);
 }
 
-void VBO::bind()
+void VBO::bind() const
 {
+	if (_id == 0)
+		return;
 	glBindBuffer(GL_ARRAY_BUFFER, this->_id);
 }
 
-void VBO::unbind()
+void VBO::unbind() const
 {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void VBO::free()
+void VBO::free() const
 {
+	if (_id == 0)
+		return;
 	glDeleteBuffers(1, &this->_id);
 }

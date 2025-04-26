@@ -15,7 +15,6 @@
 
 # include <GL/glew.h>
 # include <glm/glm.hpp>
-# include <glm/gtc/type_ptr.hpp>
 # include "TextureType.hpp"
 
 class Shader
@@ -25,13 +24,13 @@ class Shader
 		Shader(const char *vertFile, const char *fragFile, bool changeBound);
 
 		GLuint getId() const;
-		void use();
-		void free();
-		void setMat4(const char *uniform, glm::mat4 model);
-		void setVec4(const char *uniform, glm::vec4 vec);
-		void setInt(const char *uniform, int n);
-		void setFloat(const char *uniform, float f);
-		void setTint(Material material);
+		void use() const;
+		void free() const;
+		void setMat4(const char *uniform, const glm::mat4 &model) const;
+		void setVec4(const char *uniform, const glm::vec4 &vec) const;
+		void setInt(const char *uniform, int n) const;
+		void setFloat(const char *uniform, float f) const;
+		void setTint(Material material) const;
 
 		static Shader &getCurrentlyBoundShader();
 	private:

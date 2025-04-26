@@ -10,93 +10,92 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <gtx/transform.hpp>
 #include "Block.hpp"
-
-#include <iostream>
-#include <bits/ostream.tcc>
 
 #include "BlockType.hpp"
 #include "srcs/renderer/Shader.hpp"
 
 Block::Block() {
-	this->_x = 0;
-	this->_y = 0;
-	this->_z = 0;
-	this->_isSolid = false;
-	this->_material = AIR;
-	this->_chunkX = 0;
-	this->_chunkZ = 0;
+	_x = 0;
+	_y = 0;
+	_z = 0;
+	_isSolid = false;
+	_material = AIR;
+	_chunkX = 0;
+	_chunkZ = 0;
 }
 
-Block::Block(Material material, Location location, int chunkX, int chunkZ)
+Block::Block(const Material material, const Location &location, const int chunkX, const int chunkZ)
 {
-	this->_x = location.getX();
-	this->_y = location.getY();
-	this->_z = location.getZ();
-	this->_isSolid = true;
-	this->_material = material;
-	this->_chunkX = chunkX;
-	this->_chunkZ = chunkZ;
+	_x = static_cast<int>(location.getX());
+	_y = static_cast<int>(location.getY());
+	_z = static_cast<int>(location.getZ());
+	_isSolid = material != Material::AIR;
+	_material = material;
+	_chunkX = chunkX;
+	_chunkZ = chunkZ;
 }
 
 Block &Block::operator=(const Block &obj)
 {
 	if (&obj == this)
 		return (*this);
-	this->_x = obj._x;
-	this->_y = obj._y;
-	this->_z = obj._z;
-	this->_isSolid = obj._isSolid;
-	this->_material = obj._material;
-	this->_chunkX = obj._chunkX;
-	this->_chunkZ = obj._chunkZ;
+	_x = obj._x;
+	_y = obj._y;
+	_z = obj._z;
+	_isSolid = obj._isSolid;
+	_material = obj._material;
+	_chunkX = obj._chunkX;
+	_chunkZ = obj._chunkZ;
 	return (*this);
 }
 
 Location Block::getLocation() const
 {
-	return (Location(this->_x, this->_y, this->_z));
+	return (Location(_x, _y, _z));
 }
 
 Material Block::getType() const
 {
-	return (this->_material);
+	return (_material);
 }
 
 bool Block::isSolid() const
 {
-	return (this->_isSolid);
+	return (_isSolid);
 }
 
 void Block::setType(Material material)
 {
-	this->_material = material;
+	_material = material;
 }
 
 Location Block::getChunkLocation() const
 {
-	return (Location(this->_chunkX, this->_y, this->_chunkZ));
+	return (Location(_chunkX, _y, _chunkZ));
 }
 
-void Block::placeBlockAt(const Location &location)
+void Block::placeBlockAt(const Location &location) const
 {
-	if (this->_material == AIR)
+	if (_material == AIR)
 		return;
 	Shader &shader = Shader::getCurrentlyBoundShader();
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3((int)location.getX(), (int)location.getY(), (int)location.getZ()));
+	model = glm::translate(model, glm::vec3(static_cast<int>(location.getX()), static_cast<int>(location.getY()), static_cast<int>(location.getZ())));
 	shader.setMat4("model", model);
-	BlockType::draw(this->_material, shader);
+	BlockType::draw(_material, shader);
 }
 
-void Block::place()
+void Block::place() const
 {
-	if (this->_material == AIR)
+	if (_material == AIR)
 		return;
-	Location location(this->_x, this->_y, this->_z);
+	const Location location(_x, _y, _z);
 	Shader &shader = Shader::getCurrentlyBoundShader();
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3((int)location.getX(), (int)location.getY(), (int)location.getZ()));
+	model = glm::translate(model, glm::vec3(static_cast<int>(location.getX()), static_cast<int>(location.getY()), static_cast<int>(location.getZ())));
 	shader.setMat4("model", model);
-	BlockType::draw(this->_material, shader);
+	BlockType::draw(_material, shader);
 }

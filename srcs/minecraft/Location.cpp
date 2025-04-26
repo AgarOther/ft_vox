@@ -12,29 +12,19 @@
 
 #include "Location.hpp"
 
-Location::Location()
-{
-	this->_x = 0.0f;
-	this->_y = 0.0f;
-	this->_z = 0.0f;
-}
+Location::Location() : _x(0), _y(0), _z(0) {}
 
-Location::Location(double x, double y, double z)
-{
-	this->_x = x;
-	this->_y = y;
-	this->_z = z;
-}
+Location::Location(const double x, const double y, const double z) : _x(x), _y(y), _z(z) {}
 
 bool Location::operator==(const Location &obj) const
 {
-	return (this->_x == obj._x && this->_y == obj._y && this->_z == obj._z);
+	return (_x == obj._x && _y == obj._y && _z == obj._z);
 }
 
-double Location::getX() const { return this->_x; }
-double Location::getY() const { return this->_y; }
-double Location::getZ() const { return this->_z; }
+double Location::getX() const { return _x; }
+double Location::getY() const { return _y; }
+double Location::getZ() const { return _z; }
 
-void Location::setX(double x) { this->_x = x; }
-void Location::setY(double y) { this->_y = y; }
-void Location::setZ(double z) { this->_z = z; }
+void Location::setX(double x) { _x = x; }
+void Location::setY(double y) { _y = y; }
+void Location::setZ(double z) { _z = z; }

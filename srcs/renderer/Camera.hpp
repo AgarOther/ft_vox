@@ -14,12 +14,10 @@
 # define CAMERA_HPP
 # define GLM_ENABLE_EXPERIMENTAL
 
-# include <GL/glew.h>
 # include <GLFW/glfw3.h>
 # include <glm/glm.hpp>
 # include <glm/gtc/matrix_transform.hpp>
 # include <glm/gtc/type_ptr.hpp>
-# include <glm/gtx/rotate_vector.hpp>
 # include <glm/gtx/vector_angle.hpp>
 # include "Shader.hpp"
 # include "../minecraft/Location.hpp"
@@ -30,9 +28,9 @@ class Camera
 		Camera(int width, int height, glm::vec3 position);
 		~Camera();
 
-		void setupMatrix(Shader &shader);
+		void setupMatrix(const Shader &shader) const;
 		void interceptInputs(GLFWwindow *window);
-		void teleport(Location location, float yaw = -91, float pitch = -361);
+		void teleport(const Location &location, float yaw = -91, float pitch = -361);
 
 		// Getters
 		glm::vec3 getPosition() const;

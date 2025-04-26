@@ -13,89 +13,90 @@
 #include "BlockType.hpp"
 #include "BlockData.hpp"
 #include "Block.hpp"
-#include "Utils.hpp"
+#include "../utils/Utils.hpp"
 
 std::unordered_map<Material, BlockType> blockMap;
 
-BlockType::BlockType()
-{
-	
+BlockType::BlockType(): _material(Material::NONE) {
 }
 
-BlockType::BlockType(Material material)
+BlockType::BlockType(const Material material)
 {
 	const GLuint *texIds = TextureType::getIndices(material);
 
-	this->_vao = VAO();
-	this->_vao.bind();
-	this->_vbo = VBO(vertices, 120 * sizeof(GLfloat));
-	this->_texVbo = VBO(texIds, 24 * sizeof(GLuint));
-	this->_blockFacesVbo = VBO(blockFaces, 24 * sizeof(GLuint));
-	this->_ebo = EBO(indices, 36 * sizeof(GLuint));
-	this->_textures = TextureType::generateTextures(material);
-	this->_material = material;
+	_vao = VAO();
+	_vao.bind();
+	_vbo = VBO(vertices, 120 * sizeof(GLfloat));
+	_texVbo = VBO(texIds, 24 * sizeof(GLuint));
+	_blockFacesVbo = VBO(blockFaces, 24 * sizeof(GLuint));
+	_ebo = EBO(indices, 36 * sizeof(GLuint));
+	_textures = TextureType::generateTextures(material);
+	_material = material;
 
-	this->_vao.linkAttribFloat(this->_vbo, 0, 3, GL_FLOAT, 5 * sizeof(GLfloat), NULL);
-	this->_vao.linkAttribFloat(this->_vbo, 1, 2, GL_FLOAT, 5 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
-	this->_vao.linkAttribInt(this->_texVbo, 2, 1, GL_UNSIGNED_INT, sizeof(GLuint), NULL);
-	this->_vao.linkAttribInt(this->_blockFacesVbo, 3, 1, GL_UNSIGNED_INT, sizeof(GLuint), NULL);
-	this->_vao.unbind();
+	_vao.linkAttribFloat(_vbo, 0, 3, GL_FLOAT, 5 * sizeof(GLfloat), nullptr);
+	_vao.linkAttribFloat(_vbo, 1, 2, GL_FLOAT, 5 * sizeof(GLfloat), reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+	_vao.linkAttribInt(_texVbo, 2, 1, GL_UNSIGNED_INT, sizeof(GLuint), nullptr);
+	_vao.linkAttribInt(_blockFacesVbo, 3, 1, GL_UNSIGNED_INT, sizeof(GLuint), nullptr);
+	_vao.unbind();
 }
 
 BlockType &BlockType::operator=(const BlockType &obj)
 {
 	if (&obj == this)
 		return (*this);
-	this->_vao = obj._vao;
-	this->_vao.bind();
-	this->_vbo = obj._vbo;
-	this->_texVbo = obj._texVbo;
-	this->_blockFacesVbo = obj._blockFacesVbo;
-	this->_ebo = obj._ebo;
-	this->_textures = obj._textures;
-	this->_material = obj._material;
+	_vao = obj._vao;
+	_vao.bind();
+	_vbo = obj._vbo;
+	_texVbo = obj._texVbo;
+	_blockFacesVbo = obj._blockFacesVbo;
+	_ebo = obj._ebo;
+	_textures = obj._textures;
+	_material = obj._material;
 	return (*this);
 }
 
-void BlockType::draw(Material &material, Shader &shader)
+void BlockType::draw(const Material &material, Shader &shader)
 {
+	if (material == Material::NONE)
+		return;
 	BlockType &blockType = blockMap[material];
 	blockType._vao.bind();
-	shader.setInt("texCount", (int)blockType._textures.size());
+	shader.setInt("texCount", static_cast<int>(blockType._textures.size()));
 	shader.setTint(blockType._material);
-	for (int i = 0; i < (int)blockType._textures.size(); i++)
+	for (int i = 0; i < static_cast<int>(blockType._textures.size()); i++)
 	{
 		glActiveTexture(GL_TEXTURE0 + i);
 		blockType._textures[i]->bind();
 		shader.setInt(("textures[" + std::to_string(i) + "]").c_str(), i);
 	}
-	for (int i = 0; i < static_cast<int>(BlockFace::DOWN) + 1; i++)
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void *) (i * 6 * sizeof(GLuint)));
+
+	for (int i = 0; i <= static_cast<int>(BlockFace::DOWN); i++)
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, reinterpret_cast<void *>(i * 6 * sizeof(GLuint)));
 	Texture::resetSlots();
 	blockType._vao.unbind();
 }
 
 void BlockType::free()
 {
-	this->_vbo.free();
-	this->_texVbo.free();
-	this->_vao.free();
-	this->_ebo.free();
-	for (int i = 0; i < (int)this->_textures.size(); i++)
+	_vbo.free();
+	_texVbo.free();
+	_vao.free();
+	_ebo.free();
+	for (Texture *_texture : _textures)
 	{
-		this->_textures[i]->free();
-		delete this->_textures[i];
+		_texture->free();
+		delete _texture;
 	}
 }
 
 const Material &BlockType::getType() const
 {
-	return (this->_material);
+	return (_material);
 }
 
 void BlockType::init()
 {
-	for (int i = 0; i < static_cast<int>(Material::UNKNOWN) + 1; i++) {
+	for (int i = 0; i < static_cast<int>(UNKNOWN) + 1; i++) {
 		Material m = static_cast<Material>(i);
 		blockMap.insert({m, BlockType(m)});
 	}
@@ -103,7 +104,7 @@ void BlockType::init()
 
 void BlockType::shutdown()
 {
-	for (int i = 0; i < static_cast<int>(Material::UNKNOWN) + 1; i++) {
+	for (int i = 0; i < static_cast<int>(UNKNOWN) + 1; i++) {
 		Material m = static_cast<Material>(i);
 		blockMap[m].free();
 	}

@@ -15,11 +15,6 @@
 #include <stb/stb_image.h>
 #include <string>
 
-Texture::Texture()
-{
-	
-}
-
 static std::string getFilePath(const char *image)
 {
 	std::string path = "resources/textures/block/";
@@ -27,7 +22,7 @@ static std::string getFilePath(const char *image)
 	return (path);
 }
 
-Texture::Texture(const char *image, GLenum textureType, GLenum slot, GLenum format, GLenum pixeltype)
+Texture::Texture(const char *image, const GLenum textureType, const GLenum slot, const GLenum format, const GLenum pixeltype)
 {
 	this->_type = textureType;
 	// Loading image
@@ -65,17 +60,17 @@ GLenum Texture::getType() const
 	return (this->_type);
 }
 
-void Texture::bind()
+void Texture::bind() const
 {
 	glBindTexture(this->_type, this->_id);
 }
 
-void Texture::unbind()
+void Texture::unbind() const
 {
 	glBindTexture(this->_type, 0);
 }
 
-void Texture::free()
+void Texture::free() const
 {
 	glDeleteTextures(1, &this->_id);
 }

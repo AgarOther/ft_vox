@@ -19,7 +19,7 @@ constexpr int chunkHeight = 32;
 constexpr int chunkVolume = chunkSize * chunkHeight * chunkSize;
 
 // Vertices coordinates
-const GLfloat vertices[] =
+constexpr GLfloat vertices[] =
 {  //    Position         /   TexCoord  /
 	// Front face
 	-0.5f, 0.0f,  0.5f,    0.0f, 0.0f,
@@ -58,10 +58,7 @@ const GLfloat vertices[] =
 	-0.5f, 0.0f,  0.5f,    0.0f, 1.0f
 };
 
-
-
-
-const GLuint blockFaces[]
+constexpr GLuint blockFaces[]
 {
 	1, 1, 1, 1, // Front
 	2, 2, 2, 2, // Back
@@ -71,7 +68,7 @@ const GLuint blockFaces[]
 	6, 6, 6, 6  // Bottom
 };
 
-const GLuint textureId4s[]
+constexpr GLuint textureId4s[]
 {
 	2, 2, 2, 2, // Front
 	1, 1, 1, 1, // Back
@@ -81,7 +78,7 @@ const GLuint textureId4s[]
 	3, 3, 3, 3  // Bottom
 };
 
-const GLuint textureId3s[]
+constexpr GLuint textureId3s[]
 {
 	1, 1, 1, 1,
 	1, 1, 1, 1,
@@ -91,7 +88,7 @@ const GLuint textureId3s[]
 	2, 2, 2, 2
 };
 
-const GLuint textureId2s[]
+constexpr GLuint textureId2s[]
 {
 	1, 1, 1, 1,
 	1, 1, 1, 1,
@@ -101,7 +98,7 @@ const GLuint textureId2s[]
 	0, 0, 0, 0
 };
 
-const GLuint textureId1s[]
+constexpr GLuint textureId1s[]
 {
 	0, 0, 0, 0,
 	0, 0, 0, 0,

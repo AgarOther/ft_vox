@@ -13,8 +13,4 @@
 #ifndef WORLD_HPP
 # define WORLD_HPP
 
-#include "Chunk.hpp"
-
-std::vector<Chunk *> chunkList;
-
 #endif

@@ -22,7 +22,7 @@ GLuint VAO::getId() const
 	return (this->_id);
 }
 
-void VAO::linkAttribFloat(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum type, GLsizeiptr stride, void *offset)
+void VAO::linkAttribFloat(VBO &vbo, const GLuint layout, const GLint nbComponents, const GLenum type, const GLsizei stride, const void *offset) const
 {
 	vbo.bind();
 	glVertexAttribPointer(layout, nbComponents, type, GL_FALSE, stride, offset);
@@ -30,7 +30,7 @@ void VAO::linkAttribFloat(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum t
 	vbo.unbind();
 }
 
-void VAO::linkAttribInt(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum type, GLsizeiptr stride, void *offset)
+void VAO::linkAttribInt(VBO &vbo, const GLuint layout, const GLint nbComponents, const GLenum type, const GLsizei stride, const void *offset) const
 {
 	vbo.bind();
 	glVertexAttribIPointer(layout, nbComponents, type, stride, offset);
@@ -38,17 +38,17 @@ void VAO::linkAttribInt(VBO &vbo, GLuint layout, GLuint nbComponents, GLenum typ
 	vbo.unbind();
 }
 
-void VAO::bind()
+void VAO::bind() const
 {
 	glBindVertexArray(this->_id);
 }
 
-void VAO::unbind()
+void VAO::unbind() const
 {
 	glBindVertexArray(0);
 }
 
-void VAO::free()
+void VAO::free() const
 {
 	glDeleteVertexArrays(1, &this->_id);
 }
