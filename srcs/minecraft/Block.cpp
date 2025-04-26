@@ -13,7 +13,6 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <gtx/transform.hpp>
 #include "Block.hpp"
-
 #include "BlockType.hpp"
 #include "srcs/renderer/Shader.hpp"
 

@@ -16,8 +16,6 @@
 #include "Location.hpp"
 # include "../renderer/TextureType.hpp"
 
-class Chunk;
-
 class Block
 {
 	public:

@@ -70,7 +70,7 @@ void BlockType::draw(const Material &material, Shader &shader)
 		shader.setInt(("textures[" + std::to_string(i) + "]").c_str(), i);
 	}
 
-	for (int i = 0; i <= static_cast<int>(BlockFace::DOWN); i++)
+	for (int i = 0; i < 6; i++)
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, reinterpret_cast<void *>(i * 6 * sizeof(GLuint)));
 	Texture::resetSlots();
 	blockType._vao.unbind();

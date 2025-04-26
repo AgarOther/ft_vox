@@ -12,12 +12,10 @@
 
 #include <iostream>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
 #include <imgui.h>
 
 #include "utils/Utils.hpp"
-#include "minecraft/Block.hpp"
+#include "minecraft/Chunk.hpp"
 #include "minecraft/BlockType.hpp"
 #include "renderer/Camera.hpp"
 #include "renderer/Crosshair.hpp"
@@ -55,7 +53,8 @@ int	main()
 	Camera camera(mode->width, mode->height, glm::vec3(0.0f, 0.0f, 0.0f));
 	BlockType::init();
 
-	const Block test(Material::CHERRY_LOG, Location(0, 0, 0), 0, 0);
+	Chunk chunk(0, 0);
+	chunk.setBlock(Material::BEDROCK, 0, 5, 0);
 	
 	while (!glfwWindowShouldClose(window))
 	{
@@ -67,7 +66,9 @@ int	main()
 			Utils::showImGui(io, camera);
 		shader.use();
 		camera.setupMatrix(shader);
-		test.place();
+
+		// Draw calls
+		Chunk::renderAll();
 
 		if (hasGui)
 			Utils::renderImGui();

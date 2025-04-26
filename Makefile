@@ -24,6 +24,7 @@ SRCS				=	srcs/main.cpp \
 						srcs/renderer/Camera.cpp \
 						srcs/minecraft/BlockType.cpp \
 						srcs/minecraft/Block.cpp \
+						srcs/minecraft/Chunk.cpp \
 						srcs/minecraft/Location.cpp
 OBJ_FOLDER			=	objs
 INCLUDES			=	-I srcs \

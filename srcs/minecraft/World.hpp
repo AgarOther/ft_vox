@@ -1,16 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   World.hpp                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 00:06:40 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 03:27:30 by scraeyme         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+//
+// Created by scraeyme on 4/26/25.
+//
 
 #ifndef WORLD_HPP
-# define WORLD_HPP
+#define WORLD_HPP
+#include "Chunk.hpp"
 
-#endif
+std::vector<Chunk *> WORLD_CHUNKS;
+
+#endif //WORLD_HPP
