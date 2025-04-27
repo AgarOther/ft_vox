@@ -23,8 +23,8 @@ class Block
 		Block(Material material, const Location &location, int chunkX, int chunkZ);
 		Block &operator=(const Block &obj);
 
-		void placeBlockAt(const Location &location) const;
-		void place() const;
+		void placeBlockAt(const Location &locationm, uint8_t faceMask) const;
+		void place(uint8_t faceMask) const;
 		
 		Location getLocation() const;
 		Location getChunkLocation() const;

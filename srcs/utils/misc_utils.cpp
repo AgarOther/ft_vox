@@ -15,16 +15,18 @@
 #include <string>
 #include "Utils.hpp"
 #include "colors.hpp"
-#include "srcs/minecraft/Block.hpp"
-#include "srcs/minecraft/BlockData.hpp"
+#include "srcs/minecraft/World.hpp"
 
 int Utils::getBlockIndex(const Block &block) {
-	const Location& loc = block.getLocation();
-	return static_cast<int>(loc.getX() + loc.getY() * chunkSize + loc.getZ() * chunkSize * chunkHeight);
+	const Location& loc = block.getChunkLocation();
+	int x = static_cast<int>(std::floor(loc.getX()));
+	int y = static_cast<int>(std::floor(loc.getY()));
+	int z = static_cast<int>(std::floor(loc.getZ()));
+	return (x + CHUNK_SIZE * (y + CHUNK_HEIGHT * z));
 }
 
 int Utils::getBlockIndex(const int x, const int y, const int z) {
-	return x + y * chunkSize + z * chunkSize * chunkHeight;
+	return (x + CHUNK_SIZE * (y + CHUNK_HEIGHT * z));
 }
 
 std::string Utils::appendInt(std::string str, const int n)

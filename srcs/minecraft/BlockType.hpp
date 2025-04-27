@@ -42,8 +42,8 @@ class BlockType
 		
 		static void init();
 		static void shutdown();
-		void free();
-		static void draw(const Material &material, Shader &shader);
+		void free() const;
+		static void draw(const Material &material, const Shader &shader, uint8_t faceMask);
 		
 		const Material &getType() const;
 	private:

@@ -53,9 +53,15 @@ int	main()
 	Camera camera(mode->width, mode->height, glm::vec3(0.0f, 0.0f, 0.0f));
 	BlockType::init();
 
-	Chunk chunk(0, 0);
-	chunk.setBlock(Material::BEDROCK, 0, 5, 0);
-	
+	Chunk *chunk = new Chunk(0, 0);
+	Chunk *chunk1 = new Chunk(15, 0);
+	// Chunk *chunk2 = new Chunk(0, 15);
+	// Chunk *chunk3 = new Chunk(15, 15);
+	(void) chunk;
+	(void) chunk1;
+	// (void) chunk2;
+	// (void) chunk3;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		const bool hasGui = camera.hasGuiOn();
@@ -78,6 +84,7 @@ int	main()
 	}
 
 	shader.free();
+	Chunk::deleteAll();
 	Utils::shutdownImGui();
 	BlockType::shutdown();
 	glfwDestroyWindow(window);

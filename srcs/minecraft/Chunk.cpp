@@ -18,17 +18,42 @@ Chunk::Chunk(const int chunkX, const int chunkZ) {
     for (int x = 0; x < CHUNK_SIZE; ++x) {
         for (int y = 0; y < CHUNK_HEIGHT; ++y) {
             for (int z = 0; z < CHUNK_SIZE; ++z) {
-                Block block(Material::AIR, Location(x + chunkX, y, z + chunkZ), chunkX, chunkZ);
-                _blocks[Utils::getBlockIndex(block)] = block;
+                const Block block(Material::BEDROCK, Location(x + chunkX, y, z + chunkZ), chunkX, chunkZ);
+                const int index = Utils::getBlockIndex(x, y, z);
+                _blocks[index] = block;
+                _faceMasks[index] = 0;
             }
         }
     }
+    update();
     WORLD_CHUNKS.push_back(this);
+}
+
+uint8_t Chunk::getFaceMask(const Block &block) const {
+    (void) block;
+    uint8_t mask = 63;
+    return (mask);
+}
+
+void Chunk::update() {
+    for (int x = 0; x < CHUNK_SIZE; ++x) {
+        for (int y = 0; y < CHUNK_HEIGHT; ++y) {
+            for (int z = 0; z < CHUNK_SIZE; ++z) {
+                const int index = Utils::getBlockIndex(x, y, z);
+                _faceMasks[index] = getFaceMask(_blocks[index]);
+            }
+        }
+    }
 }
 
 Chunk::~Chunk() {
     for (Block &block : _blocks)
         block.~Block();
+}
+
+void Chunk::deleteAll() {
+    for (const Chunk *chunk : WORLD_CHUNKS)
+        delete chunk;
 }
 
 void Chunk::setBlock(const Material material, const int chunkX, const int y, const int chunkZ) {
@@ -40,7 +65,7 @@ void Chunk::setBlock(const Material material, const int chunkX, const int y, con
 
 void Chunk::render() {
     for (Block &block : _blocks)
-        block.place();
+        block.place(_faceMasks[Utils::getBlockIndex(block)]);
 }
 
 void Chunk::renderAll() {

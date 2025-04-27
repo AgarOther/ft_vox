@@ -1,6 +1,6 @@
 # Compilation
 CC					=	g++
-CFLAGS				=	-Wall -Wextra -Werror
+CFLAGS				=	-Wall -Wextra -Werror -g
 GLFLAGS				=	-lglfw -lGL -lm -ldl -lGLEW -lglut -lpthread
 
 # Names
@@ -25,7 +25,8 @@ SRCS				=	srcs/main.cpp \
 						srcs/minecraft/BlockType.cpp \
 						srcs/minecraft/Block.cpp \
 						srcs/minecraft/Chunk.cpp \
-						srcs/minecraft/Location.cpp
+						srcs/minecraft/Location.cpp \
+						srcs/minecraft/World.cpp
 OBJ_FOLDER			=	objs
 INCLUDES			=	-I srcs \
 						-I libs \

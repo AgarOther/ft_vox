@@ -76,7 +76,7 @@ Location Block::getChunkLocation() const
 	return (Location(_chunkX, _y, _chunkZ));
 }
 
-void Block::placeBlockAt(const Location &location) const
+void Block::placeBlockAt(const Location &location, const uint8_t faceMask) const
 {
 	if (_material == AIR)
 		return;
@@ -84,10 +84,10 @@ void Block::placeBlockAt(const Location &location) const
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(static_cast<int>(location.getX()), static_cast<int>(location.getY()), static_cast<int>(location.getZ())));
 	shader.setMat4("model", model);
-	BlockType::draw(_material, shader);
+	BlockType::draw(_material, shader, faceMask);
 }
 
-void Block::place() const
+void Block::place(const uint8_t faceMask) const
 {
 	if (_material == AIR)
 		return;
@@ -96,5 +96,5 @@ void Block::place() const
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(static_cast<int>(location.getX()), static_cast<int>(location.getY()), static_cast<int>(location.getZ())));
 	shader.setMat4("model", model);
-	BlockType::draw(_material, shader);
+	BlockType::draw(_material, shader, faceMask);
 }

@@ -3,9 +3,9 @@
 //
 
 #ifndef WORLD_HPP
-#define WORLD_HPP
-#include "Chunk.hpp"
+# define WORLD_HPP
+# include "Chunk.hpp"
 
-std::vector<Chunk *> WORLD_CHUNKS;
+extern std::vector<Chunk *> WORLD_CHUNKS;
 
-#endif //WORLD_HPP
+#endif

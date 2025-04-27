@@ -55,11 +55,11 @@ BlockType &BlockType::operator=(const BlockType &obj)
 	return (*this);
 }
 
-void BlockType::draw(const Material &material, Shader &shader)
+void BlockType::draw(const Material &material, const Shader &shader, const uint8_t faceMask)
 {
 	if (material == Material::NONE)
 		return;
-	BlockType &blockType = blockMap[material];
+	const BlockType &blockType = blockMap[material];
 	blockType._vao.bind();
 	shader.setInt("texCount", static_cast<int>(blockType._textures.size()));
 	shader.setTint(blockType._material);
@@ -71,18 +71,18 @@ void BlockType::draw(const Material &material, Shader &shader)
 	}
 
 	for (int i = 0; i < 6; i++)
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, reinterpret_cast<void *>(i * 6 * sizeof(GLuint)));
+		if (faceMask & (1 << i))
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, reinterpret_cast<void *>(i * 6 * sizeof(GLuint)));
 	Texture::resetSlots();
 	blockType._vao.unbind();
 }
 
-void BlockType::free()
-{
+void BlockType::free() const {
 	_vbo.free();
 	_texVbo.free();
 	_vao.free();
 	_ebo.free();
-	for (Texture *_texture : _textures)
+	for (const Texture *_texture : _textures)
 	{
 		_texture->free();
 		delete _texture;
