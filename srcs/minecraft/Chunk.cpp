@@ -64,8 +64,7 @@ void Chunk::setBlock(const Material material, const int chunkX, const int y, con
 }
 
 void Chunk::render() {
-    for (Block &block : _blocks)
-        block.place(_faceMasks[Utils::getBlockIndex(block)]);
+    _mesh.draw();
 }
 
 void Chunk::renderAll() {

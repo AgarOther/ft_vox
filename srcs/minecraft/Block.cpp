@@ -66,7 +66,7 @@ bool Block::isSolid() const
 	return (_isSolid);
 }
 
-void Block::setType(Material material)
+void Block::setType(const Material material)
 {
 	_material = material;
 }
@@ -80,7 +80,7 @@ void Block::placeBlockAt(const Location &location, const uint8_t faceMask) const
 {
 	if (_material == AIR)
 		return;
-	Shader &shader = Shader::getCurrentlyBoundShader();
+	const Shader &shader = Shader::getCurrentlyBoundShader();
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(static_cast<int>(location.getX()), static_cast<int>(location.getY()), static_cast<int>(location.getZ())));
 	shader.setMat4("model", model);
@@ -89,12 +89,6 @@ void Block::placeBlockAt(const Location &location, const uint8_t faceMask) const
 
 void Block::place(const uint8_t faceMask) const
 {
-	if (_material == AIR)
-		return;
 	const Location location(_x, _y, _z);
-	Shader &shader = Shader::getCurrentlyBoundShader();
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(static_cast<int>(location.getX()), static_cast<int>(location.getY()), static_cast<int>(location.getZ())));
-	shader.setMat4("model", model);
-	BlockType::draw(_material, shader, faceMask);
+	placeBlockAt(location, faceMask);
 }

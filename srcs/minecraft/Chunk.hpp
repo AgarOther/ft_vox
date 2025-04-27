@@ -14,6 +14,7 @@
 # define CHUNK_HPP
 #include <array>
 #include "Block.hpp"
+#include "renderer/Mesh.hpp"
 
 constexpr int CHUNK_SIZE = 16;
 constexpr int CHUNK_HEIGHT = 16;
@@ -33,6 +34,7 @@ public:
 private:
     std::array<Block, CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE> _blocks;
     std::array<uint8_t, CHUNK_SIZE * CHUNK_HEIGHT * CHUNK_SIZE> _faceMasks;
+    Mesh _mesh;
 };
 
 #endif
