@@ -20,6 +20,15 @@
 extern int WIDTH;
 extern int HEIGHT;
 
+typedef struct s_debug {
+	size_t blocks;
+	size_t drawCalls;
+	size_t triangles;
+	float deltaTime;
+}			t_debug;
+
+extern t_debug DEBUG_INFOS;
+
 class Block;
 
 class Utils

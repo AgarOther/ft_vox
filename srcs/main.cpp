@@ -22,6 +22,7 @@
 
 int	WIDTH = 0;
 int HEIGHT = 0;
+t_debug DEBUG_INFOS;
 
 int	main()
 {
@@ -54,22 +55,29 @@ int	main()
 	BlockType::init();
 
 	Chunk *chunk = new Chunk(0, 0);
-	Chunk *chunk1 = new Chunk(15, 0);
+	// Chunk *chunk1 = new Chunk(15, 0);
 	// Chunk *chunk2 = new Chunk(0, 15);
 	// Chunk *chunk3 = new Chunk(15, 15);
 	(void) chunk;
-	(void) chunk1;
+	// (void) chunk1;
 	// (void) chunk2;
 	// (void) chunk3;
+	DEBUG_INFOS.blocks = 0;
+	DEBUG_INFOS.drawCalls = 0;
+	DEBUG_INFOS.triangles = 0;
 
 	while (!glfwWindowShouldClose(window))
 	{
 		const bool hasGui = camera.hasGuiOn();
+		DEBUG_INFOS.deltaTime = io.DeltaTime;
 		camera.interceptInputs(window);
 		glClearColor(0.05f, 0.0f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
 			Utils::showImGui(io, camera);
+		DEBUG_INFOS.blocks = 0;
+		DEBUG_INFOS.drawCalls = 0;
+		DEBUG_INFOS.triangles = 0;
 		shader.use();
 		camera.setupMatrix(shader);
 

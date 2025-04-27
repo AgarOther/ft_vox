@@ -95,16 +95,19 @@ void Utils::showImGui(const ImGuiIO &io, Camera &camera)
 	ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 	
 	ImGui::NewLine();
-	
 	// Position infos
 	const glm::vec3 camPos = camera.getPosition();
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", camPos.x, camPos.y, camPos.z);
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: %s (Towards %s) (%.1f / %.1f)",
 		getDirectionAsString(camera.getYaw()).c_str(), getAxisDirectionAsString(camera.getYaw()).c_str(), camera.getYaw(), camera.getPitch());
+	ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.9f, 1.0f), "Blocks: %ld | Draw calls: %ld | Triangles: %ld",
+		DEBUG_INFOS.blocks, DEBUG_INFOS.drawCalls, DEBUG_INFOS.triangles);
+
+	ImGui::NewLine();
 
 	// Speed
 	float cameraSpeed = camera.getBaseSpeed();
-	ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.0f, 2.0f);
+	ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.0f, 15.0f);
 	if (cameraSpeed != camera.getBaseSpeed())
 		camera.setBaseSpeed(cameraSpeed);
 	

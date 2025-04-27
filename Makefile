@@ -1,6 +1,6 @@
 # Compilation
 CC					=	g++
-CFLAGS				=	-Wall -Wextra -Werror -g
+CFLAGS				=	-Wall -Wextra -Werror -g $(INCLUDES)
 GLFLAGS				=	-lglfw -lGL -lm -ldl -lGLEW -lglut -lpthread
 
 # Names
@@ -78,12 +78,12 @@ ALL_FCLEAN			=	@echo "🧹$(LIGHT_GREEN) Project's objects & Executables cleaned
 all : glfw glm $(NAME)
 
 $(NAME): $(IMGUI) $(OBJS)
-	@$(CC) $(CFLAGS) $(OBJS) $(STB) $(GLFW) $(GLAD) $(IMGUI) -o $(NAME) $(INCLUDES) $(GLFLAGS)
+	@$(CC) $(CFLAGS) $(OBJS) $(STB) $(GLFW) $(GLAD) $(IMGUI) -o $(NAME) $(GLFLAGS)
 	$(EXE_DONE)
 
 $(OBJ_FOLDER)/%.o: srcs/%.cpp
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean :
 	@rm -rf $(OBJ_FOLDER)
