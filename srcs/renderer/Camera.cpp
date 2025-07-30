@@ -6,7 +6,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_width = width;
 	_height = height;
 	_position = position;
-	_speed = 0.10f;
+	_speed = 7.00f;
 	_baseSpeed = _speed;
 	_sensitivity = 200.0f;
 	_firstClick = true;
@@ -46,7 +46,7 @@ static glm::vec3 translateDirection(const float yaw, const float pitch)
 	return (direction);
 }
 
-void Camera::interceptInputs(GLFWwindow *window)
+void Camera::interceptInputs(GLFWwindow * window, float deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE))
 	{
@@ -72,20 +72,21 @@ void Camera::interceptInputs(GLFWwindow *window)
 	// Key management
 	if (!_locked)
 	{
+		float velocity = _speed * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-			_position += _speed * forward;
+			_position += velocity * forward;
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-			_position += _speed * -right;
+			_position += velocity * -right;
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-			_position += _speed * -forward;
+			_position += velocity * -forward;
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-			_position += _speed * right;
+			_position += velocity * right;
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
-			_position += _speed * _altitude;
+			_position += velocity * _altitude;
 		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
-			_position += _speed * -_altitude;
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-			_speed = _baseSpeed * 2.5f;
+			_position += velocity * -_altitude;
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
+			_speed = _baseSpeed * deltaTime + 13.5f;
 		else
 			_speed = _baseSpeed;
 	}

@@ -5,16 +5,36 @@
 #include "Chunk.hpp"
 #include "Shader.hpp"
 #include "types.hpp"
+#include "utils.hpp"
 
-Chunk::Chunk(int chunkX, int chunkZ): _chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0)
+float frequency = 1.00f;
+float amplitude = 70.0f; // Max terrain height variation
+int baseHeight = 64;
+
+Chunk::Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise): _chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0)
 {
+	
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
 		for (int y = 0; y < CHUNK_HEIGHT; ++y)
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
-				_blocks[x][y][z] = y <= 64 ? y == 0 ? BEDROCK : y == 64 ? DIRT : STONE : AIR;
+				float worldX = static_cast<float>(_chunkX * CHUNK_WIDTH + x);
+				float worldZ = static_cast<float>(_chunkZ * CHUNK_DEPTH + z);
+
+				float noiseValue = noise.GetNoise(worldX * frequency, worldZ * frequency);
+				int height = static_cast<int>((noiseValue + 1.0f) * 0.5f * amplitude + baseHeight);
+
+				if (y == 0)
+                	_blocks[x][y][z] = BEDROCK;
+				else if (y < height - 5)
+					_blocks[x][y][z] = STONE;
+				else if (y < height)
+					_blocks[x][y][z] = DIRT;
+				else
+					_blocks[x][y][z] = AIR;
+				
 			}
 		}
 	}
@@ -78,6 +98,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 				const BlockType & block = BlockTypeRegistry::getBlockType(blockID);
 				if (block.isVisible && isBlockVisible(x, y, z))
 				{
+					g_DEBUG_INFO.blocks++;
 					Object object = ObjectRegistry::getObject(BLOCK);
 					std::vector<float> blockVertices = object.vertices;
 					std::vector<uint32_t> blockIndices = object.indices;
@@ -121,6 +142,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 							vertices.push_back(normal.y);
 							vertices.push_back(normal.z);
 						}
+						g_DEBUG_INFO.triangles += 2;
 					}
 
 					// Add indices with offset
@@ -181,5 +203,6 @@ void Chunk::render(const Shader & shader) const
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _atlas.getTextureID());
 	shader.setInt("textureAtlas", 0);
+	g_DEBUG_INFO.drawCalls++;
 	glDrawElements(GL_TRIANGLES, _indicesCount, GL_UNSIGNED_INT, 0);
 }

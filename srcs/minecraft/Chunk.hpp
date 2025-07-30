@@ -2,6 +2,7 @@
 
 #include "Shader.hpp"
 #include "TextureAtlas.hpp"
+#include "fastnoiselite/FastNoiseLite.h"
 
 #define CHUNK_HEIGHT 256
 #define CHUNK_WIDTH 16
@@ -10,7 +11,7 @@
 class Chunk
 {
 	public:
-		Chunk(int chunkX, int chunkZ);
+		Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise);
 		~Chunk();
 
 		void			generateMesh(const TextureAtlas & atlas);

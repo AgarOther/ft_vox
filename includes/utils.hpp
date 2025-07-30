@@ -5,6 +5,9 @@
 #include "types.hpp"
 #include "imgui/imgui.h"
 
+extern DebugInfo g_DEBUG_INFO;
+extern const unsigned long long WORLD_SEED;
+
 void						handleExit(int code, const std::string & message);
 void						debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 const						std::string getFileAsString(const char * name);

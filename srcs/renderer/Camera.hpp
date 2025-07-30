@@ -13,8 +13,8 @@ class Camera
 		Camera(int width, int height, glm::vec3 position);
 		~Camera();
 
-		void setupMatrix(const Shader &shader);
-		void interceptInputs(GLFWwindow *window);
+		void setupMatrix(const Shader & shader);
+		void interceptInputs(GLFWwindow * window, float deltaTime);
 
 		// Getters
 		glm::mat4 getViewMatrix() const;
