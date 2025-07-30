@@ -50,6 +50,7 @@ class Camera
 		void setFOV(float s);
 		void setFarPlane(float farPlane);
 		void setClicked(bool clicked);
+		void setGui(bool guiOn);
 		void setLocked(bool lock);
 		void setFullscreen(bool fullScreen);
 	private:
@@ -68,6 +69,7 @@ class Camera
 		float _FOV;
 		float _farPlane;
 		bool _firstClick;
+		bool _guiOn;
 		bool _locked;
 		bool _fullScreen;
 };

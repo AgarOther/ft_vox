@@ -4,7 +4,7 @@ CFLAGS				=	-Wall -Wextra -Werror -std=c++17 -g -MP -MMD
 LDFLAGS				=	-lglfw -lGL -lm
 
 # Names
-NAME				=	skybox
+NAME				=	world
 
 # Sources & Includes
 SRCS				= 	srcs/debug.cpp \
@@ -12,6 +12,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/main.cpp \
 						srcs/models.cpp \
 						srcs/utils.cpp \
+						srcs/imgui_utils.cpp \
 						srcs/renderer/Camera.cpp \
 						srcs/renderer/Shader.cpp \
 						srcs/renderer/Skybox.cpp \
@@ -20,12 +21,20 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/Location.cpp \
 						srcs/minecraft/ObjectRegistry.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
-						libs/stb/stb_image.cpp
+						libs/stb/stb_image.cpp \
+						libs/imgui/imgui_demo.cpp \
+						libs/imgui/imgui_draw.cpp \
+						libs/imgui/imgui_tables.cpp \
+						libs/imgui/imgui_impl_glfw.cpp \
+						libs/imgui/imgui_impl_opengl3.cpp \
+						libs/imgui/imgui_widgets.cpp \
+						libs/imgui/imgui.cpp
 OBJ_FOLDER			=	objs
 INCLUDES			=	-I includes \
 						-I srcs/engine \
 						-I srcs/renderer \
 						-I srcs/minecraft \
+						-I libs/imgui \
 						-I libs
 
 LIBS				=	libs/GL/libGLEW.a \
@@ -53,7 +62,7 @@ ALL_FCLEAN			=	@echo "🧹$(LIGHT_GREEN) Project's objects & Executables cleaned
 all : glfw glm glew
 	@make -j4 $(NAME)
 
-$(NAME): $(OBJS)
+$(NAME): $(IMGUI) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME) $(LDFLAGS)
 	$(EXE_DONE)
 
@@ -139,6 +148,9 @@ glew:
 	@if ! ls ./libs/GL 2>/dev/null | grep -q "libGLEW.a" ; then \
 		make --no-print-directory download_glew; \
 	fi
+
+$(IMGUI): %.o: %.cpp
+	@gcc $(INCLUDES) $< -c -o $@
 
 .PHONY: all clean fclean re
 

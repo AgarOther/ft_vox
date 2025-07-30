@@ -8,6 +8,7 @@
 #include "minecraft/TextureAtlas.hpp"
 #include "utils.hpp"
 #include "errors.hpp"
+#include "imgui/imgui.h"
 
 int main(void)
 {
@@ -22,6 +23,8 @@ int main(void)
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(debugCallback, nullptr);
 	#endif
+
+	const ImGuiIO & io = getImGuiIO(window);
 
 	ObjectRegistry::init();
 	BlockTypeRegistry::init();
@@ -57,7 +60,10 @@ int main(void)
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
+		const bool hasGui = camera.hasGuiOn();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if (hasGui)
+			showImGui(io, camera);
 		skybox.render(skyboxShader, camera);
 		
 		shader.bind();
@@ -67,6 +73,8 @@ int main(void)
 		for (Chunk * chunk : chunks)
 			chunk->render(shader);
 		
+		if (hasGui)
+			renderImGui();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
@@ -86,5 +94,6 @@ int main(void)
 	glfwTerminate();
 	for (Chunk * chunk : chunks)
 		delete chunk;
+	shutdownImGui();
 	return 0;
 }

@@ -15,6 +15,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_pitch = 0.0f;
 	_yaw = 90.0f;
 	_fullScreen = false;
+	_guiOn = false;
 	_locked = false;
 
 	glm::vec3 direction;
@@ -89,6 +90,11 @@ void Camera::interceptInputs(GLFWwindow *window)
 			_speed = _baseSpeed;
 	}
 
+	static bool lastFramePressedF3 = false;
+	const bool keyPressedF3 = glfwGetKey(window, GLFW_KEY_F3);
+	if (keyPressedF3 && !lastFramePressedF3)
+		_guiOn = !_guiOn;
+
 	static bool lastFramePressedF11 = false;
 	const bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
 	if (keyPressedF11 && !lastFramePressedF11)
@@ -137,6 +143,7 @@ void Camera::interceptInputs(GLFWwindow *window)
 		}
 		_firstClick = true;
 	}
+	lastFramePressedF3 = keyPressedF3;
 	lastFramePressedF11 = keyPressedF11;
 }
 
@@ -156,6 +163,7 @@ float Camera::getPitch() const { return _pitch; }
 float Camera::getFOV() const { return _FOV; }
 float Camera::getFarPlane() const { return _farPlane; }
 bool Camera::hasClicked() const { return (_firstClick); }
+bool Camera::hasGuiOn() const { return (_guiOn); }
 bool Camera::isLocked() const { return (_locked); }
 bool Camera::isFullscreen() const { return (_fullScreen); }
 
@@ -172,6 +180,7 @@ void Camera::setYaw(const float s) { _yaw = s; }
 void Camera::setPitch(const float s) { _pitch = s; }
 void Camera::setFOV(const float s) { _FOV = s; }
 void Camera::setFarPlane(const float farPlane) { _farPlane = farPlane; }
-void Camera::setClicked(const bool clicked) { _firstClick = clicked; }
-void Camera::setLocked(const bool lock) { _locked = lock; }
-void Camera::setFullscreen(const bool fullscreen) { _fullScreen = fullscreen; }
+void Camera::setClicked(bool clicked) { _firstClick = clicked; }
+void Camera::setGui(bool guiOn) { _guiOn = guiOn; }
+void Camera::setLocked(bool lock) { _locked = lock; }
+void Camera::setFullscreen(bool fullscreen) { _fullScreen = fullscreen; }
