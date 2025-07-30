@@ -25,4 +25,7 @@ class Chunk
 		GLuint			_tbo;
 		uint8_t			_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
 		TextureAtlas	_atlas;
+
+		bool			isBlockVisible(int x, int y, int z);
+		bool			isFaceVisible(BlockFace face, int x, int y, int z);
 };

@@ -4,6 +4,7 @@
 #include <vector>
 #include "Chunk.hpp"
 #include "Shader.hpp"
+#include "types.hpp"
 
 Chunk::Chunk(int chunkX, int chunkZ): _chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0)
 {
@@ -29,6 +30,38 @@ Chunk::~Chunk()
 		glDeleteBuffers(1, &_ibo);
 }
 
+bool Chunk::isBlockVisible(int x, int y, int z)
+{
+	return x == 0 || y == 0 || z == 0
+		|| x == CHUNK_WIDTH - 1 || y == CHUNK_HEIGHT - 1 || z == CHUNK_DEPTH - 1
+		|| (x - 1 >= 0 && _blocks[x - 1][y][z] == AIR)
+		|| (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] == AIR)
+		|| (y - 1 >= 0 && _blocks[x][y - 1][z] == AIR)
+		|| (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == AIR)
+		|| (z - 1 >= 0 && _blocks[x][y][z - 1] == AIR)
+		|| (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR);
+}
+
+bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z)
+{
+	switch (face)
+	{
+		case FACE_FRONT:
+			return (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR) || z == CHUNK_DEPTH - 1;
+		case FACE_BACK:
+			return (z - 1 >= 0 && _blocks[x][y][z - 1] == AIR) || z == 0;
+		case FACE_LEFT:
+			return (x - 1 >= 0 && _blocks[x - 1][y][z] == AIR) || x == 0;
+		case FACE_RIGHT:
+			return (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] == AIR) || x == CHUNK_WIDTH - 1;
+		case FACE_TOP:
+			return (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == AIR) || y == CHUNK_HEIGHT - 1;
+		case FACE_BOTTOM:
+			return (y - 1 >= 0 && _blocks[x][y - 1][z] == AIR) || y == 0;
+	}
+	return false;
+}
+
 void Chunk::generateMesh(const TextureAtlas & atlas)
 {
 	std::vector<float> vertices;
@@ -42,17 +75,19 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 			{
 				uint8_t blockID = _blocks[x][y][z];
 				const BlockType & block = BlockTypeRegistry::getBlockType(blockID);
-				if (block.isVisible)
+				if (block.isVisible && isBlockVisible(x, y, z))
 				{
-					// culling to be done
 					Object object = ObjectRegistry::getObject(BLOCK);
 					std::vector<float> blockVertices = object.vertices;
 					std::vector<uint32_t> blockIndices = object.indices;
 					size_t vertexOffset = vertices.size() / 5; // number of vertices added so far
-					// Textures
 					// Add vertices, offsetting positions by chunk coordinates
-					for (int face = 0; face < 6; ++face) {
-						for (int i = 0; i < 4; ++i) {
+					for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
+					{
+						if (!isFaceVisible(static_cast<BlockFace>(face), x, y, z))
+							continue;
+						for (int i = 0; i < 4; ++i)
+						{
 							size_t vi = (face * 4 + i) * 5;
 							float vx = blockVertices[vi + 0] + x;
 							float vy = blockVertices[vi + 1] + y;

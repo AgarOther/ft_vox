@@ -10,7 +10,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_baseSpeed = _speed;
 	_sensitivity = 200.0f;
 	_firstClick = true;
-	_farPlane = 100.0f;
+	_farPlane = 500.0f;
 	_FOV = 90.0f;
 	_pitch = 0.0f;
 	_yaw = 90.0f;

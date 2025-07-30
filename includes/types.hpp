@@ -34,3 +34,13 @@ enum ModelType
 {
 	BLOCK = 1
 };
+
+enum BlockFace
+{
+	FACE_FRONT,
+	FACE_BACK,
+	FACE_LEFT,
+	FACE_RIGHT,
+	FACE_TOP,
+	FACE_BOTTOM
+};
