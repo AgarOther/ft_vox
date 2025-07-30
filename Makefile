@@ -4,7 +4,7 @@ CFLAGS				=	-Wall -Wextra -Werror -std=c++17 -g -MP -MMD
 LDFLAGS				=	-lglfw -lGL -lm
 
 # Names
-NAME				=	chunk
+NAME				=	texture
 
 # Sources & Includes
 SRCS				= 	srcs/debug.cpp \
@@ -12,13 +12,13 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/main.cpp \
 						srcs/models.cpp \
 						srcs/utils.cpp \
-						srcs/engine/Shader.cpp \
 						srcs/renderer/Camera.cpp \
-						srcs/renderer/Texture.cpp \
-						srcs/minecraft/Location.cpp \
-						srcs/minecraft/Chunk.cpp \
+						srcs/renderer/Shader.cpp \
 						srcs/minecraft/BlockTypeRegistry.cpp \
+						srcs/minecraft/Chunk.cpp \
+						srcs/minecraft/Location.cpp \
 						srcs/minecraft/ObjectRegistry.cpp \
+						srcs/minecraft/TextureAtlas.cpp \
 						libs/stb/stb_image.cpp
 OBJ_FOLDER			=	objs
 INCLUDES			=	-I includes \

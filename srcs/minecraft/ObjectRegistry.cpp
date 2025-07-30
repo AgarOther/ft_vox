@@ -15,6 +15,6 @@ const Object & ObjectRegistry::getObject(uint8_t id)
 	auto it = _objects.find(id);
 	if (it != _objects.end())
 		return it->second;
-	std::cerr << "[ObjectRegistry] Warning: Requested unknown object ID " << id << ", returning default.\n";
+	std::cerr << "[ObjectRegistry] Warning: Requested unknown object ID " << (int)id << ", returning default.\n";
 	return _objects[0]; // air
 }

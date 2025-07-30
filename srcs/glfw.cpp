@@ -59,7 +59,7 @@ GLFWwindow * initWindow(int *width, int *height)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-	window = glfwCreateWindow(mode->width, mode->height, "chunk", nullptr, nullptr);
+	window = glfwCreateWindow(mode->width, mode->height, "texture", nullptr, nullptr);
 	if (!window)
 		handleExit(2, FAILURE_WINDOW);
 	glfwMakeContextCurrent(window);

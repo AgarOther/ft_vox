@@ -1,30 +1,36 @@
 #pragma once
+
 #include <cstdint>
 #include <vector>
 #include <string>
 
-typedef enum e_objectType
+enum ObjectType
 {
 	VERTICES,
 	INDICES
-}			ObjectType;
+};
 
-typedef enum e_Material
+enum Material
 {
-	AIR,
-	STONE
-}			Material;
+	UNKNOWN,
+	STONE,
+	AIR = 255
+};
 
-typedef struct s_Object
+struct Object
 {
 	std::vector<float>		vertices;
 	std::vector<uint32_t>	indices;
-}				Object;
+};
 
-typedef struct s_blockType
+struct BlockType
 {
-	uint8_t		id;
-	std::string	name;
 	Material	type;
+	std::string	name;
 	bool		isVisible;
-}				BlockType;
+};
+
+enum ModelType
+{
+	BLOCK = 1
+};

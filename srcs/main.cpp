@@ -5,6 +5,7 @@
 #include "minecraft/BlockTypeRegistry.hpp"
 #include "minecraft/Chunk.hpp"
 #include "minecraft/ObjectRegistry.hpp"
+#include "minecraft/TextureAtlas.hpp"
 #include "utils.hpp"
 #include "errors.hpp"
 
@@ -24,11 +25,25 @@ int main(void)
 
 	ObjectRegistry::init();
 	BlockTypeRegistry::init();
-	Chunk chunk(0, 0);
-	chunk.generateMesh();
-
+	TextureAtlas atlas;
+	atlas.load({
+		"assets/blocks/stone.png",
+		"assets/blocks/unknown.png"
+	});
+	
 	Shader shader("test.vert", "test.frag");
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, -2.0f));
+	
+	std::vector<Chunk * > chunks;
+	for (int x = 0; x < 8; x++)
+	{
+		for (int z = 0; z < 8; z++)
+		{
+			Chunk * chunk = new Chunk(x, z);
+			chunk->generateMesh(atlas);
+			chunks.push_back(chunk);
+		}
+	}
 
 	// FPS
 	double start = glfwGetTime();
@@ -44,7 +59,8 @@ int main(void)
 		camera.setWidth(width);
 		camera.setHeight(height);
 		camera.setupMatrix(shader);
-		chunk.render(shader);
+		for (Chunk * chunk : chunks)
+			chunk->render(shader);
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -63,6 +79,7 @@ int main(void)
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
-
+	for (Chunk * chunk : chunks)
+		delete chunk;
 	return 0;
 }
