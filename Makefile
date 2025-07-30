@@ -4,7 +4,7 @@ CFLAGS				=	-Wall -Wextra -Werror -std=c++17 -g -MP -MMD
 LDFLAGS				=	-lglfw -lGL -lm
 
 # Names
-NAME				=	texture
+NAME				=	skybox
 
 # Sources & Includes
 SRCS				= 	srcs/debug.cpp \
@@ -14,6 +14,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/utils.cpp \
 						srcs/renderer/Camera.cpp \
 						srcs/renderer/Shader.cpp \
+						srcs/renderer/Skybox.cpp \
 						srcs/minecraft/BlockTypeRegistry.cpp \
 						srcs/minecraft/Chunk.cpp \
 						srcs/minecraft/Location.cpp \

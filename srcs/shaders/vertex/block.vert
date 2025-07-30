@@ -2,8 +2,10 @@
 
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTex;
+layout (location = 2) in vec3 aNormal;
 
 out vec2 texCoord;
+out vec3 normal;
 
 uniform mat4 camMatrix;
 uniform mat4 model;
@@ -12,4 +14,5 @@ void main()
 {
 	gl_Position = camMatrix * model * vec4(aPos, 1);
 	texCoord = aTex;
+	normal = mat3(transpose(inverse(model))) * aNormal;
 }

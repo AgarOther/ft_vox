@@ -7,6 +7,8 @@ void BlockTypeRegistry::init()
 {
 	_types[0] = { UNKNOWN, "unknown", true };
 	_types[1] = { STONE, "stone", true };
+	_types[2] = { DIRT, "dirt", true };
+	_types[3] = { BEDROCK, "bedrock", true };
 	_types[255] = {  AIR, "air",false };
 }
 

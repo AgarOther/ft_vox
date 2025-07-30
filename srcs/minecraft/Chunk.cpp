@@ -14,7 +14,7 @@ Chunk::Chunk(int chunkX, int chunkZ): _chunkX(chunkX), _chunkZ(chunkZ), _vao(0),
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
-				_blocks[x][y][z] = y <= 64 ? STONE : AIR;
+				_blocks[x][y][z] = y <= 64 ? y == 0 ? BEDROCK : y == 64 ? DIRT : STONE : AIR;
 			}
 		}
 	}
@@ -30,7 +30,7 @@ Chunk::~Chunk()
 		glDeleteBuffers(1, &_ibo);
 }
 
-bool Chunk::isBlockVisible(int x, int y, int z)
+inline bool Chunk::isBlockVisible(int x, int y, int z)
 {
 	return x == 0 || y == 0 || z == 0
 		|| x == CHUNK_WIDTH - 1 || y == CHUNK_HEIGHT - 1 || z == CHUNK_DEPTH - 1
@@ -66,6 +66,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 {
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
+	const uint8_t verticesCount = 8;
 
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
@@ -80,7 +81,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 					Object object = ObjectRegistry::getObject(BLOCK);
 					std::vector<float> blockVertices = object.vertices;
 					std::vector<uint32_t> blockIndices = object.indices;
-					size_t vertexOffset = vertices.size() / 5; // number of vertices added so far
+					size_t vertexOffset = vertices.size() / verticesCount; // number of vertices added so far
 					// Add vertices, offsetting positions by chunk coordinates
 					for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
 					{
@@ -104,9 +105,21 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 							float localV = blockVertices[vi + 4];
 							float finalU = baseUV.x + epsilon + localU * (tileSize - 2 * epsilon);
 							float finalV = baseUV.y + epsilon + localV * (tileSize - 2 * epsilon);
-
 							vertices.push_back(finalU);
 							vertices.push_back(finalV);
+
+							glm::vec3 normal;
+							switch (face) {
+								case FACE_FRONT:  normal = {0, 0, 1}; break;
+								case FACE_BACK:   normal = {0, 0, -1}; break;
+								case FACE_LEFT:   normal = {-1, 0, 0}; break;
+								case FACE_RIGHT:  normal = {1, 0, 0}; break;
+								case FACE_TOP:    normal = {0, 1, 0}; break;
+								case FACE_BOTTOM: normal = {0, -1, 0}; break;
+							}
+							vertices.push_back(normal.x);
+							vertices.push_back(normal.y);
+							vertices.push_back(normal.z);
 						}
 					}
 
@@ -136,10 +149,17 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(uint32_t), indices.data(), GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr); // vertices
+	// Position
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, verticesCount * sizeof(float), nullptr);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	// Texture coord
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, verticesCount * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
+
+	// Brightness
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, verticesCount * sizeof(float), (void*)(5 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -157,6 +177,7 @@ void Chunk::render(const Shader & shader) const
 		_chunkZ * CHUNK_DEPTH
 	));;
 	shader.setMat4("model", model);
+	shader.setVec3("lightDir", glm::normalize(glm::vec3(1.0f, -1.5f, 0.8f)));
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, _atlas.getTextureID());
 	shader.setInt("textureAtlas", 0);

@@ -14,6 +14,8 @@ enum Material
 {
 	UNKNOWN,
 	STONE,
+	DIRT,
+	BEDROCK,
 	AIR = 255
 };
 
@@ -32,7 +34,8 @@ struct BlockType
 
 enum ModelType
 {
-	BLOCK = 1
+	BLOCK,
+	SKYBOX
 };
 
 enum BlockFace

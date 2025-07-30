@@ -29,11 +29,11 @@ Camera::~Camera()
 	
 }
 
-void Camera::setupMatrix(const Shader & shader) const
+void Camera::setupMatrix(const Shader & shader)
 {
-	const glm::mat4 view = glm::lookAt(_position, _position + _orientation, _altitude);
-	const glm::mat4 proj = glm::perspective(glm::radians(_FOV), static_cast<float>(_width) / static_cast<float>(_height), 0.01f, _farPlane);
-	shader.setMat4("camMatrix", proj * view);
+	_view = glm::lookAt(_position, _position + _orientation, _altitude);
+	_proj = glm::perspective(glm::radians(_FOV), static_cast<float>(_width) / static_cast<float>(_height), 0.01f, _farPlane);
+	shader.setMat4("camMatrix", _proj * _view);
 }
 
 static glm::vec3 translateDirection(const float yaw, const float pitch)
@@ -141,6 +141,8 @@ void Camera::interceptInputs(GLFWwindow *window)
 }
 
 // Getters
+glm::mat4 Camera::getViewMatrix() const { return _view; }
+glm::mat4 Camera::getProjectionMatrix() const { return _proj; }
 glm::vec3 Camera::getPosition() const { return _position; }
 glm::vec3 Camera::getOrientation() const { return _orientation; }
 glm::vec3 Camera::getAltitude() const { return _altitude; }

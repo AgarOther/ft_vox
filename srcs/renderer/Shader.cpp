@@ -54,10 +54,16 @@ void Shader::setInt(const char * uniform, const int n) const
 	glUniform1i(id, n);
 }
 
-void Shader::setMat4(const char * uniform, const glm::mat4 &model) const
+void Shader::setMat4(const char * uniform, const glm::mat4 & model) const
 {
 	const GLint id = glGetUniformLocation(this->_id, uniform);
 	glUniformMatrix4fv(id, 1, GL_FALSE, glm::value_ptr(model));
+}
+
+void Shader::setVec3(const char * uniform, const glm::vec3 & model) const
+{
+	const GLint id = glGetUniformLocation(this->_id, uniform);
+	glUniform3fv(id, 1, glm::value_ptr(model));
 }
 
 Shader::~Shader()

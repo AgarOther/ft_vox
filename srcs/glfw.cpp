@@ -59,7 +59,7 @@ GLFWwindow * initWindow(int *width, int *height)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
-	window = glfwCreateWindow(mode->width, mode->height, "texture", nullptr, nullptr);
+	window = glfwCreateWindow(mode->width, mode->height, "skybox", nullptr, nullptr);
 	if (!window)
 		handleExit(2, FAILURE_WINDOW);
 	glfwMakeContextCurrent(window);
@@ -73,5 +73,9 @@ GLFWwindow * initWindow(int *width, int *height)
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 	glFrontFace(GL_CCW);
+
+	// just clearing window so it doesn't look weird on start
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glfwSwapBuffers(window);
 	return window;
 }

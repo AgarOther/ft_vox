@@ -13,10 +13,12 @@ class Camera
 		Camera(int width, int height, glm::vec3 position);
 		~Camera();
 
-		void setupMatrix(const Shader &shader) const;
+		void setupMatrix(const Shader &shader);
 		void interceptInputs(GLFWwindow *window);
 
 		// Getters
+		glm::mat4 getViewMatrix() const;
+		glm::mat4 getProjectionMatrix() const;
 		glm::vec3 getPosition() const;
 		glm::vec3 getOrientation() const;
 		glm::vec3 getAltitude() const;
@@ -51,6 +53,8 @@ class Camera
 		void setLocked(bool lock);
 		void setFullscreen(bool fullScreen);
 	private:
+		glm::mat4 _proj;
+		glm::mat4 _view;
 		glm::vec3 _position;
 		glm::vec3 _orientation;
 		glm::vec3 _altitude;

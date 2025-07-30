@@ -6,3 +6,4 @@
 #define FAILURE_OBJECT		"Object failed to be parsed. Check your object files."
 #define FAILURE_ATLAS		"Failed to create texture atlas. Please check if your images are in the right size and format."
 #define FAILURE_ATLAS_UV	"Unknown material in texture atlas."
+#define FAILURE_SKYBOX		"Failure to load skybox. Please check if your images are in the right size and format."

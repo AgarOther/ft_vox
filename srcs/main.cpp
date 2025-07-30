@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "Camera.hpp"
-#include "Shader.hpp"
+#include "Skybox.hpp"
 #include "minecraft/BlockTypeRegistry.hpp"
 #include "minecraft/Chunk.hpp"
 #include "minecraft/ObjectRegistry.hpp"
@@ -28,11 +28,15 @@ int main(void)
 	TextureAtlas atlas;
 	atlas.load({
 		"assets/blocks/stone.png",
+		"assets/blocks/dirt.png",
+		"assets/blocks/bedrock.png",
 		"assets/blocks/unknown.png"
 	});
 	
-	Shader shader("test.vert", "test.frag");
+	Shader shader("block.vert", "block.frag");
+	Shader skyboxShader("skybox.vert", "skybox.frag");
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, -2.0f));
+	Skybox skybox;
 	
 	std::vector<Chunk * > chunks;
 	for (int x = 0; x < 8; x++)
@@ -54,11 +58,12 @@ int main(void)
 	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		skybox.render(skyboxShader, camera);
 		
 		shader.bind();
+		camera.setupMatrix(shader);
 		camera.setWidth(width);
 		camera.setHeight(height);
-		camera.setupMatrix(shader);
 		for (Chunk * chunk : chunks)
 			chunk->render(shader);
 		
