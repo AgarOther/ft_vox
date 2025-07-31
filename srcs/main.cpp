@@ -4,6 +4,7 @@
 #include "minecraft/BlockTypeRegistry.hpp"
 #include "minecraft/Chunk.hpp"
 #include "minecraft/ObjectRegistry.hpp"
+#include "minecraft/Player.hpp"
 #include "minecraft/TextureAtlas.hpp"
 #include "utils.hpp"
 #include "errors.hpp"
@@ -57,6 +58,8 @@ int main(void)
 			chunks.push_back(chunk);
 		}
 	}
+
+	Player player("Eleonore", camera);
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
