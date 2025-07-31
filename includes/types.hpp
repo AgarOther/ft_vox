@@ -16,6 +16,7 @@ enum Material
 	STONE,
 	DIRT,
 	BEDROCK,
+	END_STONE,
 	AIR = 255
 };
 
@@ -30,6 +31,7 @@ struct BlockType
 	Material	type;
 	std::string	name;
 	bool		isVisible;
+	bool		isSolid;
 };
 
 enum ModelType

@@ -5,11 +5,12 @@ BlockTypeRegistry::BlockTypeMap BlockTypeRegistry::_types;
 
 void BlockTypeRegistry::init()
 {
-	_types[0] = { UNKNOWN, "unknown", true };
-	_types[1] = { STONE, "stone", true };
-	_types[2] = { DIRT, "dirt", true };
-	_types[3] = { BEDROCK, "bedrock", true };
-	_types[255] = {  AIR, "air",false };
+	_types[0]	= { UNKNOWN, "unknown", true, true };
+	_types[1]	= { STONE, "stone", true, true };
+	_types[2]	= { DIRT, "dirt", true, true };
+	_types[3]	= { BEDROCK, "bedrock", true, true };
+	_types[4]	= { END_STONE, "end_stone", true, true };
+	_types[255]	= {  AIR, "air",false, false };
 }
 
 const BlockType & BlockTypeRegistry::getBlockType(uint8_t id)

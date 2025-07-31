@@ -33,10 +33,11 @@ int main(void)
 	BlockTypeRegistry::init();
 	TextureAtlas atlas;
 	atlas.load({
-		"assets/blocks/stone.png",
-		"assets/blocks/dirt.png",
-		"assets/blocks/bedrock.png",
-		"assets/blocks/unknown.png"
+		"assets/block/stone.png",
+		"assets/block/dirt.png",
+		"assets/block/bedrock.png",
+		"assets/block/end_stone.png",
+		"assets/block/unknown.png"
 	});
 	
 	Shader shader("block.vert", "block.frag");

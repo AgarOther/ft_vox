@@ -6,8 +6,8 @@ ObjectRegistry::ObjectMap ObjectRegistry::_objects;
 
 void ObjectRegistry::init()
 {
-	_objects[0] = getObjectFromFile("assets/models/block.obj");
-	_objects[1] = getObjectFromFile("assets/models/skybox.obj");
+	_objects[0] = getObjectFromFile("assets/model/block.obj");
+	_objects[1] = getObjectFromFile("assets/model/skybox.obj");
 }
 
 const Object & ObjectRegistry::getObject(uint8_t id)

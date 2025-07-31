@@ -31,7 +31,7 @@ Chunk::Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise): _chunkX(chunk
 				else if (y < height - 5)
 					_blocks[x][y][z] = STONE;
 				else if (y < height)
-					_blocks[x][y][z] = DIRT;
+					_blocks[x][y][z] = END_STONE;
 				else
 					_blocks[x][y][z] = AIR;
 				
