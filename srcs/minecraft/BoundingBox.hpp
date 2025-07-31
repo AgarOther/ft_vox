@@ -6,8 +6,8 @@
 class BoundingBox
 {
 	public:
-		BoundingBox() : _a(glm::vec3()), _b(glm::vec3()) {}
-		BoundingBox(const Location & a, const Location & b);
+		BoundingBox(): _a(glm::vec3()), _b(glm::vec3()) {}
+		BoundingBox(const Location & a, const Location & b): _a(a.getVec3()), _b(b.getVec3()) {}
 
 		bool				operator==(const BoundingBox & obj);
 		bool				operator!=(const BoundingBox & obj);
