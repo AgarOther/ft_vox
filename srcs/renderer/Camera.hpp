@@ -14,7 +14,6 @@ class Camera
 		~Camera();
 
 		void setupMatrix(const Shader & shader);
-		void interceptInputs(GLFWwindow * window, float deltaTime);
 
 		// Getters
 		glm::mat4 getViewMatrix() const;

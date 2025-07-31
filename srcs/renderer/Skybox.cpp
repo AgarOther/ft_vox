@@ -60,13 +60,13 @@ Skybox::~Skybox()
 		glDeleteTextures(1, &_textureID);
 }
 
-void Skybox::render(const Shader & shader, const Camera & camera)
+void Skybox::render(const Shader & shader, const Camera * camera)
 {
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 	shader.bind();
-	shader.setMat4("view", glm::mat4(glm::mat3(camera.getViewMatrix())));
-	shader.setMat4("projection", camera.getProjectionMatrix());
+	shader.setMat4("view", glm::mat4(glm::mat3(camera->getViewMatrix())));
+	shader.setMat4("projection", camera->getProjectionMatrix());
 
 	glBindVertexArray(_vao);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, _textureID);

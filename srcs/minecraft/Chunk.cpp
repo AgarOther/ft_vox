@@ -1,14 +1,15 @@
-#include <BlockTypeRegistry.hpp>
-#include <ObjectRegistry.hpp>
-#include <TextureAtlas.hpp>
+#include <cstdlib>
 #include <vector>
+#include <iostream>
 #include "Chunk.hpp"
+#include "ObjectRegistry.hpp"
+#include "BlockTypeRegistry.hpp"
 #include "Shader.hpp"
 #include "types.hpp"
 #include "utils.hpp"
 
-float frequency = 1.00f;
-float amplitude = 70.0f; // Max terrain height variation
+float frequency = 0.5f;
+float amplitude = 50.0f; // Max terrain height variation
 int baseHeight = 64;
 
 Chunk::Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise): _chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0)
@@ -26,14 +27,40 @@ Chunk::Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise): _chunkX(chunk
 				float noiseValue = noise.GetNoise(worldX * frequency, worldZ * frequency);
 				int height = static_cast<int>((noiseValue + 1.0f) * 0.5f * amplitude + baseHeight);
 
-				if (y == 0)
-                	_blocks[x][y][z] = BEDROCK;
-				else if (y < height - 5)
-					_blocks[x][y][z] = STONE;
-				else if (y < height)
-					_blocks[x][y][z] = END_STONE;
+				int xd = rand() % 5;
+				if (y < height)
+				{
+					switch (xd)
+					{
+						case 0:
+							_blocks[x][y][z] = BEDROCK;
+							break;
+						case 1:
+							_blocks[x][y][z] = STONE;
+							break;
+						case 2:
+							_blocks[x][y][z] = END_STONE;
+							break;
+						case 3:
+							_blocks[x][y][z] = STONE;
+							break;
+						case 4:
+							_blocks[x][y][z] = DIRT;
+							break;
+						default:
+							_blocks[x][y][z] = SAND;
+					}
+				}
 				else
 					_blocks[x][y][z] = AIR;
+				// if (y == 0)
+                // 	_blocks[x][y][z] = BEDROCK;
+				// else if (y < height - 5)
+				// 	_blocks[x][y][z] = STONE;
+				// else if (y < height)
+				// 	_blocks[x][y][z] = SAND;
+				// else
+				// 	_blocks[x][y][z] = AIR;
 				
 			}
 		}
@@ -205,4 +232,21 @@ void Chunk::render(const Shader & shader) const
 	shader.setInt("textureAtlas", 0);
 	g_DEBUG_INFO.drawCalls++;
 	glDrawElements(GL_TRIANGLES, _indicesCount, GL_UNSIGNED_INT, 0);
+}
+
+BlockType Chunk::getBlockAt(const Location & loc)
+{
+	if (loc.getX() < 0 || loc.getX() >= CHUNK_WIDTH
+		|| loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT
+		|| loc.getZ() < 0 || loc.getZ() >= CHUNK_DEPTH)
+	{
+		std::cerr << "[Chunk] Warning: Requested invalid location " << loc << " for Chunk(" << _chunkX << ", " << _chunkZ << "), returning default (0, 0, 0).\n";
+		return BlockTypeRegistry::getBlockType(_blocks[0][0][0]);
+	}
+	return BlockTypeRegistry::getBlockType(
+		_blocks
+		[static_cast<int>(loc.getX()) % CHUNK_WIDTH]
+		[static_cast<int>(loc.getY()) % CHUNK_HEIGHT]
+		[static_cast<int>(loc.getZ()) % CHUNK_DEPTH]
+	);
 }

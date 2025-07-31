@@ -1,1 +1,130 @@
 #include "Player.hpp"
+#include "utils.hpp"
+#include <Chunk.hpp>
+
+Player::Player(const std::string & name, int width, int height, World * world)
+{
+	_name = name;
+	_health = 20;
+	_world = world;
+	_camera = new Camera(width, height, glm::vec3(32.0f, 66.0f, 32.0f));
+	_location = _camera->getPosition();
+	_spawnLocation = _location;
+	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
+}
+
+Player::~Player()
+{
+	delete _camera;
+}
+
+static glm::vec3 translateDirection(const float yaw, const float pitch)
+{
+	glm::vec3 direction;
+	direction.x = cosf(glm::radians(yaw)) * cosf(glm::radians(pitch));
+	direction.y = sinf(glm::radians(pitch));
+	direction.z = sinf(glm::radians(yaw)) * cosf(glm::radians(pitch));
+	return (direction);
+}
+
+void Player::interceptInputs(GLFWwindow * window, float deltaTime)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE))
+	{
+		glfwSetWindowShouldClose(window, GL_TRUE);
+		return;
+	}
+	
+	/* GPT Code */
+	// GPT my friend who helps me with the weirdest maths
+	// Calculate forward vector for movement based on pitch (only in X-Z plane)
+	glm::vec3 forward;
+	forward.x = cosf(glm::radians(_camera->getPitch())) * cosf(glm::radians(_camera->getYaw())); // X component based on pitch
+	forward.z = cosf(glm::radians(_camera->getPitch())) * sinf(glm::radians(_camera->getYaw())); // Z component based on pitch
+	forward.y = 0.0f; // No vertical movement based on pitch, set Y to 0
+
+	// Normalize the forward vector to maintain consistent speed
+	forward = glm::normalize(forward);
+
+	// Calculate the right vector (strafe) using yaw, no pitch influence
+	const glm::vec3 right = glm::normalize(glm::cross(forward, _camera->getAltitude())); // Right direction is based on forward and altitude (up vector)
+	/* End GPT Code */
+
+	// Key management
+	if (!_camera->isLocked())
+	{
+		float velocity = _camera->getSpeed() * deltaTime;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+			_camera->setPosition(_camera->getPosition() + velocity * forward);
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+			_camera->setPosition(_camera->getPosition() + velocity * -right);
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+			_camera->setPosition(_camera->getPosition() + velocity * -forward);
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+			_camera->setPosition(_camera->getPosition() + velocity * right);
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+			_camera->setPosition(_camera->getPosition() + velocity * _camera->getAltitude());
+		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
+			_camera->setPosition(_camera->getPosition() + velocity * -_camera->getAltitude());
+		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
+			_camera->setSpeed(_camera->getBaseSpeed() * deltaTime + 13.5f);
+		else
+			_camera->setSpeed(_camera->getBaseSpeed());
+	}
+
+	static bool lastFramePressedF3 = false;
+	const bool keyPressedF3 = glfwGetKey(window, GLFW_KEY_F3);
+	if (keyPressedF3 && !lastFramePressedF3)
+		_camera->setGui(!_camera->hasGuiOn());
+
+	static bool lastFramePressedF11 = false;
+	const bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
+	if (keyPressedF11 && !lastFramePressedF11)
+		toggleFullscreen(window, *_camera);
+
+	// Mouse inputs
+	if (!_camera->isLocked() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
+	{
+		double mouseX, mouseY;
+
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		if (_camera->hasClicked())
+		{
+			glfwSetCursorPos(window, (static_cast<float>(_camera->getWidth()) / 2), (static_cast<float>(_camera->getHeight()) / 2));
+			_camera->setClicked(false);
+		}
+		glfwGetCursorPos(window, &mouseX, &mouseY);
+
+		const float rotX = _camera->getSensitivity() * static_cast<float>(mouseY - (static_cast<float>(_camera->getHeight()) / 2)) / static_cast<float>(_camera->getHeight());
+		const float rotY = _camera->getSensitivity() * static_cast<float>(mouseX - (static_cast<float>(_camera->getWidth()) / 2)) / static_cast<float>(_camera->getWidth());
+
+		_camera->setYaw(_camera->getYaw() + rotY);
+    	_camera->setPitch(_camera->getPitch() - rotX);
+
+		if (_camera->getPitch() > 89.99f)
+			_camera->setPitch(89.99f);
+		else if (_camera->getPitch() < -89.99f)
+			_camera->setPitch(-89.99f);
+		
+		if (_camera->getYaw() < -179.99f)
+			_camera->setYaw(180.0f);
+		else if (_camera->getYaw() > 179.99f)
+			_camera->setYaw(-180.0f);
+
+		_camera->setOrientation(translateDirection(_camera->getYaw(), _camera->getPitch()));
+	
+		glfwSetCursorPos(window, (static_cast<float>(_camera->getWidth()) / 2), (static_cast<float>(_camera->getHeight()) / 2));
+	}
+	else
+	{
+		if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+		{
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetCursorPos(window, (static_cast<float>(_camera->getWidth()) / 2), (static_cast<float>(_camera->getHeight()) / 2));
+		}
+		_camera->setClicked(true);
+	}
+	lastFramePressedF3 = keyPressedF3;
+	lastFramePressedF11 = keyPressedF11;
+}

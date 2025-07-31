@@ -5,6 +5,7 @@
 class Location
 {
 	public:
+		Location(): _x(0), _y(0), _z(0) {}
 		Location(glm::vec3 vec): _x(vec.x), _y(vec.y), _z(vec.z) {}
 		Location(double x, double y, double z): _x(x), _y(y), _z(z) {}
 		Location(int x, int y, int z): Location(static_cast<double>(x), static_cast<double>(y), static_cast<double>(z)) {}

@@ -57,7 +57,7 @@ static std::string getAxisDirectionAsString(const float yaw)
     return "negative X";
 }
 
-void showImGui(const ImGuiIO & io, Camera & camera)
+void showImGui(const ImGuiIO & io, Camera * camera)
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -71,10 +71,10 @@ void showImGui(const ImGuiIO & io, Camera & camera)
 	
 	ImGui::NewLine();
 	// Position infos
-	const glm::vec3 camPos = camera.getPosition();
+	const glm::vec3 camPos = camera->getPosition();
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", camPos.x, camPos.y, camPos.z);
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: %s (Towards %s) (%.1f / %.1f)",
-		getDirectionAsString(camera.getYaw()).c_str(), getAxisDirectionAsString(camera.getYaw()).c_str(), camera.getYaw(), camera.getPitch());
+		getDirectionAsString(camera->getYaw()).c_str(), getAxisDirectionAsString(camera->getYaw()).c_str(), camera->getYaw(), camera->getPitch());
 	
 	ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.9f, 1.0f), "Blocks: %ld | Draw calls: %ld | Triangles: %ld",
 		g_DEBUG_INFO.blocks, g_DEBUG_INFO.drawCalls, g_DEBUG_INFO.triangles);
@@ -82,28 +82,28 @@ void showImGui(const ImGuiIO & io, Camera & camera)
 	ImGui::NewLine();
 
 	// Speed
-	float cameraSpeed = camera.getBaseSpeed();
+	float cameraSpeed = camera->getBaseSpeed();
 	ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.0f, 15.0f);
-	if (cameraSpeed != camera.getBaseSpeed())
-		camera.setBaseSpeed(cameraSpeed);
+	if (cameraSpeed != camera->getBaseSpeed())
+		camera->setBaseSpeed(cameraSpeed);
 
 	// FOV
-	float FOV = camera.getFOV();
+	float FOV = camera->getFOV();
 	ImGui::SliderFloat("FOV", &FOV, 30.0f, 120.0f, "%.0f", ImGuiSliderFlags_AlwaysClamp);
-	if (FOV != camera.getFOV())
-		camera.setFOV(FOV);
+	if (FOV != camera->getFOV())
+		camera->setFOV(FOV);
 
 	// Sensitivity
-	float sensitivity = camera.getSensitivity();
+	float sensitivity = camera->getSensitivity();
 	ImGui::SliderFloat("Sensitivity", &sensitivity, 0.0f, 1000.0f, "%.0f", ImGuiSliderFlags_AlwaysClamp);
-	if (sensitivity != camera.getSensitivity())
-		camera.setSensitivity(sensitivity);
+	if (sensitivity != camera->getSensitivity())
+		camera->setSensitivity(sensitivity);
 
 	// Render Distance
-	int farPlane = static_cast<int>(camera.getFarPlane());
+	int farPlane = static_cast<int>(camera->getFarPlane());
 	ImGui::SliderInt("Render Distance", &farPlane, 10, 1000, "%d Blocks", ImGuiSliderFlags_AlwaysClamp);
-	if (farPlane != static_cast<int>(camera.getFarPlane()))
-		camera.setFarPlane(static_cast<float>(farPlane));
+	if (farPlane != static_cast<int>(camera->getFarPlane()))
+		camera->setFarPlane(static_cast<float>(farPlane));
 
 	// VSync
 	static bool vsync = true;
@@ -122,7 +122,7 @@ void showImGui(const ImGuiIO & io, Camera & camera)
 	ImGui::Checkbox("Lock keys", &lock);
 	if (lock != lockChanged)
 	{
-		camera.setLocked(lock);
+		camera->setLocked(lock);
 		lockChanged = lock;
 	}
 

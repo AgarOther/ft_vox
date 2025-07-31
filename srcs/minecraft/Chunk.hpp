@@ -3,6 +3,7 @@
 #include "Shader.hpp"
 #include "TextureAtlas.hpp"
 #include "fastnoiselite/FastNoiseLite.h"
+#include "Location.hpp"
 
 #define CHUNK_HEIGHT 256
 #define CHUNK_WIDTH 16
@@ -16,6 +17,10 @@ class Chunk
 
 		void			generateMesh(const TextureAtlas & atlas);
 		void			render(const Shader & shader) const;
+		BlockType		getBlockAt(const Location & loc);
+
+		int				getChunkX() const { return _chunkX; }
+		int				getChunkZ() const { return _chunkZ; }
 	private:
 		int				_chunkX;
 		int				_chunkZ;

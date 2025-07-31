@@ -9,7 +9,8 @@ void BlockTypeRegistry::init()
 	_types[1]	= { STONE, "stone", true, true };
 	_types[2]	= { DIRT, "dirt", true, true };
 	_types[3]	= { BEDROCK, "bedrock", true, true };
-	_types[4]	= { END_STONE, "end_stone", true, true };
+	_types[4]	= { SAND, "sand", true, true };
+	_types[5]	= { END_STONE, "end_stone", true, true };
 	_types[255]	= {  AIR, "air",false, false };
 }
 

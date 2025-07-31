@@ -20,6 +20,6 @@ void						voxLog(const std::string & str);
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);
-void						showImGui(const ImGuiIO & io, Camera & camera);
+void						showImGui(const ImGuiIO & io, Camera * camera);
 void						renderImGui();
 void						shutdownImGui();

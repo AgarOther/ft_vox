@@ -16,6 +16,7 @@ enum Material
 	STONE,
 	DIRT,
 	BEDROCK,
+	SAND,
 	END_STONE,
 	AIR = 255
 };

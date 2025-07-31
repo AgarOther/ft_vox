@@ -2,10 +2,10 @@
 #include "Camera.hpp"
 #include "Skybox.hpp"
 #include "minecraft/BlockTypeRegistry.hpp"
-#include "minecraft/Chunk.hpp"
 #include "minecraft/ObjectRegistry.hpp"
 #include "minecraft/Player.hpp"
 #include "minecraft/TextureAtlas.hpp"
+#include "minecraft/World.hpp"
 #include "utils.hpp"
 #include "errors.hpp"
 #include "imgui/imgui.h"
@@ -36,61 +36,48 @@ int main(void)
 		"assets/block/stone.png",
 		"assets/block/dirt.png",
 		"assets/block/bedrock.png",
+		"assets/block/sand.png",
 		"assets/block/end_stone.png",
 		"assets/block/unknown.png"
 	});
 	
 	Shader shader("block.vert", "block.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
-	Camera camera(width, height, glm::vec3(32.0f, 66.0f, 32.0f));
 	Skybox skybox;
 
 	FastNoiseLite noise;
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetSeed(WORLD_SEED);
-	
-	std::vector<Chunk * > chunks;
-	for (int x = 0; x < 16; x++)
-	{
-		for (int z = 0; z < 16; z++)
-		{
-			Chunk * chunk = new Chunk(x, z, noise);
-			chunk->generateMesh(atlas);
-			chunks.push_back(chunk);
-		}
-	}
 
-	Player player("Eleonore", camera);
+	World world(16, 16, atlas, noise);
+
+	Player player("Eleonore", width, height, &world);
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
-		const bool hasGui = camera.hasGuiOn();
+		const bool hasGui = player.getCamera()->hasGuiOn();
 		g_DEBUG_INFO.deltaTime = io.DeltaTime;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
-			showImGui(io, camera);
+			showImGui(io, player.getCamera());
 		g_DEBUG_INFO.drawCalls = 0;
 		
-		camera.setupMatrix(shader);
-		camera.setWidth(width);
-		camera.setHeight(height);
-		skybox.render(skyboxShader, camera);
-		shader.bind();
-		for (Chunk * chunk : chunks)
-			chunk->render(shader);
+		player.getCamera()->setupMatrix(shader);
+		player.getCamera()->setWidth(width);
+		player.getCamera()->setHeight(height);
+		skybox.render(skyboxShader, player.getCamera());
+		world.render(shader);
 		
 		if (hasGui)
 			renderImGui();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		camera.interceptInputs(window, io.DeltaTime);
+		player.interceptInputs(window, io.DeltaTime);
 	}
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
-	for (Chunk * chunk : chunks)
-		delete chunk;
 	shutdownImGui();
 	return 0;
 }

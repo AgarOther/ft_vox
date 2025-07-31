@@ -4,7 +4,7 @@ CFLAGS				=	-Wall -Wextra -Werror -std=c++17 -g -MP -MMD
 LDFLAGS				=	-lglfw -lGL -lm
 
 # Names
-NAME				=	world
+NAME				=	player
 
 # Sources & Includes
 SRCS				= 	srcs/debug.cpp \
@@ -17,10 +17,13 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/renderer/Shader.cpp \
 						srcs/renderer/Skybox.cpp \
 						srcs/minecraft/BlockTypeRegistry.cpp \
+						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Chunk.cpp \
 						srcs/minecraft/Location.cpp \
 						srcs/minecraft/ObjectRegistry.cpp \
+						srcs/minecraft/Player.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
+						srcs/minecraft/World.cpp \
 						libs/stb/stb_image.cpp \
 						libs/imgui/imgui_demo.cpp \
 						libs/imgui/imgui_draw.cpp \
