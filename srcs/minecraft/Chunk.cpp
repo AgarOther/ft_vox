@@ -25,14 +25,14 @@ Chunk::Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise): _chunkX(chunk
 				float worldZ = static_cast<float>(_chunkZ * CHUNK_DEPTH + z);
 
 				float noiseValue = noise.GetNoise(worldX * frequency, worldZ * frequency);
-				int height = static_cast<int>((noiseValue + 1.0f) * 0.5f * amplitude + baseHeight);
+				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + baseHeight);
 
 				if (y < height)
 					_blocks[x][y][z] = END_STONE;
 				else
 					_blocks[x][y][z] = AIR;
 				// if (y == 0)
-                // 	_blocks[x][y][z] = BEDROCK;
+				// 	_blocks[x][y][z] = BEDROCK;
 				// else if (y < height - 5)
 				// 	_blocks[x][y][z] = STONE;
 				// else if (y < height)
@@ -57,14 +57,14 @@ Chunk::~Chunk()
 
 inline bool Chunk::isBlockVisible(int x, int y, int z)
 {
-	return x == 0 || y == 0 || z == 0
+	return (x == 0 || y == 0 || z == 0
 		|| x == CHUNK_WIDTH - 1 || y == CHUNK_HEIGHT - 1 || z == CHUNK_DEPTH - 1
 		|| (x - 1 >= 0 && _blocks[x - 1][y][z] == AIR)
 		|| (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] == AIR)
 		|| (y - 1 >= 0 && _blocks[x][y - 1][z] == AIR)
 		|| (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == AIR)
 		|| (z - 1 >= 0 && _blocks[x][y][z - 1] == AIR)
-		|| (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR);
+		|| (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR));
 }
 
 bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right)
@@ -72,17 +72,29 @@ bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Ch
 	switch (face)
 	{
 		case FACE_FRONT:
+			if (front && front->getBlockAtChunkLocation(Location(x, y, 0)).isVisible)
+				return false;
+			else
 				return (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR) || z == CHUNK_DEPTH - 1;
-			case FACE_BACK:
+		case FACE_BACK:
+			if (back && back->getBlockAtChunkLocation(Location(x, y, CHUNK_DEPTH - 1)).isVisible)
+				return false;
+			else
 				return (z - 1 >= 0 && _blocks[x][y][z - 1] == AIR) || z == 0;
-			case FACE_LEFT:
+		case FACE_LEFT:
+			if (left && left->getBlockAtChunkLocation(Location(CHUNK_WIDTH - 1, y, z)).isVisible)
+				return false;
+			else
 				return (x - 1 >= 0 && _blocks[x - 1][y][z] == AIR) || x == 0;
-			case FACE_RIGHT:
+		case FACE_RIGHT:
+			if (right && right->getBlockAtChunkLocation(Location(0, y, z)).isVisible)
+				return false;
+			else
 				return (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] == AIR) || x == CHUNK_WIDTH - 1;
-			case FACE_TOP:
-				return (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == AIR) || y == CHUNK_HEIGHT - 1;
-			case FACE_BOTTOM:
-				return (y - 1 >= 0 && _blocks[x][y - 1][z] == AIR) || y == 0;
+		case FACE_TOP:
+			return (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == AIR) || y == CHUNK_HEIGHT - 1;
+		case FACE_BOTTOM:
+			return (y - 1 >= 0 && _blocks[x][y - 1][z] == AIR) || y == 0;
 	}
 	return false;
 }
@@ -92,15 +104,15 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
 	const uint8_t verticesCount = 8;
-	Object object = ObjectRegistry::getObject(BLOCK);
+	const Object & object = ObjectRegistry::getObject(BLOCK);
 	int invisibleFaces;
 
 	if (!world)
 		handleExit(7, "MDRRRRRRR");
-	Chunk * front = world->getChunkAt(_chunkX, _chunkZ + 1);
-	Chunk * back = world->getChunkAt(_chunkX, _chunkZ - 1);
-	Chunk * left = world->getChunkAt(_chunkX - 1, _chunkZ);
-	Chunk * right = world->getChunkAt(_chunkX + 1, _chunkZ);
+	Chunk * front = world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1);
+	Chunk * back = world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1);
+	Chunk * left = world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ);
+	Chunk * right = world->getChunkAtChunkLocation(_chunkX + 1, _chunkZ);
 
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
@@ -109,8 +121,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
 				invisibleFaces = 0;
-				uint8_t blockID = _blocks[x][y][z];
-				const BlockType & block = BlockTypeRegistry::getBlockType(blockID);
+				const BlockType & block = BlockTypeRegistry::getBlockType(_blocks[x][y][z]);
 				if (block.isVisible && isBlockVisible(x, y, z))
 				{
 					g_DEBUG_INFO.blocks++;
@@ -228,13 +239,14 @@ void Chunk::render(const Shader & shader) const
 BlockType Chunk::getBlockAt(const Location & loc)
 {
 	int localX = ((static_cast<int>(loc.getX()) % CHUNK_WIDTH) + CHUNK_WIDTH) % CHUNK_WIDTH;
-    int localY = static_cast<int>(loc.getY());
-    int localZ = ((static_cast<int>(loc.getZ()) % CHUNK_DEPTH) + CHUNK_DEPTH) % CHUNK_DEPTH;
+	int localY = static_cast<int>(loc.getY());
+	int localZ = ((static_cast<int>(loc.getZ()) % CHUNK_DEPTH) + CHUNK_DEPTH) % CHUNK_DEPTH;
 	if (localX < 0 || localX >= CHUNK_WIDTH
 		|| localY < 0 || localY >= CHUNK_HEIGHT
 		|| localZ < 0 || localZ >= CHUNK_DEPTH)
 	{
-		std::cerr << "[Chunk] Warning: Requested invalid location " << loc << " for Chunk(" << _chunkX * CHUNK_WIDTH << ", " << _chunkZ * CHUNK_DEPTH << "), returning air.\n";
+		std::cerr << "[Chunk] Warning: Requested invalid location "
+			<< loc << " for Chunk(" << _chunkX * CHUNK_WIDTH << ", " << _chunkZ * CHUNK_DEPTH << "), returning air.\n";
 		return BlockTypeRegistry::getBlockType(AIR);
 	}
 	return BlockTypeRegistry::getBlockType(
@@ -242,5 +254,23 @@ BlockType Chunk::getBlockAt(const Location & loc)
 		[localX]
 		[localY]
 		[localZ]
+	);
+}
+
+BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
+{
+	if (loc.getX() < 0 || loc.getX() >= CHUNK_WIDTH
+		|| loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT
+		|| loc.getZ() < 0 || loc.getZ() >= CHUNK_DEPTH)
+	{
+		std::cerr << "[Chunk] Warning: Requested invalid location "
+			<< loc << " for Chunk(" << _chunkX * CHUNK_WIDTH << ", " << _chunkZ * CHUNK_DEPTH << "), returning air.\n";
+		return BlockTypeRegistry::getBlockType(AIR);
+	}
+	return BlockTypeRegistry::getBlockType(
+		_blocks
+		[static_cast<int>(loc.getX())]
+		[static_cast<int>(loc.getY())]
+		[static_cast<int>(loc.getZ())]
 	);
 }

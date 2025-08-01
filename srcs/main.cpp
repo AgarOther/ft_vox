@@ -49,12 +49,13 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(6, 6, atlas, noise);
+	World world(12, 12, atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
 
 	double timeStart = glfwGetTime();
 	double endTime;
+	double deltaTime;
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
@@ -76,7 +77,9 @@ int main(void)
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 		endTime = glfwGetTime();
-		player.interceptInputs(window, endTime - timeStart);
+		deltaTime = endTime - timeStart;
+		player.interceptInputs(window, deltaTime);
+		world.applyGravity(deltaTime);
 		timeStart = glfwGetTime();
 	}
 

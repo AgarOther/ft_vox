@@ -58,3 +58,9 @@ struct DebugInfo
 	size_t drawCalls;
 	size_t triangles;
 };
+
+enum Gamemode
+{
+	CREATIVE,
+	SURVIVAL
+};

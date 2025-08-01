@@ -20,6 +20,7 @@ class Chunk
 		void			generateMesh(const TextureAtlas & atlas, World * world);
 		void			render(const Shader & shader) const;
 		BlockType		getBlockAt(const Location & loc);
+		BlockType		getBlockAtChunkLocation(const Location & loc);
 
 		int				getChunkX() const { return _chunkX; }
 		int				getChunkZ() const { return _chunkZ; }

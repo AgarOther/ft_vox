@@ -25,11 +25,6 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_orientation = glm::normalize(direction);
 }
 
-Camera::~Camera()
-{
-	
-}
-
 void Camera::setupMatrix(const Shader & shader)
 {
 	shader.bind();

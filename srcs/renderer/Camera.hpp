@@ -11,7 +11,6 @@ class Camera
 {
 	public:
 		Camera(int width, int height, glm::vec3 position);
-		~Camera();
 
 		void setupMatrix(const Shader & shader);
 

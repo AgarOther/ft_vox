@@ -73,8 +73,10 @@ void showImGui(const ImGuiIO & io, Player * player)
 	
 	ImGui::NewLine();
 	// Position infos
-	const glm::vec3 camPos = camera->getPosition();
+	glm::vec3 camPos = camera->getPosition();
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", camPos.x, camPos.y, camPos.z);
+	ImGui::TextColored(ImVec4(1.0f, 0.74f, 0.0f, 1.0f), "Chunk XZ: %d / %d",
+		static_cast<int>(camPos.z) % 16, static_cast<int>(camPos.x) % 16);
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: %s (Towards %s) (%.1f / %.1f)",
 		getDirectionAsString(camera->getYaw()).c_str(), getAxisDirectionAsString(camera->getYaw()).c_str(), camera->getYaw(), camera->getPitch());
 	
@@ -115,6 +117,16 @@ void showImGui(const ImGuiIO & io, Player * player)
 	{
 		glfwSwapInterval(vsync);
 		vsyncChanged = vsync;
+	}
+
+	static bool creative = true;
+	static bool creativeChanged = false;
+	ImGui::SameLine();
+	ImGui::Checkbox("Creative", &creative);
+	if (creative != creativeChanged)
+	{
+		player->setGamemode(creative ? CREATIVE : SURVIVAL);
+		creativeChanged = creative;
 	}
 
 	// Key lock

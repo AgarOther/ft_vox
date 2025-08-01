@@ -6,22 +6,25 @@
 #include <Chunk.hpp>
 #include <cmath>
 #include <cstdlib>
-#include <iostream>
 
 Player::Player(const std::string & name, int width, int height, World * world)
 {
 	_name = name;
 	_health = 20;
 	_world = world;
-	_camera = new Camera(width, height, glm::vec3(32.0f, 66.0f, 32.0f));
+	_spawnLocation = Location(32.0, world->getHighestY(32, 32) + 2.5, 32.0);
+	_camera = new Camera(width, height, _spawnLocation.getVec3());
 	_location = _camera->getPosition();
-	_spawnLocation = _location;
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
+	_gamemode = CREATIVE;
+	_velocity = glm::vec3(0.0f);
+	_world->addPlayer(this);
 }
 
 Player::~Player()
 {
-	delete _camera;
+	if (_camera)
+		delete _camera;
 }
 
 static glm::vec3 translateDirection(const float yaw, const float pitch)
@@ -70,10 +73,18 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 			_camera->setPosition(_camera->getPosition() + velocity * -forward);
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 			_camera->setPosition(_camera->getPosition() + velocity * right);
-		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
-			_camera->setPosition(_camera->getPosition() + velocity * _camera->getAltitude());
-		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
-			_camera->setPosition(_camera->getPosition() + velocity * -_camera->getAltitude());
+		if (_gamemode == CREATIVE)
+		{
+			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+				_camera->setPosition(_camera->getPosition() + velocity * _camera->getAltitude());
+			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
+				_camera->setPosition(_camera->getPosition() + velocity * -_camera->getAltitude());
+		}
+		else
+		{
+			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS))
+				setVelocityY(JUMP_STRENGTH);
+		}
 	}
 
 	static bool lastFramePressedF3 = false;
@@ -137,3 +148,10 @@ BlockType Player::getTargetedBlock()
 {
 	return BlockTypeRegistry::getBlockType(AIR);
 }
+
+void Player::teleport(const Location & location)
+{
+	 _location = location;
+	 _camera->setPosition(location.getVec3());
+}
+
