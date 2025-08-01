@@ -72,42 +72,17 @@ bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Ch
 	switch (face)
 	{
 		case FACE_FRONT:
-			if (z + 1 < CHUNK_DEPTH)
-				return _blocks[x][y][z + 1] == AIR;
-			else if (front)
-				return front->getBlockAt(Location(x, y, 0)).type == AIR;
-			else
-				return true;
-
-		case FACE_BACK:
-			if (z - 1 >= 0)
-				return _blocks[x][y][z - 1] == AIR;
-			else if (back)
-				return back->getBlockAt(Location(x, y, CHUNK_DEPTH - 1)).type == AIR;
-			else
-				return true;
-
-		case FACE_LEFT:
-			if (x - 1 >= 0)
-				return _blocks[x - 1][y][z] == AIR;
-			else if (left)
-				return left->getBlockAt(Location(CHUNK_WIDTH - 1, y, z)).type == AIR;
-			else
-				return true;
-
-		case FACE_RIGHT:
-			if (x + 1 < CHUNK_WIDTH)
-				return _blocks[x + 1][y][z] == AIR;
-			else if (right)
-				return right->getBlockAt(Location(0, y, z)).type == AIR;
-			else
-				return true;
-
-		case FACE_TOP:
-			return (y + 1 >= CHUNK_HEIGHT) || (_blocks[x][y + 1][z] == AIR);
-
-		case FACE_BOTTOM:
-			return (y - 1 < 0) || (_blocks[x][y - 1][z] == AIR);
+				return (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR) || z == CHUNK_DEPTH - 1;
+			case FACE_BACK:
+				return (z - 1 >= 0 && _blocks[x][y][z - 1] == AIR) || z == 0;
+			case FACE_LEFT:
+				return (x - 1 >= 0 && _blocks[x - 1][y][z] == AIR) || x == 0;
+			case FACE_RIGHT:
+				return (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] == AIR) || x == CHUNK_WIDTH - 1;
+			case FACE_TOP:
+				return (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == AIR) || y == CHUNK_HEIGHT - 1;
+			case FACE_BOTTOM:
+				return (y - 1 >= 0 && _blocks[x][y - 1][z] == AIR) || y == 0;
 	}
 	return false;
 }
