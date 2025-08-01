@@ -10,7 +10,8 @@
 #include "errors.hpp"
 #include "imgui/imgui.h"
 
-DebugInfo g_DEBUG_INFO = {0, 0, 0};
+
+DebugInfo g_DEBUG_INFO = {0, 0, 0, false};
 const unsigned long long WORLD_SEED = 420;
 
 int main(void)

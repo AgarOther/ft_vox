@@ -119,6 +119,7 @@ void showImGui(const ImGuiIO & io, Player * player)
 		vsyncChanged = vsync;
 	}
 
+	// Gamemode
 	static bool creative = true;
 	static bool creativeChanged = false;
 	ImGui::SameLine();
@@ -138,6 +139,17 @@ void showImGui(const ImGuiIO & io, Player * player)
 	{
 		camera->setLocked(lock);
 		lockChanged = lock;
+	}
+
+	// Key lock
+	static bool wireframe = false;
+	static bool wireframeChanged = false;
+	ImGui::SameLine();
+	ImGui::Checkbox("Wireframe", &wireframe);
+	if (wireframe != wireframeChanged)
+	{
+		g_DEBUG_INFO.wireframe = wireframe;
+		wireframeChanged = wireframe;
 	}
 
 	ImGui::NewLine();

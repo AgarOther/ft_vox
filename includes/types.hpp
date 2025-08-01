@@ -54,9 +54,10 @@ enum BlockFace
 
 struct DebugInfo
 {
-	size_t blocks;
-	size_t drawCalls;
-	size_t triangles;
+	size_t	blocks;
+	size_t	drawCalls;
+	size_t	triangles;
+	bool	wireframe;
 };
 
 enum Gamemode

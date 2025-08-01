@@ -233,7 +233,14 @@ void Chunk::render(const Shader & shader) const
 	glBindTexture(GL_TEXTURE_2D, _atlas.getTextureID());
 	shader.setInt("textureAtlas", 0);
 	g_DEBUG_INFO.drawCalls++;
-	glDrawElements(GL_TRIANGLES, _indicesCount, GL_UNSIGNED_INT, 0);
+	if (g_DEBUG_INFO.wireframe)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glDrawElements(GL_TRIANGLES, _indicesCount, GL_UNSIGNED_INT, 0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else
+		glDrawElements(GL_TRIANGLES, _indicesCount, GL_UNSIGNED_INT, 0);
 }
 
 BlockType Chunk::getBlockAt(const Location & loc)
