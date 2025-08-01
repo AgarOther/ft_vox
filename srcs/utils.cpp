@@ -1,7 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "utils.hpp"
+#include "../includes/utils.hpp"
 #include "colors.hpp"
 
 void voxLog(const std::string & str)

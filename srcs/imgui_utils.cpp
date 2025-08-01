@@ -85,7 +85,7 @@ void showImGui(const ImGuiIO & io, Player * player)
 
 	// Speed
 	float cameraSpeed = camera->getBaseSpeed();
-	ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.0f, 15.0f);
+	ImGui::SliderFloat("Camera Speed", &cameraSpeed, 0.0f, 150.0f);
 	if (cameraSpeed != camera->getBaseSpeed())
 		camera->setBaseSpeed(cameraSpeed);
 

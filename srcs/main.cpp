@@ -10,7 +10,7 @@
 #include "errors.hpp"
 #include "imgui/imgui.h"
 
-DebugInfo g_DEBUG_INFO = {0, 0, 0, 0};
+DebugInfo g_DEBUG_INFO = {0, 0, 0};
 const unsigned long long WORLD_SEED = 420;
 
 int main(void)
@@ -46,18 +46,20 @@ int main(void)
 	Skybox skybox;
 
 	FastNoiseLite noise;
-	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
+	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(8, 8, atlas, noise);
+	World world(6, 6, atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
+
+	double timeStart = glfwGetTime();
+	double endTime;
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
 		const bool hasGui = player.getCamera()->hasGuiOn();
-		g_DEBUG_INFO.deltaTime = io.DeltaTime;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
 			showImGui(io, &player);
@@ -73,7 +75,9 @@ int main(void)
 			renderImGui();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		player.interceptInputs(window, io.DeltaTime);
+		endTime = glfwGetTime();
+		player.interceptInputs(window, endTime - timeStart);
+		timeStart = glfwGetTime();
 	}
 
 	glfwDestroyWindow(window);

@@ -27,30 +27,8 @@ Chunk::Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise): _chunkX(chunk
 				float noiseValue = noise.GetNoise(worldX * frequency, worldZ * frequency);
 				int height = static_cast<int>((noiseValue + 1.0f) * 0.5f * amplitude + baseHeight);
 
-				int xd = rand() % 5;
 				if (y < height)
-				{
-					switch (xd)
-					{
-						case 0:
-							_blocks[x][y][z] = BEDROCK;
-							break;
-						case 1:
-							_blocks[x][y][z] = STONE;
-							break;
-						case 2:
-							_blocks[x][y][z] = END_STONE;
-							break;
-						case 3:
-							_blocks[x][y][z] = STONE;
-							break;
-						case 4:
-							_blocks[x][y][z] = DIRT;
-							break;
-						default:
-							_blocks[x][y][z] = SAND;
-					}
-				}
+					_blocks[x][y][z] = END_STONE;
 				else
 					_blocks[x][y][z] = AIR;
 				// if (y == 0)
@@ -89,31 +67,65 @@ inline bool Chunk::isBlockVisible(int x, int y, int z)
 		|| (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR);
 }
 
-bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z)
+bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right)
 {
 	switch (face)
 	{
 		case FACE_FRONT:
-			return (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR) || z == CHUNK_DEPTH - 1;
+			if (z + 1 < CHUNK_DEPTH)
+				return _blocks[x][y][z + 1] == AIR;
+			else if (front)
+				return front->getBlockAt(Location(x, y, 0)).type == AIR;
+			else
+				return true;
+
 		case FACE_BACK:
-			return (z - 1 >= 0 && _blocks[x][y][z - 1] == AIR) || z == 0;
+			if (z - 1 >= 0)
+				return _blocks[x][y][z - 1] == AIR;
+			else if (back)
+				return back->getBlockAt(Location(x, y, CHUNK_DEPTH - 1)).type == AIR;
+			else
+				return true;
+
 		case FACE_LEFT:
-			return (x - 1 >= 0 && _blocks[x - 1][y][z] == AIR) || x == 0;
+			if (x - 1 >= 0)
+				return _blocks[x - 1][y][z] == AIR;
+			else if (left)
+				return left->getBlockAt(Location(CHUNK_WIDTH - 1, y, z)).type == AIR;
+			else
+				return true;
+
 		case FACE_RIGHT:
-			return (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] == AIR) || x == CHUNK_WIDTH - 1;
+			if (x + 1 < CHUNK_WIDTH)
+				return _blocks[x + 1][y][z] == AIR;
+			else if (right)
+				return right->getBlockAt(Location(0, y, z)).type == AIR;
+			else
+				return true;
+
 		case FACE_TOP:
-			return (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == AIR) || y == CHUNK_HEIGHT - 1;
+			return (y + 1 >= CHUNK_HEIGHT) || (_blocks[x][y + 1][z] == AIR);
+
 		case FACE_BOTTOM:
-			return (y - 1 >= 0 && _blocks[x][y - 1][z] == AIR) || y == 0;
+			return (y - 1 < 0) || (_blocks[x][y - 1][z] == AIR);
 	}
 	return false;
 }
 
-void Chunk::generateMesh(const TextureAtlas & atlas)
+void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 {
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
 	const uint8_t verticesCount = 8;
+	Object object = ObjectRegistry::getObject(BLOCK);
+	int invisibleFaces;
+
+	if (!world)
+		handleExit(7, "MDRRRRRRR");
+	Chunk * front = world->getChunkAt(_chunkX, _chunkZ + 1);
+	Chunk * back = world->getChunkAt(_chunkX, _chunkZ - 1);
+	Chunk * left = world->getChunkAt(_chunkX - 1, _chunkZ);
+	Chunk * right = world->getChunkAt(_chunkX + 1, _chunkZ);
 
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
@@ -121,20 +133,23 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
+				invisibleFaces = 0;
 				uint8_t blockID = _blocks[x][y][z];
 				const BlockType & block = BlockTypeRegistry::getBlockType(blockID);
 				if (block.isVisible && isBlockVisible(x, y, z))
 				{
 					g_DEBUG_INFO.blocks++;
-					Object object = ObjectRegistry::getObject(BLOCK);
 					std::vector<float> blockVertices = object.vertices;
 					std::vector<uint32_t> blockIndices = object.indices;
 					size_t vertexOffset = vertices.size() / verticesCount; // number of vertices added so far
 					// Add vertices, offsetting positions by chunk coordinates
 					for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
 					{
-						if (!isFaceVisible(static_cast<BlockFace>(face), x, y, z))
+						if (!isFaceVisible(static_cast<BlockFace>(face), x, y, z, front, back, left, right))
+						{
+							invisibleFaces++;
 							continue;
+						}
 						for (int i = 0; i < 4; ++i)
 						{
 							size_t vi = (face * 4 + i) * 5;
@@ -147,7 +162,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 							vertices.push_back(vz);
 							glm::vec2 baseUV = atlas.getUVForBlock(block.type);
 							float tileSize = 1.0f / atlas.getTilesPerRow();
-							float epsilon = 0.01f / atlas.getWidth();
+							float epsilon = 0.15f / atlas.getWidth();
 
 							float localU = blockVertices[vi + 3];
 							float localV = blockVertices[vi + 4];
@@ -171,7 +186,8 @@ void Chunk::generateMesh(const TextureAtlas & atlas)
 						}
 						g_DEBUG_INFO.triangles += 2;
 					}
-
+					if (invisibleFaces == 6)
+						continue;
 					// Add indices with offset
 					for (size_t i = 0; i < blockIndices.size(); i += 3)
 					{

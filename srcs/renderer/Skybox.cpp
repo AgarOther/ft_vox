@@ -3,7 +3,7 @@
 #include "Shader.hpp"
 #include "utils.hpp"
 #include "errors.hpp"
-#include <stb/stb_image.h>
+#include "stb/stb_image.h"
 
 Skybox::Skybox(): _vao(0), _vbo(0), _textureID(0)
 {

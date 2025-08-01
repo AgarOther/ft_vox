@@ -5,8 +5,8 @@
 #include <cmath>
 #include <cstddef>
 #include <cstring>
-#include <stb/stb_image.h>
-#include <stb/stb_image_write.h>
+#include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
 
 TextureAtlas::~TextureAtlas()
 {

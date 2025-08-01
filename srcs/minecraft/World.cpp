@@ -1,5 +1,4 @@
 #include "World.hpp"
-#include <Chunk.hpp>
 
 World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const FastNoiseLite & noise)
 {
@@ -8,10 +7,11 @@ World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const
 		for (int z = 0; z < chunkCountZ; z++)
 		{
 			Chunk * chunk = new Chunk(x, z, noise);
-			chunk->generateMesh(atlas);
 			_chunks[std::pair<int, int>(x, z)] = chunk;
 		}
 	}
+	for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
+		it->second->generateMesh(atlas, this);
 }
 
 World::~World()
@@ -24,7 +24,8 @@ void World::render(const Shader & shader) const
 {
 	shader.bind();
 	for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
-		it->second->render(shader);
+		if (it->second)
+			it->second->render(shader);
 }
 
 Chunk * World::getChunkAt(int x, int z)

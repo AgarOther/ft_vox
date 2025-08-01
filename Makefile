@@ -23,8 +23,8 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/ObjectRegistry.cpp \
 						srcs/minecraft/Player.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
-						srcs/minecraft/World.cpp \
-						libs/stb/stb_image.cpp \
+						srcs/minecraft/World.cpp
+LIBS_SRC			=	libs/stb/stb_image.cpp \
 						libs/imgui/imgui_demo.cpp \
 						libs/imgui/imgui_draw.cpp \
 						libs/imgui/imgui_tables.cpp \
@@ -44,8 +44,10 @@ LIBS				=	libs/GL/libGLEW.a \
 						libs/GLFW/libglfw3.a
 
 # Objects
-OBJS				=	$(patsubst srcs/%, $(OBJ_FOLDER)/%, $(SRCS:.cpp=.o))
-DEPS				=	$(patsubst srcs/%, $(OBJ_FOLDER)/%, $(SRCS:.cpp=.d))
+OBJS				=	$(patsubst srcs/%, $(OBJ_FOLDER)/%, $(SRCS:.cpp=.o)) \
+						$(patsubst libs/%, $(OBJ_FOLDER)/%, $(LIBS_SRC:.cpp=.o))
+DEPS				=	$(patsubst srcs/%, $(OBJ_FOLDER)/%, $(SRCS:.cpp=.d)) \
+						$(patsubst libs/%, $(OBJ_FOLDER)/%, $(LIBS_SRC:.cpp=.d))
 
 # Custom Makefile Flags
 MAKEFLAGS			+=	--no-print-directory --silent
@@ -70,6 +72,10 @@ $(NAME): $(IMGUI) $(OBJS)
 	$(EXE_DONE)
 
 $(OBJ_FOLDER)/%.o: srcs/%.cpp
+	@mkdir -p $(dir $@)
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(OBJ_FOLDER)/%.o: libs/%.cpp
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 

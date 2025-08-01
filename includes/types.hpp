@@ -57,5 +57,4 @@ struct DebugInfo
 	size_t blocks;
 	size_t drawCalls;
 	size_t triangles;
-	float deltaTime;
 };

@@ -9,13 +9,15 @@
 #define CHUNK_WIDTH 16
 #define CHUNK_DEPTH 16
 
+class World;
+
 class Chunk
 {
 	public:
 		Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise);
 		~Chunk();
 
-		void			generateMesh(const TextureAtlas & atlas);
+		void			generateMesh(const TextureAtlas & atlas, World * world);
 		void			render(const Shader & shader) const;
 		BlockType		getBlockAt(const Location & loc);
 
@@ -33,6 +35,6 @@ class Chunk
 		TextureAtlas	_atlas;
 
 		bool			isBlockVisible(int x, int y, int z);
-		bool			isFaceVisible(BlockFace face, int x, int y, int z);
+		bool			isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
 		float			getBrightness(BlockFace face, int x, int y, int z);
 };
