@@ -6,6 +6,7 @@
 #include <Chunk.hpp>
 #include <cmath>
 #include <cstdlib>
+#include <iostream>
 
 Player::Player(const std::string & name, int width, int height, World * world)
 {
@@ -58,7 +59,9 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	// Key management
 	if (!_camera->isLocked())
 	{
-		float velocity = _camera->getSpeed() * deltaTime;
+		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
+
+		float velocity = (_camera->getBaseSpeed() * (1 + 1.5f * shiftPressed)) * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 			_camera->setPosition(_camera->getPosition() + velocity * forward);
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
@@ -71,10 +74,6 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 			_camera->setPosition(_camera->getPosition() + velocity * _camera->getAltitude());
 		if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
 			_camera->setPosition(_camera->getPosition() + velocity * -_camera->getAltitude());
-		if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
-			_camera->setSpeed(_camera->getBaseSpeed() * deltaTime + 13.5f);
-		else
-			_camera->setSpeed(_camera->getBaseSpeed());
 	}
 
 	static bool lastFramePressedF3 = false;
