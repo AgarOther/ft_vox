@@ -1,6 +1,11 @@
-#include "Player.hpp"
+#include "World.hpp"
+#include <glm/glm.hpp>
+#include "types.hpp"
 #include "utils.hpp"
+#include "BlockTypeRegistry.hpp"
 #include <Chunk.hpp>
+#include <cmath>
+#include <cstdlib>
 
 Player::Player(const std::string & name, int width, int height, World * world)
 {
@@ -127,4 +132,9 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	}
 	lastFramePressedF3 = keyPressedF3;
 	lastFramePressedF11 = keyPressedF11;
+}
+
+BlockType Player::getTargetedBlock()
+{
+	return BlockTypeRegistry::getBlockType(AIR);
 }

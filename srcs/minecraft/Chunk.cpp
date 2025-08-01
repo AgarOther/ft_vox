@@ -236,17 +236,20 @@ void Chunk::render(const Shader & shader) const
 
 BlockType Chunk::getBlockAt(const Location & loc)
 {
-	if (loc.getX() < 0 || loc.getX() >= CHUNK_WIDTH
-		|| loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT
-		|| loc.getZ() < 0 || loc.getZ() >= CHUNK_DEPTH)
+	int localX = ((static_cast<int>(loc.getX()) % CHUNK_WIDTH) + CHUNK_WIDTH) % CHUNK_WIDTH;
+    int localY = static_cast<int>(loc.getY());
+    int localZ = ((static_cast<int>(loc.getZ()) % CHUNK_DEPTH) + CHUNK_DEPTH) % CHUNK_DEPTH;
+	if (localX < 0 || localX >= CHUNK_WIDTH
+		|| localY < 0 || localY >= CHUNK_HEIGHT
+		|| localZ < 0 || localZ >= CHUNK_DEPTH)
 	{
-		std::cerr << "[Chunk] Warning: Requested invalid location " << loc << " for Chunk(" << _chunkX << ", " << _chunkZ << "), returning default (0, 0, 0).\n";
-		return BlockTypeRegistry::getBlockType(_blocks[0][0][0]);
+		std::cerr << "[Chunk] Warning: Requested invalid location " << loc << " for Chunk(" << _chunkX * CHUNK_WIDTH << ", " << _chunkZ * CHUNK_DEPTH << "), returning air.\n";
+		return BlockTypeRegistry::getBlockType(AIR);
 	}
 	return BlockTypeRegistry::getBlockType(
 		_blocks
-		[static_cast<int>(loc.getX()) % CHUNK_WIDTH]
-		[static_cast<int>(loc.getY()) % CHUNK_HEIGHT]
-		[static_cast<int>(loc.getZ()) % CHUNK_DEPTH]
+		[localX]
+		[localY]
+		[localZ]
 	);
 }

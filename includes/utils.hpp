@@ -2,6 +2,7 @@
 
 #include <string>
 #include "Camera.hpp"
+#include "Player.hpp"
 #include "types.hpp"
 #include "imgui/imgui.h"
 
@@ -20,6 +21,6 @@ void						voxLog(const std::string & str);
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);
-void						showImGui(const ImGuiIO & io, Camera * camera);
+void						showImGui(const ImGuiIO & io, Player * player);
 void						renderImGui();
 void						shutdownImGui();

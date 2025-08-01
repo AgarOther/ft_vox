@@ -9,22 +9,22 @@ World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const
 		{
 			Chunk * chunk = new Chunk(x, z, noise);
 			chunk->generateMesh(atlas);
-			_chunks.push_back(chunk);
+			_chunks[std::pair<int, int>(x, z)] = chunk;
 		}
 	}
 }
 
 World::~World()
 {
-	for (Chunk * chunk : _chunks)
-		delete chunk;
+	for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
+		delete it->second;
 }
 
 void World::render(const Shader & shader) const
 {
 	shader.bind();
-	for (Chunk * chunk : _chunks)
-		chunk->render(shader);
+	for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
+		it->second->render(shader);
 }
 
 Chunk * World::getChunkAt(int x, int z)
@@ -32,12 +32,12 @@ Chunk * World::getChunkAt(int x, int z)
 	int chunkX;
 	int chunkZ;
 
-	chunkX = x - (x % 16) - 1;
-	chunkZ = z - (z % 16) - 1;
-	for (Chunk * chunk : _chunks)
+	chunkX = (x - (x % 16)) / 16;
+	chunkZ = (z - (z % 16)) / 16;
+	for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
 	{
-		if (chunk->getChunkX() == chunkX && chunk->getChunkZ() == chunkZ)
-			return chunk;
+		if (it->second->getChunkX() == chunkX && it->second->getChunkZ() == chunkZ)
+			return it->second;
 	}
 	return nullptr;
 }

@@ -46,10 +46,10 @@ int main(void)
 	Skybox skybox;
 
 	FastNoiseLite noise;
-	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(16, 16, atlas, noise);
+	World world(8, 8, atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
 
@@ -60,7 +60,7 @@ int main(void)
 		g_DEBUG_INFO.deltaTime = io.DeltaTime;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
-			showImGui(io, player.getCamera());
+			showImGui(io, &player);
 		g_DEBUG_INFO.drawCalls = 0;
 		
 		player.getCamera()->setupMatrix(shader);

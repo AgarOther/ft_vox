@@ -33,6 +33,7 @@ struct BlockType
 	std::string	name;
 	bool		isVisible;
 	bool		isSolid;
+	void		setType(Material newType) { type = newType; }
 };
 
 enum ModelType

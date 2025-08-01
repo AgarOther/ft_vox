@@ -16,42 +16,42 @@ class Camera
 		void setupMatrix(const Shader & shader);
 
 		// Getters
-		glm::mat4 getViewMatrix() const;
-		glm::mat4 getProjectionMatrix() const;
-		glm::vec3 getPosition() const;
-		glm::vec3 getOrientation() const;
-		glm::vec3 getAltitude() const;
-		int getWidth() const;
-		int getHeight() const;
-		float getSpeed() const;
-		float getBaseSpeed() const;
-		float getSensitivity() const;
-		float getYaw() const;
-		float getPitch() const;
-		float getFOV() const;
-		float getFarPlane() const;
-		bool hasClicked() const;
-		bool hasGuiOn() const;
-		bool isLocked() const;
-		bool isFullscreen() const;
+		glm::mat4 getViewMatrix() const { return _view; }
+		glm::mat4 getProjectionMatrix() const { return _proj; }
+		glm::vec3 getPosition() const { return _position; }
+		glm::vec3 getOrientation() const { return _orientation; }
+		glm::vec3 getAltitude() const { return _altitude; }
+		int getWidth() const { return _width; }
+		int getHeight() const { return _height; }
+		float getSpeed() const { return _speed; }
+		float getBaseSpeed() const { return _baseSpeed; }
+		float getSensitivity() const { return _sensitivity; }
+		float getYaw() const { return _yaw; }
+		float getPitch() const { return _pitch; }
+		float getFOV() const { return _FOV; }
+		float getFarPlane() const { return _farPlane; }
+		bool hasClicked() const { return (_firstClick); }
+		bool hasGuiOn() const { return (_guiOn); }
+		bool isLocked() const { return (_locked); }
+		bool isFullscreen() const { return (_fullScreen); }
 
 		// Setters
-		void setPosition(const glm::vec3 &position);
-		void setOrientation(const glm::vec3 &orientation);
-		void setAltitude(const glm::vec3 &Altitude);
-		void setWidth(int width);
-		void setHeight(int height);
-		void setSpeed(float s);
-		void setBaseSpeed(float s);
-		void setSensitivity(float s);
-		void setYaw(float s);
-		void setPitch(float s);
-		void setFOV(float s);
-		void setFarPlane(float farPlane);
-		void setClicked(bool clicked);
-		void setGui(bool guiOn);
-		void setLocked(bool lock);
-		void setFullscreen(bool fullScreen);
+		void setPosition(const glm::vec3 &position) { _position = position; }
+		void setOrientation(const glm::vec3 &orientation) { _orientation = orientation; }
+		void setAltitude(const glm::vec3 &altitude) { _altitude = altitude; }
+		void setWidth(const int width) { _width = width; }
+		void setHeight(const int height) { _height = height; }
+		void setSpeed(const float s) { _speed = s; }
+		void setBaseSpeed(const float s) { _baseSpeed = s; }
+		void setSensitivity(const float s) { _sensitivity = s; }
+		void setYaw(const float s) { _yaw = s; }
+		void setPitch(const float s) { _pitch = s; }
+		void setFOV(const float s) { _FOV = s; }
+		void setFarPlane(const float farPlane) { _farPlane = farPlane; }
+		void setClicked(bool clicked) { _firstClick = clicked; }
+		void setGui(bool guiOn) { _guiOn = guiOn; }
+		void setLocked(bool lock) { _locked = lock; }
+		void setFullscreen(bool fullscreen) { _fullScreen = fullscreen; }
 	private:
 		glm::mat4 _proj;
 		glm::mat4 _view;

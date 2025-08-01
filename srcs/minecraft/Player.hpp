@@ -26,6 +26,7 @@ class Player
 		void				setBoundingBox(const BoundingBox & boundingBox) { _boundingBox = boundingBox; }
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
+		BlockType			getTargetedBlock();
 	private:
 		std::string			_name;
 		uint8_t				_health;

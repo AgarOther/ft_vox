@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minecraft/Player.hpp"
 #include "utils.hpp"
 #include <GLFW/glfw3.h>
 #include "imgui/imgui_impl_opengl3.h"
@@ -57,8 +58,9 @@ static std::string getAxisDirectionAsString(const float yaw)
     return "negative X";
 }
 
-void showImGui(const ImGuiIO & io, Camera * camera)
+void showImGui(const ImGuiIO & io, Player * player)
 {
+	Camera * camera = player->getCamera();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -79,7 +81,7 @@ void showImGui(const ImGuiIO & io, Camera * camera)
 	ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.9f, 1.0f), "Blocks: %ld | Draw calls: %ld | Triangles: %ld",
 		g_DEBUG_INFO.blocks, g_DEBUG_INFO.drawCalls, g_DEBUG_INFO.triangles);
 
-	ImGui::NewLine();
+	ImGui::TextColored(ImVec4(0.4f, 0.84f, 1.0f, 1.0f), "Targeted block: %s", player->getTargetedBlock().name.c_str());
 
 	// Speed
 	float cameraSpeed = camera->getBaseSpeed();
