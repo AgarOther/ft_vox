@@ -10,7 +10,6 @@
 #include "utils.hpp"
 
 std::mutex g_debugMutex;
-std::mutex g_printMutex;
 
 float frequency = 0.5f;
 float amplitude = 50.0f; // Max terrain height variation
@@ -66,49 +65,25 @@ bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Ch
 	switch (face)
 	{
 		case FACE_FRONT:
-			if (front && front->getBlockAtChunkLocation(Location(x, y, 0)).isVisible)
+			if (z == CHUNK_DEPTH - 1 && front && front->getBlockAtChunkLocation(Location(x, y, 0)).isVisible)
 				return false;
 			else
-			{
-				{
-					std::lock_guard<std::mutex> lock(g_printMutex);
-					std::cout << "Type: " << (z + 1 < CHUNK_DEPTH ? 0 : _blocks[x][y][z + 1]) << " (X: " << x << ", Y: " << y << ", Z: " << z + 1<< ")"  << std::endl;
-				}
 				return (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] == AIR) || z == CHUNK_DEPTH - 1;
-			}
 		case FACE_BACK:
-			if (back && back->getBlockAtChunkLocation(Location(x, y, CHUNK_DEPTH - 1)).isVisible)
+			if (z == 0 && back && back->getBlockAtChunkLocation(Location(x, y, CHUNK_DEPTH - 1)).isVisible)
 				return false;
 			else
-			{
-				{
-					std::lock_guard<std::mutex> lock(g_printMutex);
-					std::cout << "Type: " << (z - 1 >= 0 ? 0 : _blocks[x][y][z - 1]) << " (X: " << x + 1 << ", Y: " << y << ", Z: " << z - 1 << ")"  << std::endl;
-				}
 				return (z - 1 >= 0 && _blocks[x][y][z - 1] == AIR) || z == 0;
-			}
 		case FACE_LEFT:
-			if (left && left->getBlockAtChunkLocation(Location(CHUNK_WIDTH - 1, y, z)).isVisible)
+			if (x == 0 && left && left->getBlockAtChunkLocation(Location(CHUNK_WIDTH - 1, y, z)).isVisible)
 				return false;
 			else
-			{
-				{
-					std::lock_guard<std::mutex> lock(g_printMutex);
-					std::cout << "Type: " << (x - 1 >= 0 ? 0 : _blocks[x - 1][y][z]) << " (X: " << x - 1 << ", Y: " << y << ", Z: " << z << ")" << std::endl;
-				}
 				return (x - 1 >= 0 && _blocks[x - 1][y][z] == AIR) || x == 0;
-			}
 		case FACE_RIGHT:
-			if (right && right->getBlockAtChunkLocation(Location(0, y, z)).isVisible)
+			if (x == CHUNK_WIDTH - 1 && right && right->getBlockAtChunkLocation(Location(0, y, z)).isVisible)
 				return false;
 			else
-			{
-				{
-					std::lock_guard<std::mutex> lock(g_printMutex);
-					std::cout << "Type: " << (x + 1 < CHUNK_WIDTH ? 0 : _blocks[x + 1][y][z]) << " (X: " << x + 1 << ", Y: " << y << ", Z: " << z << ")" << std::endl;
-				}
 				return (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] == AIR) || x == CHUNK_WIDTH - 1;
-			}
 		case FACE_TOP:
 			return (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == AIR) || y == CHUNK_HEIGHT - 1;
 		case FACE_BOTTOM:
@@ -149,21 +124,6 @@ void Chunk::uploadMesh()
 	glBindVertexArray(0);
 }
 
-static const std::string getFaceAsString(int face)
-{
-	switch (face)
-	{
-		case FACE_BACK: return "BACK";
-		case FACE_FRONT: return "FRONT";
-		case FACE_LEFT: return "LEFT";
-		case FACE_RIGHT: return "RIGHT";
-		case FACE_TOP: return "TOP";
-		case FACE_BOTTOM: return "BOTTOM";
-		default:
-			return "UNKNOWN";
-	}
-}
-
 void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 {
 	std::vector<float> vertices;
@@ -199,10 +159,6 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 					for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
 					{
 						bool faceVisible = isFaceVisible(static_cast<BlockFace>(face), x, y, z, front, back, left, right);
-						{
-							std::lock_guard<std::mutex> lock(g_printMutex);
-							std::cout << "Face " << (faceVisible ? "VISIBLE: " : "NOTSHOWN: ") << " " << getFaceAsString(face) << " (X: " << x << ",Y: " << y << ", Z: " << z << ")" << std::endl << std::endl;
-						}
 						if (!faceVisible)
 						{
 							invisibleFaces++;
