@@ -1,6 +1,6 @@
 # Compilation
 CC					=	c++
-CFLAGS				=	-Wall -Wextra -Werror -std=c++17 -g -MP -MMD
+CFLAGS				=	-Wall -Wextra -Werror -std=c++20 -g -MP -MMD
 LDFLAGS				=	-lglfw -lGL -lm
 
 # Names

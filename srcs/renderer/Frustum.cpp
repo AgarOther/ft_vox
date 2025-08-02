@@ -6,7 +6,7 @@ Frustum::Frustum(const glm::mat4 & matrix)
 	_planes[0] = glm::row(matrix, 3) + glm::row(matrix, 0);
 	_planes[1] = glm::row(matrix, 3) - glm::row(matrix, 0);
 	_planes[2] = glm::row(matrix, 3) + glm::row(matrix, 1);
-	_planes[3] = glm::row(matrix, 3) -glm::row(matrix, 1);
+	_planes[3] = glm::row(matrix, 3) - glm::row(matrix, 1);
 	_planes[4] = glm::row(matrix, 3) + glm::row(matrix, 2);
 	_planes[5] = glm::row(matrix, 3) - glm::row(matrix, 2);
 

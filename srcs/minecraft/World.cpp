@@ -1,11 +1,14 @@
 #include "Frustum.hpp"
 #include "Player.hpp"
-#include "Chunk.hpp"
 #include "Location.hpp"
 #include "types.hpp"
+#include <future>
 
 World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const FastNoiseLite & noise)
 {
+	std::vector<std::future<void>> tasks;
+
+	// Allocates chunks
 	for (int x = 0; x < chunkCountX; x++)
 	{
 		for (int z = 0; z < chunkCountZ; z++)
@@ -14,25 +17,45 @@ World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const
 			_chunks[std::pair<int, int>(x, z)] = chunk;
 		}
 	}
-	for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
-		it->second->generateMesh(atlas, this);
+
+	// Generate blocks in chunks
+	for (auto& [_, chunk] : _chunks)
+	{
+		tasks.push_back(std::async(std::launch::async, [chunk]() {
+			chunk->generateBlocks();
+		}));
+	}
+	for (auto& task : tasks)
+		task.get();
+	tasks.clear();
+
+	// Generate meshes for chunks
+	for (auto& [_, chunk] : _chunks)
+	{
+		tasks.push_back(std::async(std::launch::async, [chunk, &atlas, this]() {
+			chunk->generateMesh(atlas, this);
+		}));
+	}
+	for (auto& task : tasks)
+		task.get();
+
+	// Upload chunks to OpenGL (well technically to GPU)
+	for (auto& [_, chunk] : _chunks)
+		chunk->uploadMesh();
 }
 
 World::~World()
 {
-	for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
-		delete it->second;
+	for (auto& [_, chunk] : _chunks)
+		delete chunk;
 }
 
 void World::render(const Shader & shader, const Player & player) const
 {
 	shader.bind();
-	// for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
-	// 	if (it->second)
-	// 		it->second->render(shader);
 	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
-	for (auto & [chunkKey, chunkPtr] : _chunks)
+	for (auto & [_, chunkPtr] : _chunks)
 	{
 		const int chunkX = chunkPtr->getChunkX();
 		const int chunkZ = chunkPtr->getChunkZ();
@@ -98,9 +121,8 @@ void World::applyGravity(float deltaTime)
 {
 	double newPlayerY;
 
-	for (auto it = _players.begin(); it != _players.end(); ++it)
+	for (auto & [_, player] : _players)
 	{
-		Player * player = it->second;
 		if (player->getVelocityY() != 0)
 		{
 			newPlayerY = player->getLocation().getY() + -player->getVelocityY() * deltaTime;
