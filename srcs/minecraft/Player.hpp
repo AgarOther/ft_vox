@@ -4,6 +4,7 @@
 #include "Camera.hpp"
 #include "World.hpp"
 #include "BoundingBox.hpp"
+#include "types.hpp"
 #include <cstdint>
 
 #define JUMP_STRENGTH 5.0f
@@ -40,7 +41,8 @@ class Player
 		void				setVelocityZ(float velocityZ) { _velocity.z = velocityZ; }
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
-		BlockType			getTargetedBlock();
+		BlockType			getTargetedBlock() const;
+		BlockType			getBlockUnder() const;
 	private:
 		std::string			_name;
 		uint8_t				_health;

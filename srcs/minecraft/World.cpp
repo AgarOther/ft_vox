@@ -1,3 +1,4 @@
+#include "BlockTypeRegistry.hpp"
 #include "Chunk.hpp"
 #include "Frustum.hpp"
 #include "Player.hpp"
@@ -124,34 +125,32 @@ const Player * World::getPlayer(const std::string & name) const
 	return nullptr;
 }
 
+BlockType World::getBlockAt(const Location & loc)
+{
+	if (loc.getY() < 0 || loc.getY() > CHUNK_HEIGHT)
+		return BlockTypeRegistry::getBlockType(AIR);
+	Chunk * chunk = getChunkAt(loc.getX(), loc.getZ());
+	if (!chunk)
+		return BlockTypeRegistry::getBlockType(AIR);
+	return chunk->getBlockAt(loc);
+}
+
 void World::applyGravity(float deltaTime)
 {
-	double newPlayerY;
-
 	for (auto & [_, player] : _players)
 	{
-		if (player->getVelocityY() != 0)
+		if (player->getGamemode() == SURVIVAL && !player->getBlockUnder().isSolid)
 		{
-			newPlayerY = player->getLocation().getY() + -player->getVelocityY() * deltaTime;
-			Chunk * chunk = getChunkAt(player->getLocation().getX(), player->getLocation().getZ());
-			if (!chunk || !chunk->getBlockAt(Location(player->getLocation().getX(),
-				std::floor(newPlayerY),
-				player->getLocation().getZ())).isSolid)
+			if (player->getVelocityY() == 0)
+				player->setVelocityY(-0.08f);
+			else if (player->getVelocityY() > -1.9)
+				player->setVelocityY(player->getVelocityY() + (player->getVelocityY() / 0.6 * deltaTime));
+			player->teleport(player->getLocation().clone().add(0.0, player->getVelocityY(), 0.0));
+			if (player->getBlockUnder().isSolid)
 			{
-				player->teleport(Location(
-					player->getLocation().getX(),
-					std::floor(newPlayerY) + 1.0,
-					player->getLocation().getZ()
-				));
 				player->setVelocityY(0);
-				continue;
+				player->teleport(Location(player->getLocation().getX(), ceil(player->getLocation().getY()), player->getLocation().getZ()));
 			}
-			player->setVelocityY(player->getVelocityY() + GRAVITY * deltaTime);
-			player->teleport(Location(
-				player->getLocation().getX(),
-				newPlayerY,
-				player->getLocation().getZ()
-			));
 		}
 	}
 }

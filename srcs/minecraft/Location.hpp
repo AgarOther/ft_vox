@@ -31,6 +31,11 @@ class Location
 		Location &	add(double x, double y, double z);
 		Location &	add(int x, int y, int z);
 
+		Location &	sub(const Location & loc);
+		Location &	sub(double x, double y, double z);
+		Location &	sub(int x, int y, int z);
+		Location	clone() const;
+
 		glm::vec3	getVec3() const;
 	private:
 		double		_x;

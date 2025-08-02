@@ -14,7 +14,7 @@ Player::Player(const std::string & name, int width, int height, World * world)
 	_world = world;
 	_spawnLocation = Location(32.0, world->getHighestY(32, 32) + 2.5, 32.0);
 	_camera = new Camera(width, height, _spawnLocation.getVec3());
-	_location = _camera->getPosition();
+	_location = Location(_camera->getPosition()).sub(0.0, 2.5, 0.0);
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
 	_gamemode = CREATIVE;
 	_velocity = glm::vec3(0.0f);
@@ -60,31 +60,32 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	/* End GPT Code */
 
 	// Key management
+	// TODO: Make a location tmp for all then only update at the end
 	if (!_camera->isLocked())
 	{
 		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
 
-		float velocity = (_camera->getBaseSpeed() * (1 + 1.5f * shiftPressed)) * deltaTime;
+		float velocity = (_camera->getBaseSpeed() * (1 + 1.25f * shiftPressed)) * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-			_camera->setPosition(_camera->getPosition() + velocity * forward);
+			teleport(getLocation() + velocity * forward);
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-			_camera->setPosition(_camera->getPosition() + velocity * -right);
+			teleport(getLocation() + velocity * -right);
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-			_camera->setPosition(_camera->getPosition() + velocity * -forward);
+			teleport(getLocation() + velocity * -forward);
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-			_camera->setPosition(_camera->getPosition() + velocity * right);
+			teleport(getLocation() + velocity * right);
 		if (_gamemode == CREATIVE)
 		{
 			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
-				_camera->setPosition(_camera->getPosition() + velocity * _camera->getAltitude());
+				teleport(getLocation() + velocity * _camera->getAltitude());
 			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
-				_camera->setPosition(_camera->getPosition() + velocity * -_camera->getAltitude());
+				teleport(getLocation() + velocity * -_camera->getAltitude());
 		}
-		else
-		{
-			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS))
-				setVelocityY(JUMP_STRENGTH);
-		}
+		// else
+		// {
+		// 	if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS))
+		// 		setVelocityY(JUMP_STRENGTH);
+		// }
 	}
 
 	static bool lastFramePressedF3 = false;
@@ -144,14 +145,23 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	lastFramePressedF11 = keyPressedF11;
 }
 
-BlockType Player::getTargetedBlock()
+void Player::teleport(const Location & location)
+{
+	 _location = location;
+	 _camera->setPosition(location.clone().add(0.0, 2.5, 0.0).clone().getVec3());
+}
+
+BlockType Player::getTargetedBlock() const
 {
 	return BlockTypeRegistry::getBlockType(AIR);
 }
 
-void Player::teleport(const Location & location)
+BlockType Player::getBlockUnder() const
 {
-	 _location = location;
-	 _camera->setPosition(location.getVec3());
+	Location blockLocation = getLocation().clone();
+	blockLocation.setX(ceil(blockLocation.getX()));
+	blockLocation.setY(ceil(blockLocation.getY()));
+	blockLocation.setZ(ceil(blockLocation.getZ()));
+	return _world->getBlockAt(blockLocation);
 }
 

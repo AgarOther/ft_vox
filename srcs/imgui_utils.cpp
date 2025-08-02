@@ -62,6 +62,7 @@ static std::string getAxisDirectionAsString(const float yaw)
 void showImGui(const ImGuiIO & io, Player * player)
 {
 	Camera * camera = player->getCamera();
+	const Location & position = player->getLocation();
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
@@ -75,7 +76,7 @@ void showImGui(const ImGuiIO & io, Player * player)
 	ImGui::NewLine();
 	// Position infos
 	glm::vec3 camPos = camera->getPosition();
-	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", camPos.x, camPos.y, camPos.z);
+	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", position.getX(), position.getY(), position.getZ());
 	ImGui::TextColored(ImVec4(1.0f, 0.74f, 0.0f, 1.0f), "Chunk XZ: %d / %d",
 		abs(static_cast<int>(camPos.x) % CHUNK_WIDTH), abs(static_cast<int>(camPos.z) % CHUNK_DEPTH));
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: %s (Towards %s) (%.1f / %.1f)",

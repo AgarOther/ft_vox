@@ -12,7 +12,7 @@
 
 
 DebugInfo g_DEBUG_INFO = {0, 0, 0, false};
-const unsigned long long WORLD_SEED = 420;
+const unsigned long long WORLD_SEED = 42;
 
 int main(void)
 {
@@ -41,7 +41,7 @@ int main(void)
 		"assets/block/end_stone.png",
 		"assets/block/unknown.png"
 	});
-	
+
 	Shader shader("block.vert", "block.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
 	Skybox skybox;
@@ -50,7 +50,7 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(12, 12, atlas, noise);
+	World world(32, 32, atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
 

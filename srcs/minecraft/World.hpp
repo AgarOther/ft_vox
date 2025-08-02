@@ -36,11 +36,14 @@ class World
 		~World();
 
 		void					render(const Shader & shader, const Player & player) const;
+
 		Chunk *					getChunkAt(int x, int z);
 		Chunk *					getChunkAtChunkLocation(int x, int z);
-		double					getHighestY(int x, int z);
-		void					addPlayer(Player * player);
+		BlockType				getBlockAt(const Location & loc);
 		const Player *			getPlayer(const std::string & name) const;
+		double					getHighestY(int x, int z);
+
+		void					addPlayer(Player * player);
 		void					applyGravity(float deltaTime);
 	private:
 		typedef std::unordered_map<std::pair<int, int>, Chunk * , PairHash> ChunkMap;

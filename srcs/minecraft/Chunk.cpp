@@ -174,7 +174,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 							vertices.push_back(vx);
 							vertices.push_back(vy);
 							vertices.push_back(vz);
-							glm::vec2 baseUV = atlas.getUVForBlock(block.type);
+							glm::vec2 baseUV = atlas.getUVForBlock(block.type); // send face
 							float tileSize = 1.0f / atlas.getTilesPerRow();
 							float epsilon = 0.2f / atlas.getWidth();
 

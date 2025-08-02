@@ -6,7 +6,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_width = width;
 	_height = height;
 	_position = position;
-	_speed = 7.00f;
+	_speed = 6.50f;
 	_baseSpeed = _speed;
 	_sensitivity = 200.0f;
 	_firstClick = true;

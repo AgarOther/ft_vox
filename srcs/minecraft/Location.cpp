@@ -18,10 +18,40 @@ Location & Location::add(double x, double y, double z)
 
 Location & Location::add(int x, int y, int z)
 {
-	_x += static_cast<double>(x);
-	_y += static_cast<double>(y);
-	_z += static_cast<double>(z);
+	Location cpy(*this);
+	cpy._x += static_cast<double>(x);
+	cpy._y += static_cast<double>(y);
+	cpy._z += static_cast<double>(z);
 	return *this;
+}
+
+Location & Location::sub(const Location & loc)
+{
+	_x -= loc._x;
+	_y -= loc._y;
+	_z -= loc._z;
+	return *this;
+}
+
+Location & Location::sub(double x, double y, double z)
+{
+	_x -= x;
+	_y -= y;
+	_z -= z;
+	return *this;
+}
+
+Location & Location::sub(int x, int y, int z)
+{
+	_x -= static_cast<double>(x);
+	_y -= static_cast<double>(y);
+	_z -= static_cast<double>(z);
+	return *this;
+}
+
+Location Location::clone() const
+{
+	return Location(*this);
 }
 
 Location & Location::operator=(const Location & loc)
