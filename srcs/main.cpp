@@ -47,7 +47,7 @@ int main(void)
 	Skybox skybox;
 
 	FastNoiseLite noise;
-	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
+	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
 	World world(12, 12, atlas, noise);
@@ -66,13 +66,13 @@ int main(void)
 		if (hasGui)
 			showImGui(io, &player);
 		g_DEBUG_INFO.drawCalls = 0;
-		
+
 		player.getCamera()->setupMatrix(shader);
 		player.getCamera()->setWidth(width);
 		player.getCamera()->setHeight(height);
 		skybox.render(skyboxShader, player.getCamera());
 		world.render(shader, player);
-		
+
 		if (hasGui)
 			renderImGui();
 		glfwSwapBuffers(window);

@@ -21,8 +21,9 @@ World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const
 	}
 
 	// Generate blocks in chunks
-	for (auto& [_, chunk] : _chunks)
+	for (auto & pair : _chunks)
 	{
+		Chunk* chunk = pair.second;
 		tasks.push_back(std::async(std::launch::async, [chunk]() {
 			chunk->generateBlocks();
 		}));
@@ -32,18 +33,22 @@ World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const
 	tasks.clear();
 
 	// Generate meshes for chunks
-	for (auto& [_, chunk] : _chunks)
+	for (auto & pair : _chunks)
 	{
+		Chunk* chunk = pair.second;
 		tasks.push_back(std::async(std::launch::async, [chunk, &atlas, this]() {
 			chunk->generateMesh(atlas, this);
 		}));
 	}
-	for (auto& task : tasks)
+	for (auto & task : tasks)
 		task.get();
 
-	// Upload chunks to OpenGL (well technically to GPU)
-	for (auto& [_, chunk] : _chunks)
+	// Upload to OpenGL (must be main thread)
+	for (auto & pair : _chunks)
+	{
+		Chunk* chunk = pair.second;
 		chunk->uploadMesh();
+	}
 }
 
 World::~World()
