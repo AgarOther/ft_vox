@@ -13,9 +13,6 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/models.cpp \
 						srcs/utils.cpp \
 						srcs/imgui_utils.cpp \
-						srcs/renderer/Camera.cpp \
-						srcs/renderer/Shader.cpp \
-						srcs/renderer/Skybox.cpp \
 						srcs/minecraft/BlockTypeRegistry.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Chunk.cpp \
@@ -23,7 +20,11 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/ObjectRegistry.cpp \
 						srcs/minecraft/Player.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
-						srcs/minecraft/World.cpp
+						srcs/minecraft/World.cpp \
+						srcs/renderer/Camera.cpp \
+						srcs/renderer/Frustum.cpp \
+						srcs/renderer/Shader.cpp \
+						srcs/renderer/Skybox.cpp
 LIBS_SRC			=	libs/stb/stb_image.cpp \
 						libs/imgui/imgui_demo.cpp \
 						libs/imgui/imgui_draw.cpp \

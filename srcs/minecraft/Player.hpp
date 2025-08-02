@@ -17,7 +17,7 @@ class Player
 
 		const std::string &	getName() const { return _name; }
 		uint8_t				getHealth() const { return _health; }
-		Camera *			getCamera() { return _camera; }
+		Camera *			getCamera() const { return _camera; }
 		const Location &	getLocation() const { return _location; }
 		const Location &	getSpawnLocation() const { return _spawnLocation; }
 		const BoundingBox &	getBoundingBox() const { return _boundingBox; }

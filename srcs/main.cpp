@@ -71,7 +71,7 @@ int main(void)
 		player.getCamera()->setWidth(width);
 		player.getCamera()->setHeight(height);
 		skybox.render(skyboxShader, player.getCamera());
-		world.render(shader);
+		world.render(shader, player);
 		
 		if (hasGui)
 			renderImGui();

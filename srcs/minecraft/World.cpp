@@ -1,3 +1,4 @@
+#include "Frustum.hpp"
 #include "Player.hpp"
 #include "Chunk.hpp"
 #include "Location.hpp"
@@ -23,12 +24,31 @@ World::~World()
 		delete it->second;
 }
 
-void World::render(const Shader & shader) const
+void World::render(const Shader & shader, const Player & player) const
 {
 	shader.bind();
-	for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
-		if (it->second)
-			it->second->render(shader);
+	// for (auto it = _chunks.begin(); it != _chunks.end(); ++it)
+	// 	if (it->second)
+	// 		it->second->render(shader);
+	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
+	Frustum frustum(viewProj);
+	for (auto & [chunkKey, chunkPtr] : _chunks)
+	{
+		const int chunkX = chunkPtr->getChunkX();
+		const int chunkZ = chunkPtr->getChunkZ();
+		glm::vec3 min = {
+			chunkX * CHUNK_WIDTH,
+			0,
+			chunkZ * CHUNK_DEPTH
+		};
+		glm::vec3 max = {
+			min.x + CHUNK_WIDTH,
+			CHUNK_HEIGHT,
+			min.z + CHUNK_DEPTH
+		};
+		if (frustum.isChunkVisible(min, max))
+			chunkPtr->render(shader);
+	}
 }
 
 Chunk * World::getChunkAt(int x, int z)

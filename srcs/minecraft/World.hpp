@@ -33,7 +33,7 @@ class World
 		World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const FastNoiseLite & noise);
 		~World();
 
-		void					render(const Shader & shader) const;
+		void					render(const Shader & shader, const Player & player) const;
 		Chunk *					getChunkAt(int x, int z);
 		Chunk *					getChunkAtChunkLocation(int x, int z);
 		double					getHighestY(int x, int z);
