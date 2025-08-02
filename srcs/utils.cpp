@@ -4,9 +4,13 @@
 #include "../includes/utils.hpp"
 #include "colors.hpp"
 
-void voxLog(const std::string & str)
+int floorDiv(int value, int divisor)
 {
-	std::cout << str << std::endl;
+    int div = value / divisor;
+    int rem = value % divisor;
+    if (rem < 0)
+        div--;
+    return div;
 }
 
 std::vector<std::string> ft_split(const std::string & str, char delimiter)

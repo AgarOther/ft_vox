@@ -249,9 +249,9 @@ void Chunk::render(const Shader & shader) const
 
 BlockType Chunk::getBlockAt(const Location & loc)
 {
-	int localX = ((static_cast<int>(loc.getX()) % CHUNK_WIDTH) + CHUNK_WIDTH) % CHUNK_WIDTH;
-	int localY = static_cast<int>(loc.getY());
-	int localZ = ((static_cast<int>(loc.getZ()) % CHUNK_DEPTH) + CHUNK_DEPTH) % CHUNK_DEPTH;
+	int localX = (static_cast<int>(std::floor(loc.getX())) % CHUNK_WIDTH + CHUNK_WIDTH) % CHUNK_WIDTH;
+	int localY = static_cast<int>(std::floor(loc.getY()));
+	int localZ = (static_cast<int>(std::floor(loc.getZ())) % CHUNK_DEPTH + CHUNK_DEPTH) % CHUNK_DEPTH;
 	if (localX < 0 || localX >= CHUNK_WIDTH
 		|| localY < 0 || localY >= CHUNK_HEIGHT
 		|| localZ < 0 || localZ >= CHUNK_DEPTH)
@@ -279,9 +279,9 @@ BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
 		return BlockTypeRegistry::getBlockType(AIR);
 	}
 	return BlockTypeRegistry::getBlockType(
-		_blocks
-		[static_cast<int>(loc.getX())]
-		[static_cast<int>(loc.getY())]
-		[static_cast<int>(loc.getZ())]
+    	_blocks
+		[static_cast<int>(std::floor(loc.getX()))]
+		[static_cast<int>(std::floor(loc.getY()))]
+		[static_cast<int>(std::floor(loc.getZ()))]
 	);
 }

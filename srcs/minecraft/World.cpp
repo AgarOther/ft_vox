@@ -1,7 +1,9 @@
+#include "Chunk.hpp"
 #include "Frustum.hpp"
 #include "Player.hpp"
 #include "Location.hpp"
 #include "types.hpp"
+#include "utils.hpp"
 #include <future>
 
 World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const FastNoiseLite & noise)
@@ -79,8 +81,8 @@ Chunk * World::getChunkAt(int x, int z)
 	int chunkX;
 	int chunkZ;
 
-	chunkX = (x - (x % 16)) / 16;
-	chunkZ = (z - (z % 16)) / 16;
+	chunkX = floorDiv(x, CHUNK_WIDTH);
+	chunkZ = floorDiv(z, CHUNK_DEPTH);
 	return getChunkAtChunkLocation(chunkX, chunkZ);
 }
 

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "Chunk.hpp"
 #include "minecraft/Player.hpp"
 #include "utils.hpp"
 #include <GLFW/glfw3.h>
@@ -76,7 +77,7 @@ void showImGui(const ImGuiIO & io, Player * player)
 	glm::vec3 camPos = camera->getPosition();
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", camPos.x, camPos.y, camPos.z);
 	ImGui::TextColored(ImVec4(1.0f, 0.74f, 0.0f, 1.0f), "Chunk XZ: %d / %d",
-		static_cast<int>(camPos.z) % 16, static_cast<int>(camPos.x) % 16);
+		abs(static_cast<int>(camPos.x) % CHUNK_WIDTH), abs(static_cast<int>(camPos.z) % CHUNK_DEPTH));
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: %s (Towards %s) (%.1f / %.1f)",
 		getDirectionAsString(camera->getYaw()).c_str(), getAxisDirectionAsString(camera->getYaw()).c_str(), camera->getYaw(), camera->getPitch());
 	
