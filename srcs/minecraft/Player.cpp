@@ -60,26 +60,26 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	/* End GPT Code */
 
 	// Key management
-	// TODO: Make a location tmp for all then only update at the end
+	Location finalLocation = getLocation();
 	if (!_camera->isLocked())
 	{
 		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
 
 		float velocity = (_camera->getBaseSpeed() * (1 + 1.25f * shiftPressed)) * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-			teleport(getLocation() + velocity * forward);
+			finalLocation += velocity * forward;
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-			teleport(getLocation() + velocity * -right);
+			finalLocation += velocity * -right;
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-			teleport(getLocation() + velocity * -forward);
+			finalLocation += velocity * -forward;
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-			teleport(getLocation() + velocity * right);
+			finalLocation += velocity * right;
 		if (_gamemode == CREATIVE)
 		{
 			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
-				teleport(getLocation() + velocity * _camera->getAltitude());
+				finalLocation += velocity * _camera->getAltitude();
 			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
-				teleport(getLocation() + velocity * -_camera->getAltitude());
+				finalLocation += velocity * -_camera->getAltitude();
 		}
 		// else
 		// {
@@ -143,6 +143,8 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	}
 	lastFramePressedF3 = keyPressedF3;
 	lastFramePressedF11 = keyPressedF11;
+	if (getLocation() != finalLocation)
+			teleport(finalLocation);
 }
 
 void Player::teleport(const Location & location)
@@ -156,12 +158,13 @@ BlockType Player::getTargetedBlock() const
 	return BlockTypeRegistry::getBlockType(AIR);
 }
 
-BlockType Player::getBlockUnder() const
+BlockType Player::getBlockUnder(int yOffset) const
 {
+	if (getLocation().getY() >= CHUNK_HEIGHT || getLocation().getY() < 0)
+		return BlockTypeRegistry::getBlockType(AIR);
 	Location blockLocation = getLocation().clone();
-	blockLocation.setX(ceil(blockLocation.getX()));
-	blockLocation.setY(ceil(blockLocation.getY()));
-	blockLocation.setZ(ceil(blockLocation.getZ()));
+	blockLocation.setX(round(blockLocation.getX()));
+	blockLocation.setY(ceil(blockLocation.getY() - yOffset));
+	blockLocation.setZ(round(blockLocation.getZ()));
 	return _world->getBlockAt(blockLocation);
 }
-

@@ -142,14 +142,14 @@ void World::applyGravity(float deltaTime)
 		if (player->getGamemode() == SURVIVAL && !player->getBlockUnder().isSolid)
 		{
 			if (player->getVelocityY() == 0)
-				player->setVelocityY(-0.08f);
-			else if (player->getVelocityY() > -1.9)
-				player->setVelocityY(player->getVelocityY() + (player->getVelocityY() / 0.6 * deltaTime));
+				player->setVelocityY(-1.7f * deltaTime);
+			else if (player->getVelocityY() > -2.2f)
+				player->setVelocityY(player->getVelocityY() + (player->getVelocityY() / 0.2 * deltaTime));
 			player->teleport(player->getLocation().clone().add(0.0, player->getVelocityY(), 0.0));
-			if (player->getBlockUnder().isSolid)
+			if (player->getBlockUnder().isSolid || (player->getVelocityY() < -2.0f && player->getBlockUnder(1).isSolid))
 			{
+				player->teleport(Location(player->getLocation().getX(), ceil(player->getLocation().getY() + (player->getVelocityY() < -2.0f)), player->getLocation().getZ()));
 				player->setVelocityY(0);
-				player->teleport(Location(player->getLocation().getX(), ceil(player->getLocation().getY()), player->getLocation().getZ()));
 			}
 		}
 	}

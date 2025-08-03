@@ -42,7 +42,7 @@ class Player
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
 		BlockType			getTargetedBlock() const;
-		BlockType			getBlockUnder() const;
+		BlockType			getBlockUnder(int yOffset = 0) const;
 	private:
 		std::string			_name;
 		uint8_t				_health;
