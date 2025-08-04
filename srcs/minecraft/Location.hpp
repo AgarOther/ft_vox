@@ -34,6 +34,9 @@ class Location
 		Location &	sub(const Location & loc);
 		Location &	sub(double x, double y, double z);
 		Location &	sub(int x, int y, int z);
+
+		double		distance(const Location & loc) const;
+
 		Location	clone() const;
 
 		glm::vec3	getVec3() const;

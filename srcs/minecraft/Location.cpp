@@ -1,4 +1,5 @@
 #include "Location.hpp"
+#include <cmath>
 
 Location & Location::add(const Location & loc)
 {
@@ -46,6 +47,11 @@ Location & Location::sub(int x, int y, int z)
 	_y -= static_cast<double>(y);
 	_z -= static_cast<double>(z);
 	return *this;
+}
+
+double Location::distance(const Location & loc) const
+{
+	return (sqrt(pow(loc.getX() - _x, 2) + pow(loc.getY() - _y, 2) + pow(loc.getZ() - _z, 2)));
 }
 
 Location Location::clone() const
