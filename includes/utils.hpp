@@ -21,6 +21,6 @@ int							floorDiv(int value, int divisor);
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);
-void						showImGui(const ImGuiIO & io, Player * player);
+void						showImGui(const ImGuiIO & io, Player * player, float deltaTime);
 void						renderImGui();
 void						shutdownImGui();

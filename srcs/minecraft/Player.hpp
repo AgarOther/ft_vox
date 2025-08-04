@@ -7,7 +7,7 @@
 #include "types.hpp"
 #include <cstdint>
 
-#define JUMP_STRENGTH 5.0f
+#define JUMP_STRENGTH 0.15f
 
 class Player
 {

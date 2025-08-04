@@ -65,7 +65,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	{
 		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
 
-		float velocity = (_camera->getBaseSpeed() * (1 + 1.25f * shiftPressed)) * deltaTime;
+		float velocity = (_camera->getBaseSpeed() * (1 + 0.4f * shiftPressed)) * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 			finalLocation += velocity * forward;
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
@@ -81,11 +81,11 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
 				finalLocation += velocity * -_camera->getAltitude();
 		}
-		// else
-		// {
-		// 	if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS))
-		// 		setVelocityY(JUMP_STRENGTH);
-		// }
+		else
+		{
+			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) && getBlockUnder().isSolid)
+				setVelocityY(JUMP_STRENGTH);
+		}
 	}
 
 	static bool lastFramePressedF3 = false;

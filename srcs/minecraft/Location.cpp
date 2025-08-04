@@ -18,10 +18,9 @@ Location & Location::add(double x, double y, double z)
 
 Location & Location::add(int x, int y, int z)
 {
-	Location cpy(*this);
-	cpy._x += static_cast<double>(x);
-	cpy._y += static_cast<double>(y);
-	cpy._z += static_cast<double>(z);
+	_x += static_cast<double>(x);
+	_y += static_cast<double>(y);
+	_z += static_cast<double>(z);
 	return *this;
 }
 

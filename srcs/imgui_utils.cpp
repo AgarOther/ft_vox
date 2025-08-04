@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
+#include "imgui/imgui.h"
 #include "minecraft/Player.hpp"
 #include "utils.hpp"
 #include <GLFW/glfw3.h>
@@ -33,7 +34,7 @@ ImGuiIO & getImGuiIO(GLFWwindow * window)
 	io.Fonts->Build();
 
 	ImGuiStyle &style = ImGui::GetStyle();
-	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.3f, 0.3f, 0.3f, 0.1f);
+	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.3f, 0.3f, 0.3f, 0.3f);
 	return (io);
 }
 
@@ -59,7 +60,7 @@ static std::string getAxisDirectionAsString(const float yaw)
     return "negative X";
 }
 
-void showImGui(const ImGuiIO & io, Player * player)
+void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 {
 	Camera * camera = player->getCamera();
 	const Location & position = player->getLocation();
@@ -71,11 +72,13 @@ void showImGui(const ImGuiIO & io, Player * player)
 	
 	// FPS
 	ImGui::Text("Minecraft 0.00.1 (0.00.1/vanilla)");
-	ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	ImGui::Text("%.3f ms/frame (%.1f FPS) Delta: %.3f", 1000.0f / io.Framerate, io.Framerate, deltaTime);
 	
 	ImGui::NewLine();
 	// Position infos
 	glm::vec3 camPos = camera->getPosition();
+	ImGui::TextColored(ImVec4(0.0f, 0.6f, 0.8f, 1.0f), "Gamemode: %s", player->getGamemode() == CREATIVE ? "Creative" : "Survival");
+	ImGui::TextColored(ImVec4(0.75f, 1.0f, 0.0f, 1.0f), "Velocity: %.3f / %.3f / %.3f", player->getVelocityX(), player->getVelocityY(), player->getVelocityZ());
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", position.getX(), position.getY(), position.getZ());
 	ImGui::TextColored(ImVec4(1.0f, 0.74f, 0.0f, 1.0f), "Chunk XZ: %d / %d",
 		abs(static_cast<int>(camPos.x) % CHUNK_WIDTH), abs(static_cast<int>(camPos.z) % CHUNK_DEPTH));
@@ -129,6 +132,7 @@ void showImGui(const ImGuiIO & io, Player * player)
 	if (creative != creativeChanged)
 	{
 		player->setGamemode(creative ? CREATIVE : SURVIVAL);
+		player->setVelocity(glm::vec3(0));
 		creativeChanged = creative;
 	}
 
