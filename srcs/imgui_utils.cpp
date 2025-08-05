@@ -125,7 +125,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 	}
 
 	// Gamemode
-	static bool creative = true;
+	static bool creative = player->getGamemode() == CREATIVE;
 	static bool creativeChanged = false;
 	ImGui::SameLine();
 	ImGui::Checkbox("Creative", &creative);

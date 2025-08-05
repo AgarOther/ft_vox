@@ -16,7 +16,7 @@ Player::Player(const std::string & name, int width, int height, World * world)
 	_camera = new Camera(width, height, _spawnLocation.getVec3());
 	_location = Location(_camera->getPosition()).sub(0.0, 2.5, 0.0);
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
-	_gamemode = CREATIVE;
+	_gamemode = SURVIVAL;
 	_velocity = glm::vec3(0.0f);
 	_world->addPlayer(this);
 }
