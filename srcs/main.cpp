@@ -33,21 +33,14 @@ int main(void)
 	ObjectRegistry::init();
 	BlockTypeRegistry::init();
 	TextureAtlas atlas;
-	atlas.load({
-		"assets/block/stone.png",
-		"assets/block/dirt.png",
-		"assets/block/bedrock.png",
-		"assets/block/sand.png",
-		"assets/block/end_stone.png",
-		"assets/block/unknown.png"
-	});
+	atlas.init();
 
 	Shader shader("block.vert", "block.frag");
 	Shader skyboxShader("skybox.vert", "skybox.frag");
 	Skybox skybox;
 
 	FastNoiseLite noise;
-	noise.SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2S);
+	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
 	World world(16, 16, atlas, noise);
@@ -67,10 +60,10 @@ int main(void)
 			showImGui(io, &player, deltaTime);
 		g_DEBUG_INFO.drawCalls = 0;
 
-		player.getCamera()->setupMatrix(shader);
+		skybox.render(skyboxShader, player.getCamera());
 		player.getCamera()->setWidth(width);
 		player.getCamera()->setHeight(height);
-		skybox.render(skyboxShader, player.getCamera());
+		player.getCamera()->setupMatrix(shader);
 		world.render(shader, player);
 
 		if (hasGui)

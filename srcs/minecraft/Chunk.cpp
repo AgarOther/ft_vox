@@ -30,7 +30,7 @@ void Chunk::generateBlocks()
 				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + baseHeight);
 
 				if (y < height)
-					_blocks[x][y][z] = END_STONE;
+					_blocks[x][y][z] = ACACIA_LOG;
 				else
 					_blocks[x][y][z] = AIR;
 			}
@@ -174,7 +174,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 							vertices.push_back(vx);
 							vertices.push_back(vy);
 							vertices.push_back(vz);
-							glm::vec2 baseUV = atlas.getUVForBlock(block.type); // send face
+							glm::vec2 baseUV = atlas.getUVForBlock(block.type, static_cast<BlockFace>(face)); // send face
 							float tileSize = 1.0f / atlas.getTilesPerRow();
 							float epsilon = 0.2f / atlas.getWidth();
 

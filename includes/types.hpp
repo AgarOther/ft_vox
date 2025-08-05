@@ -18,6 +18,7 @@ enum Material
 	BEDROCK,
 	SAND,
 	END_STONE,
+	ACACIA_LOG,
 	AIR = 255
 };
 

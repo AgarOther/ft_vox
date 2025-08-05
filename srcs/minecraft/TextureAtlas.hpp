@@ -13,24 +13,41 @@
 
 typedef glm::vec2 BlockUV;
 
+struct UVMapHash
+{
+	size_t operator()(const std::pair<Material, BlockFace> & uv) const
+	{
+		return std::hash<int>()(uv.first) ^ (std::hash<int>()(uv.second) << 1);
+	}
+};
+
 class TextureAtlas
 {
 	public:
-		TextureAtlas(): _id(0), _atlasWidth(0), _atlasHeight(0) {}
+		TextureAtlas();
 		~TextureAtlas();
 
-		void	load(const std::vector<std::string> & texturePaths);
-		GLuint	getTextureID() const { return _id; }
-		const 	BlockUV & getUVForBlock(Material material) const;
+		void			init();
+		typedef std::unordered_map<Material, std::vector<std::pair<BlockFace, std::string>>> TextureMap;
+		void			loadTextures(const TextureMap & texturePaths);
+		GLuint			getTextureID() const { return _id; }
+		const 			BlockUV & getUVForBlock(Material material, BlockFace face) const;
 
-		int		getTilesPerRow() const { return _tilesPerRow; }
-		int		getWidth() const { return _atlasWidth; }
-		int		getHeight() const { return _atlasHeight; }
+		int				getTilesPerRow() const { return _tilesPerRow; }
+		int				getWidth() const { return _atlasWidth; }
+		int				getHeight() const { return _atlasHeight; }
 	private:
-		GLuint	_id;
-		int		_atlasWidth;
-		int		_atlasHeight;
-		int		_tilesPerRow;
-		typedef std::unordered_map<Material, BlockUV> UVMap;
-		UVMap	_uvMap;
+		GLuint			_id;
+		int				_atlasWidth;
+		int				_atlasHeight;
+		int				_tilesPerRow;
+		typedef std::unordered_map<std::pair<Material, BlockFace>, BlockUV, UVMapHash> UVMap;
+		UVMap			_uvMap;
+		typedef std::unordered_map<std::string, glm::vec2> TextureCache;
+		TextureCache	_textureCache;
+
+		typedef std::vector<std::pair<BlockFace, std::string>> TextureBuffer;
+		TextureBuffer	loadUnique(const std::string & texturePath);
+		TextureBuffer	loadSideTopBottom(const std::string & side, const std::string & topBottom);
+
 };
