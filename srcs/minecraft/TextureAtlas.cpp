@@ -26,12 +26,13 @@ void TextureAtlas::loadTextures(const std::unordered_map<Material, std::vector<s
 {
 	static int texCount = 0;
 
-	_tilesPerRow = ceil(sqrt(texturePaths.size()));
+	_tilesPerRow = ceil(sqrt(texturePaths.size())) + 1;
 	_atlasWidth = _tilesPerRow * TILE_SIZE;
 	_atlasHeight = _atlasWidth;
 
 	std::vector<unsigned char> atlasData(_atlasWidth * _atlasHeight * COLOR_CHANNELS);
 
+	stbi_set_flip_vertically_on_load(true);
 	for (size_t material = UNKNOWN; material < texturePaths.size(); material++)
 	{
 		auto it = texturePaths.find(static_cast<Material>(material));
@@ -144,5 +145,14 @@ void TextureAtlas::init()
 
 	// Multi-textured blocks
 	textureMap[ACACIA_LOG] = loadSideTopBottom("assets/block/acacia_log.png", "assets/block/acacia_log_top.png");
+
+	TextureBuffer cartography;
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_FRONT), "assets/block/cartography_table_side1.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BACK), "assets/block/cartography_table_side3.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_LEFT), "assets/block/cartography_table_side2.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_RIGHT), "assets/block/cartography_table_side3.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_TOP), "assets/block/cartography_table_top.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BOTTOM), "assets/block/dark_oak_planks.png"));
+	textureMap[CARTOGRAPHY_TABLE] = cartography;
 	loadTextures(textureMap);
 }

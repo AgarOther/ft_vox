@@ -60,10 +60,11 @@ int main(void)
 			showImGui(io, &player, deltaTime);
 		g_DEBUG_INFO.drawCalls = 0;
 
-		skybox.render(skyboxShader, player.getCamera());
 		player.getCamera()->setWidth(width);
 		player.getCamera()->setHeight(height);
 		player.getCamera()->setupMatrix(shader);
+		skybox.render(skyboxShader, player.getCamera());
+		shader.bind();
 		world.render(shader, player);
 
 		if (hasGui)

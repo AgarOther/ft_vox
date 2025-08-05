@@ -25,6 +25,7 @@ class Chunk
 		void					render(const Shader & shader) const;
 		BlockType				getBlockAt(const Location & loc);
 		BlockType				getBlockAtChunkLocation(const Location & loc);
+		void					changeBlockAt(const Location & loc, Material newMaterial);
 
 		int						getChunkX() const { return _chunkX; }
 		int						getChunkZ() const { return _chunkZ; }
@@ -42,8 +43,9 @@ class Chunk
 		std::vector<float>		_vertices;
 		std::vector<uint32_t>	_indices;
 		bool					_generated;
+		World *					_world;
 
 		bool					isBlockVisible(int x, int y, int z);
 		bool					isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
 		float					getBrightness(BlockFace face, int x, int y, int z);
-};
+};	

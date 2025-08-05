@@ -12,6 +12,7 @@ void BlockTypeRegistry::init()
 	_types[4]	= { SAND, "sand", true, true };
 	_types[5]	= { END_STONE, "end_stone", true, true };
 	_types[6]	= { ACACIA_LOG, "acacia_log", true, true };
+	_types[7]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true };
 	_types[255]	= {  AIR, "air",false, false };
 }
 

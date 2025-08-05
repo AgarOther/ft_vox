@@ -11,8 +11,9 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/glfw.cpp \
 						srcs/main.cpp \
 						srcs/models.cpp \
-						srcs/utils.cpp \
-						srcs/imgui_utils.cpp \
+						srcs/utils/command_utils.cpp \
+						srcs/utils/imgui_utils.cpp \
+						srcs/utils/utils.cpp \
 						srcs/minecraft/BlockTypeRegistry.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Chunk.cpp \

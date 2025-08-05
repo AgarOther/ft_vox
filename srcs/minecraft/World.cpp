@@ -60,7 +60,6 @@ World::~World()
 
 void World::render(const Shader & shader, const Player & player) const
 {
-	shader.bind();
 	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
 	for (auto & [_, chunkPtr] : _chunks)
@@ -161,8 +160,8 @@ void World::applyGravity(float deltaTime)
 		{
 			player->setVelocityY(player->getVelocityY() - (player->getVelocityY() * 5 * deltaTime));
 			player->teleport(player->getLocation().clone().add(0.0, player->getVelocityY(), 0.0));
-			if (player->getVelocityY() <= 2.25f * deltaTime)
-				player->setVelocityY(0);
+			if (player->getVelocityY() <= 2.3f * deltaTime)
+				player->setVelocityY(-(2.3f * deltaTime));
 		}
 	}
 }

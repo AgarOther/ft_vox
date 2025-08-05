@@ -68,7 +68,7 @@ GLFWwindow * initWindow(int *width, int *height)
 	glfwGetFramebufferSize(window, width, height);
 	glViewport(0, 0, *width, *height);
 	glfwSetFramebufferSizeCallback(window, frameBufferCallback);
-	glfwSwapInterval(0); // unlimited (0) | vsync(1)
+	glfwSwapInterval(1); // unlimited (0) | vsync(1)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);

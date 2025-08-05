@@ -19,6 +19,7 @@ enum Material
 	SAND,
 	END_STONE,
 	ACACIA_LOG,
+	CARTOGRAPHY_TABLE,
 	AIR = 255
 };
 

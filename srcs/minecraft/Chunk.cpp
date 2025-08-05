@@ -30,7 +30,7 @@ void Chunk::generateBlocks()
 				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + baseHeight);
 
 				if (y < height)
-					_blocks[x][y][z] = ACACIA_LOG;
+					_blocks[x][y][z] = CARTOGRAPHY_TABLE;
 				else
 					_blocks[x][y][z] = AIR;
 			}
@@ -218,6 +218,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 	}
 	_indicesCount = indices.size();
 	_atlas = atlas;
+	_world = world;
 	_vertices = vertices;
 	_indices = indices;
 }
@@ -267,6 +268,24 @@ BlockType Chunk::getBlockAt(const Location & loc)
 		[localY]
 		[localZ]
 	);
+}
+
+void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
+{
+	int localX = (static_cast<int>(std::floor(loc.getX())) % CHUNK_WIDTH + CHUNK_WIDTH) % CHUNK_WIDTH;
+	int localY = static_cast<int>(std::floor(loc.getY()));
+	int localZ = (static_cast<int>(std::floor(loc.getZ())) % CHUNK_DEPTH + CHUNK_DEPTH) % CHUNK_DEPTH;
+	if (localX < 0 || localX >= CHUNK_WIDTH
+		|| localY < 0 || localY >= CHUNK_HEIGHT
+		|| localZ < 0 || localZ >= CHUNK_DEPTH)
+	{
+		std::cerr << "[Chunk] Warning: Requested invalid location "
+			<< loc << " for Chunk(" << _chunkX * CHUNK_WIDTH << ", " << _chunkZ * CHUNK_DEPTH << "), returning air.\n";
+		return ;
+	}
+	_blocks[localX][localY][localZ] = newMaterial;
+	generateMesh(_atlas, _world);
+	uploadMesh();
 }
 
 BlockType Chunk::getBlockAtChunkLocation(const Location & loc)

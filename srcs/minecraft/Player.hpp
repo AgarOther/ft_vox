@@ -28,6 +28,7 @@ class Player
 		float				getVelocityX() const { return _velocity.x; }
 		float				getVelocityY() const { return _velocity.y; }
 		float				getVelocityZ() const { return _velocity.z; }
+		World *				getWorld() const { return _world; }
 
 		void				setName(const std::string & name) { _name = name; }
 		void				setHealth(uint8_t health) { _health = health; }

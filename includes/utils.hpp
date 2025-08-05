@@ -18,6 +18,7 @@ void						toggleFullscreen(GLFWwindow * window, Camera & camera);
 std::vector<std::string>	ft_split(const std::string & str, char delimiter);
 Object						getObjectFromFile(const std::string & filepath);
 int							floorDiv(int value, int divisor);
+void                        dispatchCommand(char * buffer, Player * player);
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);

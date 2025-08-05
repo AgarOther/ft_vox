@@ -12,7 +12,6 @@
 
 #include "Chunk.hpp"
 #include "imgui/imgui.h"
-#include "minecraft/Player.hpp"
 #include "utils.hpp"
 #include <GLFW/glfw3.h>
 #include "imgui/imgui_impl_opengl3.h"
@@ -159,6 +158,14 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 	}
 
 	ImGui::NewLine();
+	ImGui::NewLine();
+	static char buffer[100] = {};
+	ImGui::InputText("Command line", buffer, 100);
+	if (ImGui::Button("Enter"))
+	{
+		dispatchCommand(buffer, player);
+		buffer[0] = 0;
+	}
 	ImGui::End();
 }
 
