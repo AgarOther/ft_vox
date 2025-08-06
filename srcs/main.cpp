@@ -61,8 +61,7 @@ int main(void)
 			showImGui(io, &player, deltaTime);
 		g_DEBUG_INFO.drawCalls = 0;
 
-		player.getCamera()->setWidth(width);
-		player.getCamera()->setHeight(height);
+		player.interceptInputs(window, deltaTime);
 		player.getCamera()->setupMatrix(shader);
 		skybox.render(player.getCamera());
 		shader.bind();
@@ -75,7 +74,6 @@ int main(void)
 		glfwPollEvents();
 		endTime = glfwGetTime();
 		deltaTime = endTime - timeStart;
-		player.interceptInputs(window, deltaTime);
 		world.applyGravity(deltaTime);
 		timeStart = glfwGetTime();
 	}

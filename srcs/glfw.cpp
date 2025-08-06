@@ -1,15 +1,15 @@
 #include "errors.hpp"
 #include "utils.hpp"
 
-void toggleFullscreen(GLFWwindow * window, Camera & camera)
+void toggleFullscreen(GLFWwindow * window, Camera * camera)
 {
 	static int windowPosX = 0;
 	static int windowPosY = 0;
 	static int windowWidth = 0;
 	static int windowHeight = 0;
 
-	camera.setFullscreen(!camera.isFullscreen());
-	if (camera.isFullscreen())
+	camera->setFullscreen(!camera->isFullscreen());
+	if (camera->isFullscreen())
 	{
 		glfwGetWindowPos(window, &windowPosX, &windowPosY);
 		glfwGetWindowSize(window, &windowWidth, &windowHeight);
@@ -17,9 +17,15 @@ void toggleFullscreen(GLFWwindow * window, Camera & camera)
 		GLFWmonitor *monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode *mode = glfwGetVideoMode(monitor);
 		glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		camera->setHeight(mode->height);
+		camera->setWidth(mode->width);
 	}
 	else
+	{
 		glfwSetWindowMonitor(window, nullptr, windowPosX, windowPosY, windowWidth, windowHeight, 0);
+		camera->setHeight(windowHeight);
+		camera->setWidth(windowWidth);
+	}
 }
 
 static void frameBufferCallback(GLFWwindow * window, int width, int height)

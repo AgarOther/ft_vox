@@ -14,7 +14,7 @@ void						debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, 
 const						std::string getFileAsString(const char * name);
 const						std::string getShaderAsString(std::string path);
 GLFWwindow *				initWindow(int *width, int *height);
-void						toggleFullscreen(GLFWwindow * window, Camera & camera);
+void						toggleFullscreen(GLFWwindow * window, Camera * camera);
 std::vector<std::string>	ft_split(const std::string & str, char delimiter);
 Object						getObjectFromFile(const std::string & filepath);
 int							floorDiv(int value, int divisor);

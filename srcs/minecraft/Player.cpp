@@ -96,7 +96,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	static bool lastFramePressedF11 = false;
 	const bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
 	if (keyPressedF11 && !lastFramePressedF11)
-		toggleFullscreen(window, *_camera);
+		toggleFullscreen(window, _camera);
 
 	// Mouse inputs
 	if (!_camera->isLocked() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
