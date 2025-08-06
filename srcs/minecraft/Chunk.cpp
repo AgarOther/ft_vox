@@ -36,8 +36,10 @@ void Chunk::generateBlocks()
 					_blocks[x][y][z] = DIRT;
 				else if (y <= height - 6)
 					_blocks[x][y][z] = STONE;
-				else
+				else if (y > height)
 					_blocks[x][y][z] = AIR;
+				else
+					_blocks[x][y][z] = DIRT;
 			}
 		}
 	}
