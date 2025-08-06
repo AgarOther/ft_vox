@@ -42,7 +42,8 @@ struct BlockType
 enum ModelType
 {
 	BLOCK,
-	SKYBOX
+	SKYBOX,
+	CROSSHAIR
 };
 
 enum BlockFace

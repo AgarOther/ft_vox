@@ -11,9 +11,10 @@ class Skybox
 		Skybox();
 		~Skybox();
 
-		void	render(const Shader & shader, const Camera * camera);
+		void	render(const Camera * camera);
 	private:
 		GLuint	_vao;
 		GLuint	_vbo;
 		GLuint	_textureID;
+		Shader	_shader;
 };

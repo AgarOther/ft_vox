@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include "Camera.hpp"
+#include "Crosshair.hpp"
 #include "Skybox.hpp"
 #include "minecraft/BlockTypeRegistry.hpp"
 #include "minecraft/ObjectRegistry.hpp"
@@ -36,14 +37,14 @@ int main(void)
 	atlas.init();
 
 	Shader shader("block.vert", "block.frag");
-	Shader skyboxShader("skybox.vert", "skybox.frag");
 	Skybox skybox;
+	Crosshair crosshair;
 
 	FastNoiseLite noise;
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(16, 16, atlas, noise);
+	World world(32, 32, atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
 
@@ -63,9 +64,10 @@ int main(void)
 		player.getCamera()->setWidth(width);
 		player.getCamera()->setHeight(height);
 		player.getCamera()->setupMatrix(shader);
-		skybox.render(skyboxShader, player.getCamera());
+		skybox.render(player.getCamera());
 		shader.bind();
 		world.render(shader, player);
+		crosshair.draw();
 
 		if (hasGui)
 			renderImGui();

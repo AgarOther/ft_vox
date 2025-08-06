@@ -8,6 +8,7 @@ void ObjectRegistry::init()
 {
 	_objects[0] = getObjectFromFile("assets/model/block.obj");
 	_objects[1] = getObjectFromFile("assets/model/skybox.obj");
+	_objects[2] = getObjectFromFile("assets/model/crosshair.obj");
 }
 
 const Object & ObjectRegistry::getObject(uint8_t id)

@@ -83,8 +83,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		}
 		else
 		{
-			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
-					&& (getBlockUnder().isSolid || (getVelocityY() * deltaTime >= -0.00001f && getVelocityY() * deltaTime < 0)))
+			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) && getBlockUnder().isSolid)
 				setVelocityY(JUMP_STRENGTH);
 		}
 	}

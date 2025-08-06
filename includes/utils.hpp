@@ -25,3 +25,8 @@ ImGuiIO & 					getImGuiIO(GLFWwindow * window);
 void						showImGui(const ImGuiIO & io, Player * player, float deltaTime);
 void						renderImGui();
 void						shutdownImGui();
+
+// Texture Atlas
+TextureBuffer               loadUnique(const std::string & texturePath);
+TextureBuffer               loadSideTop(const std::string & side, const std::string & topBottom);
+TextureBuffer               loadSideTopBottom(const std::string & side, const std::string & top, const std::string & bottom);

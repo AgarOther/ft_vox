@@ -14,6 +14,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/utils/command_utils.cpp \
 						srcs/utils/imgui_utils.cpp \
 						srcs/utils/utils.cpp \
+						srcs/utils/textureatlas_utils.cpp \
 						srcs/minecraft/BlockTypeRegistry.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Chunk.cpp \
@@ -23,6 +24,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
 						srcs/minecraft/World.cpp \
 						srcs/renderer/Camera.cpp \
+						srcs/renderer/Crosshair.cpp \
 						srcs/renderer/Frustum.cpp \
 						srcs/renderer/Shader.cpp \
 						srcs/renderer/Skybox.cpp

@@ -11,6 +11,7 @@
 #define TILE_SIZE 16
 #define COLOR_CHANNELS 4
 
+typedef std::vector<std::pair<BlockFace, std::string>> TextureBuffer;
 typedef glm::vec2 BlockUV;
 
 struct UVMapHash
@@ -21,6 +22,7 @@ struct UVMapHash
 	}
 };
 
+
 class TextureAtlas
 {
 	public:
@@ -28,7 +30,7 @@ class TextureAtlas
 		~TextureAtlas();
 
 		void			init();
-		typedef std::unordered_map<Material, std::vector<std::pair<BlockFace, std::string>>> TextureMap;
+		typedef std::unordered_map<Material, TextureBuffer> TextureMap;
 		void			loadTextures(const TextureMap & texturePaths);
 		GLuint			getTextureID() const { return _id; }
 		const 			BlockUV & getUVForBlock(Material material, BlockFace face) const;
@@ -45,10 +47,4 @@ class TextureAtlas
 		UVMap			_uvMap;
 		typedef std::unordered_map<std::string, glm::vec2> TextureCache;
 		TextureCache	_textureCache;
-
-		typedef std::vector<std::pair<BlockFace, std::string>> TextureBuffer;
-		TextureBuffer	loadUnique(const std::string & texturePath);
-		TextureBuffer	loadSideTop(const std::string & side, const std::string & topBottom);
-		TextureBuffer	loadSideTopBottom(const std::string & side, const std::string & top, const std::string & bottom);
-
 };
