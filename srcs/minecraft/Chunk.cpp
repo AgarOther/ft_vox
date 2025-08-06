@@ -12,8 +12,8 @@
 
 std::mutex g_debugMutex;
 
-float frequency = 0.5f;
-float amplitude = 50.0f; // Max terrain height variation
+float frequency = 2.50f;
+float amplitude = 100.0f; // Max terrain height variation
 int baseHeight = 68;
 
 void Chunk::generateBlocks()
@@ -29,15 +29,18 @@ void Chunk::generateBlocks()
 
 				float noiseValue = _noise.GetNoise(worldX * frequency, worldZ * frequency);
 				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + baseHeight);
+				int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 2;
 
 				if (y == height)
 					_blocks[x][y][z] = GRASS_BLOCK;
-				else if (y < height && y > height - 6)
+				else if (y < height && y > height - stoneOffset)
 					_blocks[x][y][z] = DIRT;
-				else if (y <= height - 6)
+				else if (y <= height - stoneOffset)
 					_blocks[x][y][z] = STONE;
 				else if (y > height)
 					_blocks[x][y][z] = AIR;
+				else if (y == 0)
+					_blocks[x][y][z] = BEDROCK;
 				else
 					_blocks[x][y][z] = DIRT;
 			}
