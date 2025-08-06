@@ -8,12 +8,13 @@
 #include "Shader.hpp"
 #include "types.hpp"
 #include "utils.hpp"
+#include <future>
 
 std::mutex g_debugMutex;
 
 float frequency = 0.5f;
 float amplitude = 50.0f; // Max terrain height variation
-int baseHeight = 88;
+int baseHeight = 68;
 
 void Chunk::generateBlocks()
 {
@@ -29,8 +30,12 @@ void Chunk::generateBlocks()
 				float noiseValue = _noise.GetNoise(worldX * frequency, worldZ * frequency);
 				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + baseHeight);
 
-				if (y < height)
-					_blocks[x][y][z] = CARTOGRAPHY_TABLE;
+				if (y == height)
+					_blocks[x][y][z] = GRASS_BLOCK;
+				else if (y < height && y > height - 6)
+					_blocks[x][y][z] = DIRT;
+				else if (y <= height - 6)
+					_blocks[x][y][z] = STONE;
 				else
 					_blocks[x][y][z] = AIR;
 			}
@@ -46,6 +51,10 @@ Chunk::~Chunk()
 		glDeleteVertexArrays(1, &_vao);
 	if (_ibo)
 		glDeleteBuffers(1, &_ibo);
+	if (_bbo)
+		glDeleteBuffers(1, &_bbo);
+	if (_fbo)
+		glDeleteBuffers(1, &_fbo);
 }
 
 inline bool Chunk::isBlockVisible(int x, int y, int z)
@@ -100,15 +109,16 @@ void Chunk::uploadMesh()
 		glGenBuffers(1, &_vbo);
 	if (!_ibo)
 		glGenBuffers(1, &_ibo);
+	if (!_bbo)
+		glGenBuffers(1, &_bbo);
+	if (!_fbo)
+		glGenBuffers(1, &_fbo);
 
 	glBindVertexArray(_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), _vertices.data(), GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(uint32_t), _indices.data(), GL_STATIC_DRAW);
 
 	// Position
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+	glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(float), _vertices.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTICES_COUNT * sizeof(float), nullptr);
 	glEnableVertexAttribArray(0);
 
@@ -120,6 +130,21 @@ void Chunk::uploadMesh()
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTICES_COUNT * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
+	// Block IDs
+	glBindBuffer(GL_ARRAY_BUFFER, _bbo);
+	glBufferData(GL_ARRAY_BUFFER, _blockIDs.size() * sizeof(uint8_t), _blockIDs.data(), GL_STATIC_DRAW);
+	glVertexAttribIPointer(3, 1, GL_UNSIGNED_BYTE, 0, nullptr);
+	glEnableVertexAttribArray(3);
+
+	// Face IDs
+	glBindBuffer(GL_ARRAY_BUFFER, _fbo);
+	glBufferData(GL_ARRAY_BUFFER, _faceIDs.size() * sizeof(uint8_t), _faceIDs.data(), GL_STATIC_DRAW);
+	glVertexAttribIPointer(4, 1, GL_UNSIGNED_BYTE, 0, nullptr);
+	glEnableVertexAttribArray(4);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(uint32_t), _indices.data(), GL_STATIC_DRAW);
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
@@ -128,6 +153,8 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 {
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
+	std::vector<uint8_t> blockIDs;
+	std::vector<uint8_t> faceIDs;
 	const Object & object = ObjectRegistry::getObject(BLOCK);
 	int invisibleFaces;
 
@@ -176,7 +203,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 							vertices.push_back(vz);
 							glm::vec2 baseUV = atlas.getUVForBlock(block.type, static_cast<BlockFace>(face)); // send face
 							float tileSize = 1.0f / atlas.getTilesPerRow();
-							float epsilon = 0.2f / atlas.getWidth();
+							float epsilon = 0.001f / atlas.getWidth();
 
 							float localU = blockVertices[vi + 3];
 							float localV = blockVertices[vi + 4];
@@ -197,6 +224,8 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 							vertices.push_back(normal.x);
 							vertices.push_back(normal.y);
 							vertices.push_back(normal.z);
+							blockIDs.push_back(static_cast<uint8_t>(block.type));
+							faceIDs.push_back(static_cast<uint8_t>(face));
 						}
 						{
 							std::lock_guard<std::mutex> lock(g_debugMutex);
@@ -216,16 +245,17 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 			}
 		}
 	}
-	_indicesCount = indices.size();
 	_atlas = atlas;
 	_world = world;
 	_vertices = vertices;
 	_indices = indices;
+	_blockIDs = blockIDs;
+	_faceIDs = faceIDs;
 }
 
 void Chunk::render(const Shader & shader) const
 {
-	if (_indicesCount == 0)
+	if (_indices.size() == 0)
 		return;
 	glBindVertexArray(_vao);
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(
@@ -242,11 +272,11 @@ void Chunk::render(const Shader & shader) const
 	if (g_DEBUG_INFO.wireframe)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDrawElements(GL_TRIANGLES, _indicesCount, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	else
-		glDrawElements(GL_TRIANGLES, _indicesCount, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
 }
 
 BlockType Chunk::getBlockAt(const Location & loc)
@@ -284,7 +314,9 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 		return ;
 	}
 	_blocks[localX][localY][localZ] = newMaterial;
-	generateMesh(_atlas, _world);
+	std::async(std::launch::async, [this]() {
+		generateMesh(_atlas, _world);
+	}).get();
 	uploadMesh();
 }
 

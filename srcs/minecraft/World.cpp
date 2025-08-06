@@ -99,7 +99,7 @@ Chunk * World::getChunkAtChunkLocation(int x, int z)
 	return nullptr;
 }
 
-double World::getHighestY(int x, int z)
+int World::getHighestY(int x, int z)
 {
 	Chunk * chunk = getChunkAt(x, z);
 	if (chunk)

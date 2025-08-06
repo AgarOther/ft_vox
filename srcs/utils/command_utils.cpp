@@ -10,30 +10,24 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "BlockTypeRegistry.hpp"
 #include "Chunk.hpp"
 #include "types.hpp"
 #include "utils.hpp"
 
-static Material getMaterialFromString(std::string name)
+static Material getMaterialFromString(std::string & name)
 {
 	for (char i = 0; i < (char)name.length(); i++)
 		name[i] = std::tolower(name[i]);
-	if (name == "bedrock")
-		return (BEDROCK);
-	else if (name == "stone")
-		return (STONE);
-	else if (name == "dirt")
-		return (DIRT);
-	else if (name == "acacia_log")
-		return (ACACIA_LOG);
-	else if (name == "sand")
-		return (SAND);
-	else if (name == "end_stone")
-		return (END_STONE);
-	else if (name == "cartography_table")
-		return (CARTOGRAPHY_TABLE);
-	else
-		return (UNKNOWN);
+	BlockTypeRegistry::BlockTypeMap blockTypeMap = BlockTypeRegistry::getBlockTypeMap();
+	if (name == "air")
+		return AIR;
+	for (auto it = blockTypeMap.begin(); it != blockTypeMap.end(); ++it)
+	{
+		if (name == it->second.name)
+			return (it->second.type);
+	}
+	return UNKNOWN;
 }
 
 void dispatchCommand(char * buffer, Player * player)

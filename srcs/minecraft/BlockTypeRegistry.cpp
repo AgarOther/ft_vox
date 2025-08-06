@@ -13,6 +13,7 @@ void BlockTypeRegistry::init()
 	_types[5]	= { END_STONE, "end_stone", true, true };
 	_types[6]	= { ACACIA_LOG, "acacia_log", true, true };
 	_types[7]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true };
+	_types[8]	= { GRASS_BLOCK, "grass_block", true, true };
 	_types[255]	= {  AIR, "air",false, false };
 }
 
@@ -34,4 +35,9 @@ const BlockType & BlockTypeRegistry::getBlockType(const std::string & name)
 	}
 	std::cerr << "[ObjectRegistry] Warning: Requested unknown object named " << name << ", returning default.\n";
 	return _types[0];
+}
+
+const BlockTypeRegistry::BlockTypeMap & BlockTypeRegistry::getBlockTypeMap()
+{
+	return _types;
 }

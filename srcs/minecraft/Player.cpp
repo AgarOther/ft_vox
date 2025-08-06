@@ -12,9 +12,9 @@ Player::Player(const std::string & name, int width, int height, World * world)
 	_name = name;
 	_health = 20;
 	_world = world;
-	_spawnLocation = Location(32.0, world->getHighestY(32, 32) + 2.5, 32.0);
-	_camera = new Camera(width, height, _spawnLocation.getVec3());
-	_location = Location(_camera->getPosition()).sub(0.0, 2.5, 0.0);
+	_spawnLocation = Location(32.0, static_cast<double>(world->getHighestY(32, 32)), 32.0);
+	_camera = new Camera(width, height, _spawnLocation.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).getVec3());
+	_location = Location(_camera->getPosition()).sub(0.0, CAMERA_OFFSET_Y, 0.0);
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
 	_gamemode = SURVIVAL;
 	_velocity = glm::vec3(0.0f);
@@ -83,7 +83,8 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		}
 		else
 		{
-			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) && getBlockUnder().isSolid)
+			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+					&& (getBlockUnder().isSolid || (getVelocityY() * deltaTime >= -0.00001f && getVelocityY() * deltaTime < 0)))
 				setVelocityY(JUMP_STRENGTH);
 		}
 	}
@@ -150,7 +151,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 void Player::teleport(const Location & location)
 {
 	 _location = location;
-	 _camera->setPosition(location.clone().add(0.0, 2.5, 0.0).clone().getVec3());
+	 _camera->setPosition(location.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).clone().getVec3());
 }
 
 BlockType Player::getTargetedBlock() const

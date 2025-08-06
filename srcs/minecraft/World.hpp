@@ -41,7 +41,7 @@ class World
 		Chunk *					getChunkAtChunkLocation(int x, int z);
 		BlockType				getBlockAt(const Location & loc);
 		const Player *			getPlayer(const std::string & name) const;
-		double					getHighestY(int x, int z);
+		int						getHighestY(int x, int z);
 
 		void					addPlayer(Player * player);
 		void					applyGravity(float deltaTime);

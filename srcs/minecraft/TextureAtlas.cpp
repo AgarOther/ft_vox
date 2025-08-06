@@ -24,6 +24,7 @@ TextureAtlas::~TextureAtlas()
 
 void TextureAtlas::loadTextures(const std::unordered_map<Material, std::vector<std::pair<BlockFace, std::string>>> & texturePaths)
 {
+	static const std::string prefix = "assets/block/";
 	static int texCount = 0;
 
 	_tilesPerRow = ceil(sqrt(texturePaths.size())) + 1;
@@ -59,7 +60,7 @@ void TextureAtlas::loadTextures(const std::unordered_map<Material, std::vector<s
 				_uvMap[std::pair<Material, BlockFace>(static_cast<Material>(material), textureFace)]= _textureCache[texturePath];
 				continue;
 			}
-			stbi_uc * data = stbi_load(texturePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+			stbi_uc * data = stbi_load((prefix + texturePath).c_str(), &width, &height, &channels, STBI_rgb_alpha);
 			if (!data || width != TILE_SIZE || height != TILE_SIZE)
 			{
 				if (data)
@@ -117,7 +118,7 @@ TextureAtlas::TextureBuffer TextureAtlas::loadUnique(const std::string & texture
 	return paths;
 }
 
-TextureAtlas::TextureBuffer TextureAtlas::loadSideTopBottom(const std::string & side, const std::string & topBottom)
+TextureAtlas::TextureBuffer TextureAtlas::loadSideTop(const std::string & side, const std::string & topBottom)
 {
 	TextureBuffer paths;
 
@@ -131,28 +132,46 @@ TextureAtlas::TextureBuffer TextureAtlas::loadSideTopBottom(const std::string & 
 	return paths;
 }
 
+TextureAtlas::TextureBuffer TextureAtlas::loadSideTopBottom(const std::string & side, const std::string & top, const std::string & bottom)
+{
+	TextureBuffer paths;
+
+	for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
+	{
+		if (face == FACE_TOP)
+			paths.push_back(std::pair<BlockFace, std::string>(static_cast<BlockFace>(face), top));
+		else if (face == FACE_BOTTOM)
+			paths.push_back(std::pair<BlockFace, std::string>(static_cast<BlockFace>(face), bottom));
+		else
+			paths.push_back(std::pair<BlockFace, std::string>(static_cast<BlockFace>(face), side));
+	}
+	return paths;
+}
+
 void TextureAtlas::init()
 {
 	TextureMap textureMap;
 
 	// Unique textures (one texture for the whole block)
-	textureMap[UNKNOWN] = loadUnique("assets/block/unknown.png");
-	textureMap[STONE] = loadUnique("assets/block/stone.png");
-	textureMap[END_STONE] = loadUnique("assets/block/end_stone.png");
-	textureMap[BEDROCK] = loadUnique("assets/block/bedrock.png");
-	textureMap[DIRT] = loadUnique("assets/block/dirt.png");
-	textureMap[SAND] = loadUnique("assets/block/sand.png");
+	textureMap[UNKNOWN] = loadUnique("unknown.png");
+	textureMap[STONE] = loadUnique("stone.png");
+	textureMap[END_STONE] = loadUnique("end_stone.png");
+	textureMap[BEDROCK] = loadUnique("bedrock.png");
+	textureMap[DIRT] = loadUnique("dirt.png");
+	textureMap[SAND] = loadUnique("sand.png");
 
 	// Multi-textured blocks
-	textureMap[ACACIA_LOG] = loadSideTopBottom("assets/block/acacia_log.png", "assets/block/acacia_log_top.png");
+	textureMap[ACACIA_LOG] = loadSideTop("acacia_log.png", "acacia_log_top.png");
 
 	TextureBuffer cartography;
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_FRONT), "assets/block/cartography_table_side1.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BACK), "assets/block/cartography_table_side3.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_LEFT), "assets/block/cartography_table_side2.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_RIGHT), "assets/block/cartography_table_side3.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_TOP), "assets/block/cartography_table_top.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BOTTOM), "assets/block/dark_oak_planks.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_FRONT), "cartography_table_side1.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BACK), "cartography_table_side3.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_LEFT), "cartography_table_side2.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_RIGHT), "cartography_table_side3.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_TOP), "cartography_table_top.png"));
+	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BOTTOM), "dark_oak_planks.png"));
 	textureMap[CARTOGRAPHY_TABLE] = cartography;
+
+	textureMap[GRASS_BLOCK] = loadSideTopBottom("grass_block_side.png", "grass_block_top.png", "dirt.png");
 	loadTextures(textureMap);
 }

@@ -8,6 +8,7 @@
 #include <cstdint>
 
 #define JUMP_STRENGTH 0.15f
+#define CAMERA_OFFSET_Y 2.5f
 
 class Player
 {

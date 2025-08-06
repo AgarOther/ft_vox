@@ -48,6 +48,7 @@ class TextureAtlas
 
 		typedef std::vector<std::pair<BlockFace, std::string>> TextureBuffer;
 		TextureBuffer	loadUnique(const std::string & texturePath);
-		TextureBuffer	loadSideTopBottom(const std::string & side, const std::string & topBottom);
+		TextureBuffer	loadSideTop(const std::string & side, const std::string & topBottom);
+		TextureBuffer	loadSideTopBottom(const std::string & side, const std::string & top, const std::string & bottom);
 
 };

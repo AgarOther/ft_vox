@@ -20,6 +20,7 @@ enum Material
 	END_STONE,
 	ACACIA_LOG,
 	CARTOGRAPHY_TABLE,
+	GRASS_BLOCK,
 	AIR = 255
 };
 
