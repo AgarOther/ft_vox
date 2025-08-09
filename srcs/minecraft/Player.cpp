@@ -148,7 +148,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		Location test = finalLocation.clone();
 		test.setX(round(test.getX()));
 		test.setZ(round(test.getZ()));
-		if (_world->getBlockAt(test).isSolid)
+		if (_world->getBlockAt(test).isSolid && _gamemode != CREATIVE)
 			return;
 		teleport(finalLocation);
 	}
