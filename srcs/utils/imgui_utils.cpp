@@ -75,12 +75,11 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 	
 	ImGui::NewLine();
 	// Position infos
-	glm::vec3 camPos = camera->getPosition();
 	ImGui::TextColored(ImVec4(0.0f, 0.6f, 0.8f, 1.0f), "Gamemode: %s", player->getGamemode() == CREATIVE ? "Creative" : "Survival");
 	ImGui::TextColored(ImVec4(0.75f, 1.0f, 0.0f, 1.0f), "Velocity: %.3f / %.3f / %.3f", player->getVelocityX(), player->getVelocityY(), player->getVelocityZ());
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", position.getX(), position.getY(), position.getZ());
 	ImGui::TextColored(ImVec4(1.0f, 0.74f, 0.0f, 1.0f), "Chunk XZ: %d / %d",
-		abs(static_cast<int>(camPos.x) % CHUNK_WIDTH), abs(static_cast<int>(camPos.z) % CHUNK_DEPTH));
+		abs(static_cast<int>(camera->getPosition().x) % CHUNK_WIDTH), abs(static_cast<int>(camera->getPosition().z) % CHUNK_DEPTH));
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: %s (Towards %s) (%.1f / %.1f)",
 		getDirectionAsString(camera->getYaw()).c_str(), getAxisDirectionAsString(camera->getYaw()).c_str(), camera->getYaw(), camera->getPitch());
 	

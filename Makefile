@@ -123,7 +123,7 @@ glfw:
 
 download_glm:
 	@cd libs; \
-	echo "\033[31;1;4mglad Not Found\033[0m"; \
+	echo "\033[31;1;4mglm Not Found\033[0m"; \
 	echo "\033[31;1mDownloading it from github\033[0m"; \
 	git clone https://github.com/g-truc/glm.git GLM; \
 	echo "\033[31;1mGetting the Headers\033[0m"; \

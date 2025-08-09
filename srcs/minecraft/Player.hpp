@@ -8,7 +8,7 @@
 #include <cstdint>
 
 #define JUMP_STRENGTH 0.15f
-#define CAMERA_OFFSET_Y 2.5f
+#define CAMERA_OFFSET_Y 1.5f
 
 class Player
 {
@@ -30,6 +30,8 @@ class Player
 		float				getVelocityY() const { return _velocity.y; }
 		float				getVelocityZ() const { return _velocity.z; }
 		World *				getWorld() const { return _world; }
+		BlockType			getTargetedBlock() const;
+		BlockType			getBlockUnder(int xOffset = 0, int yOffset = 0, int zOffset = 0) const;
 
 		void				setName(const std::string & name) { _name = name; }
 		void				setHealth(uint8_t health) { _health = health; }
@@ -43,8 +45,6 @@ class Player
 		void				setVelocityZ(float velocityZ) { _velocity.z = velocityZ; }
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
-		BlockType			getTargetedBlock() const;
-		BlockType			getBlockUnder(int yOffset = 0) const;
 	private:
 		std::string			_name;
 		uint8_t				_health;

@@ -13,7 +13,7 @@
 
 
 DebugInfo g_DEBUG_INFO = {0, 0, 0, false};
-const unsigned long long WORLD_SEED = 42;
+constexpr unsigned long long WORLD_SEED = 28;
 
 int main(void)
 {

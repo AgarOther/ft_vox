@@ -158,13 +158,13 @@ BlockType Player::getTargetedBlock() const
 	return BlockTypeRegistry::getBlockType(AIR);
 }
 
-BlockType Player::getBlockUnder(int yOffset) const
+BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const
 {
 	if (getLocation().getY() >= CHUNK_HEIGHT || getLocation().getY() < 0)
 		return BlockTypeRegistry::getBlockType(AIR);
 	Location blockLocation = getLocation().clone();
-	blockLocation.setX(round(blockLocation.getX()));
-	blockLocation.setY(ceil(blockLocation.getY() - yOffset));
-	blockLocation.setZ(round(blockLocation.getZ()));
+	blockLocation.setX(round(blockLocation.getX() - xOffset));
+	blockLocation.setY(ceil(blockLocation.getY() - yOffset - 1));
+	blockLocation.setZ(round(blockLocation.getZ() - zOffset));
 	return _world->getBlockAt(blockLocation);
 }

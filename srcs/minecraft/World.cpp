@@ -106,7 +106,7 @@ int World::getHighestY(int x, int z)
 	{
 		for (int y = CHUNK_HEIGHT - 1; y >= 0; --y)
 			if (chunk->getBlockAt(Location(x, y, z)).isSolid)
-				return y;
+				return y + 1;
 	}
 	return 0;
 }
@@ -137,11 +137,11 @@ BlockType World::getBlockAt(const Location & loc)
 void World::applyGravity(float deltaTime)
 {
 	float baseVelocity = -3.5f * deltaTime;
-	float maxVelocity = -150.f * deltaTime;
+	float maxVelocity = -100.f * deltaTime;
 
 	for (auto & [_, player] : _players)
 	{
-		if (player->getGamemode() == SURVIVAL && !player->getBlockUnder().isSolid && player->getVelocityY() <= 0)
+		if (player->getGamemode() == SURVIVAL && !player->getBlockUnder(static_cast<int>(player->getLocation().getX()) - player->getLocation().getX()).isSolid && player->getVelocityY() <= 0)
 		{
 			if (player->getVelocityY() == 0)
 				player->setVelocityY(baseVelocity);
