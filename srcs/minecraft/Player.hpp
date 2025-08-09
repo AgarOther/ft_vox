@@ -7,7 +7,7 @@
 #include "types.hpp"
 #include <cstdint>
 
-#define JUMP_STRENGTH 0.15f
+#define JUMP_STRENGTH 0.13f
 #define CAMERA_OFFSET_Y 1.5f
 
 class Player

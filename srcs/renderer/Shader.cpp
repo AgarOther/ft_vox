@@ -54,6 +54,12 @@ void Shader::setInt(const char * uniform, const int n) const
 	glUniform1i(id, n);
 }
 
+void Shader::setFloat(const char * uniform, const float n) const
+{
+	const GLint id = glGetUniformLocation(this->_id, uniform);
+	glUniform1f(id, n);
+}
+
 void Shader::setMat4(const char * uniform, const glm::mat4 & model) const
 {
 	const GLint id = glGetUniformLocation(this->_id, uniform);

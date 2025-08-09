@@ -8,7 +8,7 @@ class Crosshair
         Crosshair();
         ~Crosshair();
 
-        void	draw() const;
+        void	draw(float aspectRatio) const;
     private:
         GLuint	_vao;
         GLuint	_id;

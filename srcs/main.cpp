@@ -13,7 +13,7 @@
 
 
 DebugInfo g_DEBUG_INFO = {0, 0, 0, false};
-constexpr unsigned long long WORLD_SEED = 28;
+constexpr unsigned long long WORLD_SEED = 42;
 
 int main(void)
 {
@@ -44,7 +44,7 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(32, 32, atlas, noise);
+	World world(16, 16, atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
 
@@ -66,7 +66,7 @@ int main(void)
 		skybox.render(player.getCamera());
 		shader.bind();
 		world.render(shader, player);
-		crosshair.draw();
+		crosshair.draw(static_cast<float>(player.getCamera()->getWidth()) / static_cast<float>(player.getCamera()->getHeight()));
 
 		if (hasGui)
 			renderImGui();

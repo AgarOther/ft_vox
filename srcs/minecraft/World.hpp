@@ -37,11 +37,11 @@ class World
 
 		void					render(const Shader & shader, const Player & player) const;
 
-		Chunk *					getChunkAt(int x, int z);
-		Chunk *					getChunkAtChunkLocation(int x, int z);
-		BlockType				getBlockAt(const Location & loc);
+		Chunk *					getChunkAt(int x, int z) const;
+		Chunk *					getChunkAtChunkLocation(int x, int z) const;
+		BlockType				getBlockAt(const Location & loc) const;
 		const Player *			getPlayer(const std::string & name) const;
-		int						getHighestY(int x, int z);
+		int						getHighestY(int x, int z) const;
 
 		void					addPlayer(Player * player);
 		void					applyGravity(float deltaTime);

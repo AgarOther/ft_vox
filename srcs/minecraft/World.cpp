@@ -81,7 +81,7 @@ void World::render(const Shader & shader, const Player & player) const
 	}
 }
 
-Chunk * World::getChunkAt(int x, int z)
+Chunk * World::getChunkAt(int x, int z) const
 {
 	int chunkX;
 	int chunkZ;
@@ -91,7 +91,7 @@ Chunk * World::getChunkAt(int x, int z)
 	return getChunkAtChunkLocation(chunkX, chunkZ);
 }
 
-Chunk * World::getChunkAtChunkLocation(int x, int z)
+Chunk * World::getChunkAtChunkLocation(int x, int z) const
 {
 	auto it = _chunks.find(std::pair<int, int>(x, z));
 	if (it != _chunks.end())
@@ -99,7 +99,7 @@ Chunk * World::getChunkAtChunkLocation(int x, int z)
 	return nullptr;
 }
 
-int World::getHighestY(int x, int z)
+int World::getHighestY(int x, int z) const
 {
 	Chunk * chunk = getChunkAt(x, z);
 	if (chunk)
@@ -124,7 +124,7 @@ const Player * World::getPlayer(const std::string & name) const
 	return nullptr;
 }
 
-BlockType World::getBlockAt(const Location & loc)
+BlockType World::getBlockAt(const Location & loc) const
 {
 	if (loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT)
 		return BlockTypeRegistry::getBlockType(AIR);
@@ -146,7 +146,7 @@ void World::applyGravity(float deltaTime)
 			if (player->getVelocityY() == 0)
 				player->setVelocityY(baseVelocity);
 			else if (player->getVelocityY() > maxVelocity)
-				player->setVelocityY(player->getVelocityY() + (player->getVelocityY() * 5 * deltaTime));
+				player->setVelocityY(player->getVelocityY() + (player->getVelocityY() * 4.2 * deltaTime));
 			player->teleport(player->getLocation().clone().add(0.0, player->getVelocityY(), 0.0));
 			if (player->getBlockUnder(-player->getVelocityY()).isSolid)
 			{
@@ -158,7 +158,7 @@ void World::applyGravity(float deltaTime)
 		}
 		else if (player->getGamemode() == SURVIVAL && player->getVelocityY() > 0)
 		{
-			player->setVelocityY(player->getVelocityY() - (player->getVelocityY() * 5 * deltaTime));
+			player->setVelocityY(player->getVelocityY() - (player->getVelocityY() * 4.2 * deltaTime));
 			player->teleport(player->getLocation().clone().add(0.0, player->getVelocityY(), 0.0));
 			if (player->getVelocityY() <= 2.3f * deltaTime)
 				player->setVelocityY(-(2.3f * deltaTime));

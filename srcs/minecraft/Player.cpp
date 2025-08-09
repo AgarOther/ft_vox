@@ -144,7 +144,14 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	lastFramePressedF3 = keyPressedF3;
 	lastFramePressedF11 = keyPressedF11;
 	if (getLocation() != finalLocation)
-			teleport(finalLocation);
+	{
+		Location test = finalLocation.clone();
+		test.setX(round(test.getX()));
+		test.setZ(round(test.getZ()));
+		if (_world->getBlockAt(test).isSolid)
+			return;
+		teleport(finalLocation);
+	}
 }
 
 void Player::teleport(const Location & location)
