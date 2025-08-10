@@ -11,7 +11,6 @@
 #include "errors.hpp"
 #include "imgui/imgui.h"
 
-
 DebugInfo g_DEBUG_INFO = {0, 0, 0, false};
 constexpr unsigned long long WORLD_SEED = 42;
 
@@ -44,7 +43,7 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(16, 16, atlas, noise);
+	World world(6, 6, atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
 

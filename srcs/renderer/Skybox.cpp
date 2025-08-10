@@ -39,7 +39,7 @@ Skybox::Skybox(): _vao(0), _vbo(0), _textureID(0), _shader(Shader("skybox.vert",
 			stbi_image_free(data);
 		}
 		else
-			handleExit(7, FAILURE_SKYBOX);
+			handleExit(8, FAILURE_SKYBOX);
 	}
 
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

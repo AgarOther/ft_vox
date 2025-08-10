@@ -164,7 +164,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 	int invisibleFaces;
 
 	if (!world)
-		handleExit(7, "MDRRRRRRR");
+		handleExit(9, "MDRRRRRRR");
 	Chunk * front = world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1);
 	Chunk * back = world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1);
 	Chunk * left = world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ);

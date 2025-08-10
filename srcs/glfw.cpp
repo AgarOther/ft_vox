@@ -58,9 +58,6 @@ GLFWwindow * initWindow(int *width, int *height)
 	GLFWmonitor * monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode * mode = glfwGetVideoMode(monitor);
 
-	if (!glfwInit())
-		handleExit(1, FAILURE_GLFW);
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
