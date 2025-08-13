@@ -7,8 +7,6 @@
 #include <functional>
 #include <unordered_map>
 
-#define GRAVITY -2.0f
-
 class Player;
 
 struct PairHash

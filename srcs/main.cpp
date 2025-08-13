@@ -54,6 +54,7 @@ int main(void)
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
+		timeStart = glfwGetTime();
 		const bool hasGui = player.getCamera()->hasGuiOn();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
@@ -74,7 +75,6 @@ int main(void)
 		endTime = glfwGetTime();
 		deltaTime = endTime - timeStart;
 		world.applyGravity(deltaTime);
-		timeStart = glfwGetTime();
 	}
 
 	glfwDestroyWindow(window);
