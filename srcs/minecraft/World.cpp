@@ -136,7 +136,7 @@ BlockType World::getBlockAt(const Location & loc) const
 
 void World::applyGravity(float deltaTime)
 {
-	static constexpr float acceleration = -25.0f;
+	static const float gravity = -25.0f;
 	float verticalPosition;
 	Location teleportLocation;
 
@@ -145,7 +145,7 @@ void World::applyGravity(float deltaTime)
 		if (player->getGamemode() == SURVIVAL && (player->getVelocityY() != 0 || !player->getBlockUnder().isSolid))
 		{
 			verticalPosition = player->getLocation().getY() + player->getVelocityY() * deltaTime;
-			player->setVelocityY(player->getVelocityY() + acceleration * deltaTime);
+			player->setVelocityY(player->getVelocityY() + gravity * deltaTime);
 			teleportLocation = Location(
 				player->getLocation().getX(),
 				verticalPosition,

@@ -65,7 +65,8 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	{
 		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
 
-		float velocity = (_camera->getBaseSpeed() * (1 + 0.75f * shiftPressed)) * deltaTime;
+		// (Base speed * Run speed (if shift pressed) + Velocity acceleration * velocityY (faster if going up, slower if going down)) * deltaTime
+		float velocity = (_camera->getBaseSpeed() * (1 + RUN_SPEED * shiftPressed) + VELOCITY_ACCELERATION * getVelocityY()) * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 			finalLocation += velocity * forward;
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)

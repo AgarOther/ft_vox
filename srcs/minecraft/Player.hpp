@@ -8,6 +8,8 @@
 #include <cstdint>
 
 #define JUMP_STRENGTH 7.7f
+#define RUN_SPEED 0.75f
+#define VELOCITY_ACCELERATION 0.15f
 #define CAMERA_OFFSET_Y 1.5f
 
 class Player
