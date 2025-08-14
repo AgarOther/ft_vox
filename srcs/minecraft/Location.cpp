@@ -56,9 +56,9 @@ double Location::distance(const Location & loc) const
 
 Location & Location::blockalize()
 {
-	setX(round(getX()));
-	setY(ceil(getY()));
-	setZ(round(getZ()));
+	_x = round(_x);
+	_y = ceil(_y);
+	_z = round(_z);
 	return (*this);
 }
 

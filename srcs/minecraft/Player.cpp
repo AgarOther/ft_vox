@@ -174,7 +174,7 @@ Block Player::getTargetedBlock() const
 			return (Block){ Location(position).blockalize(), hitBlock };
 		position += glm::dot(orientation, glm::vec3(0.1));
 		reach += 0.1;
-	} while (reach <= 3 && hitBlock.type == AIR);
+	} while (reach <= 3 + (_gamemode == CREATIVE) && hitBlock.type == AIR);
 	return (Block){ Location(position).blockalize(), hitBlock };
 }
 
