@@ -86,7 +86,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 	ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.9f, 1.0f), "Blocks: %ld | Draw calls: %ld | Triangles: %ld",
 		g_DEBUG_INFO.blocks, g_DEBUG_INFO.drawCalls, g_DEBUG_INFO.triangles);
 
-	ImGui::TextColored(ImVec4(0.4f, 0.84f, 1.0f, 1.0f), "Targeted block: %s", player->getTargetedBlock().name.c_str());
+	ImGui::TextColored(ImVec4(0.4f, 0.84f, 1.0f, 1.0f), "Targeted block: %s", player->getTargetedBlock().blockType.name.c_str());
 
 	// Speed
 	float cameraSpeed = camera->getBaseSpeed();

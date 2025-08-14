@@ -136,15 +136,13 @@ BlockType World::getBlockAt(const Location & loc) const
 
 void World::applyGravity(float deltaTime)
 {
-	// float baseVelocity = -3.5f * deltaTime;
-	// float maxVelocity = -100.f * deltaTime;
-	static const float acceleration = -25.0f;
+	static constexpr float acceleration = -25.0f;
 	float verticalPosition;
 	Location teleportLocation;
 
 	for (auto & [_, player] : _players)
 	{
-		if (player->getGamemode() == SURVIVAL && player->getVelocityY() != 0)
+		if (player->getGamemode() == SURVIVAL && (player->getVelocityY() != 0 || !player->getBlockUnder().isSolid))
 		{
 			verticalPosition = player->getLocation().getY() + player->getVelocityY() * deltaTime;
 			player->setVelocityY(player->getVelocityY() + acceleration * deltaTime);
@@ -165,27 +163,5 @@ void World::applyGravity(float deltaTime)
 			}
 			player->teleport(teleportLocation);
 		}
-		// if (player->getGamemode() == SURVIVAL && !player->getBlockUnder(static_cast<int>(player->getLocation().getX()) - player->getLocation().getX()).isSolid && player->getVelocityY() <= 0)
-		// {
-		// 	if (player->getVelocityY() == 0)
-		// 		player->setVelocityY(baseVelocity);
-		// 	else if (player->getVelocityY() > maxVelocity)
-		// 		player->setVelocityY(player->getVelocityY() + (player->getVelocityY() * 4.2 * deltaTime));
-		// 	player->teleport(player->getLocation().clone().add(0.0, player->getVelocityY(), 0.0));
-		// 	if (player->getBlockUnder(-player->getVelocityY()).isSolid)
-		// 	{
-		// 		// High fall can glitch, fix by checking current Y against next Y + getVelocity(), basically checking its next call.
-		// 		// if theres a solid block inbetween, fall on it. Only do that if distance is less than the velocity.
-		// 		player->teleport(Location(player->getLocation().getX(), ceil(player->getLocation().getY()) + ceil(player->getVelocityY()), player->getLocation().getZ()));
-		// 		player->setVelocityY(0);
-		// 	}
-		// }
-		// else if (player->getGamemode() == SURVIVAL && player->getVelocityY() > 0)
-		// {
-		// 	player->setVelocityY(player->getVelocityY() - (player->getVelocityY() * 4.2 * deltaTime));
-		// 	player->teleport(player->getLocation().clone().add(0.0, player->getVelocityY(), 0.0));
-		// 	if (player->getVelocityY() <= 2.3f * deltaTime)
-		// 		player->setVelocityY(-(2.3f * deltaTime));
-		// }
 	}
 }

@@ -22,7 +22,6 @@ struct UVMapHash
 	}
 };
 
-
 class TextureAtlas
 {
 	public:

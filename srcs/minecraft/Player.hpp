@@ -30,7 +30,7 @@ class Player
 		float				getVelocityY() const { return _velocity.y; }
 		float				getVelocityZ() const { return _velocity.z; }
 		World *				getWorld() const { return _world; }
-		BlockType			getTargetedBlock() const;
+		Block				getTargetedBlock() const;
 		BlockType			getBlockUnder(int xOffset = 0, int yOffset = 0, int zOffset = 0) const;
 
 		void				setName(const std::string & name) { _name = name; }

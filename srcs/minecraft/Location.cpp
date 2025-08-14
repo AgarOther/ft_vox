@@ -54,6 +54,14 @@ double Location::distance(const Location & loc) const
 	return (sqrt(pow(loc.getX() - _x, 2) + pow(loc.getY() - _y, 2) + pow(loc.getZ() - _z, 2)));
 }
 
+Location & Location::blockalize()
+{
+	setX(round(getX()));
+	setY(ceil(getY()));
+	setZ(round(getZ()));
+	return (*this);
+}
+
 Location Location::clone() const
 {
 	return Location(*this);

@@ -160,9 +160,22 @@ void Player::teleport(const Location & location)
 	 _camera->setPosition(location.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).clone().getVec3());
 }
 
-BlockType Player::getTargetedBlock() const
+Block Player::getTargetedBlock() const
 {
-	return BlockTypeRegistry::getBlockType(AIR);
+	float reach = 0;
+	glm::vec3 orientation = _camera->getOrientation();
+	glm::vec3 position = _camera->getPosition();
+	BlockType hitBlock;
+
+	do
+	{
+		hitBlock = _world->getBlockAt(position);
+		if (hitBlock.isSolid)
+			return (Block){ Location(position).blockalize(), hitBlock };
+		position += glm::dot(orientation, glm::vec3(0.1));
+		reach += 0.1;
+	} while (reach <= 3 && hitBlock.type == AIR);
+	return (Block){ Location(position).blockalize(), hitBlock };
 }
 
 BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const

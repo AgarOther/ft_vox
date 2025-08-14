@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <vector>
 #include <string>
+#include "Location.hpp"
 
 enum ObjectType
 {
@@ -68,4 +69,10 @@ enum Gamemode
 {
 	CREATIVE,
 	SURVIVAL
+};
+
+struct Block
+{
+	Location	position;
+	BlockType	blockType;
 };
