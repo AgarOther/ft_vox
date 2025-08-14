@@ -4,6 +4,7 @@
 #include "TextureAtlas.hpp"
 #include "fastnoiselite/FastNoiseLite.h"
 #include "Location.hpp"
+#include <cstdint>
 
 #define CHUNK_HEIGHT 256
 #define CHUNK_WIDTH 16
@@ -40,6 +41,7 @@ class Chunk
 		GLuint					_fbo;
 		uint8_t					_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
 		TextureAtlas			_atlas;
+		unsigned int			_indicesSize;
 		std::vector<float>		_vertices;
 		std::vector<uint32_t>	_indices;
 		std::vector<uint8_t>	_blockIDs;

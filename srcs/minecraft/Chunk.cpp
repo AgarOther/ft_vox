@@ -152,6 +152,17 @@ void Chunk::uploadMesh()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	_indicesSize = _indices.size();
+
+	_vertices.clear();
+	_vertices.shrink_to_fit();
+	_indices.clear();
+	_indices.shrink_to_fit();
+	_faceIDs.clear();
+	_faceIDs.shrink_to_fit();
+	_blockIDs.clear();
+	_blockIDs.shrink_to_fit();
 }
 
 void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
@@ -260,7 +271,7 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 
 void Chunk::render(const Shader & shader) const
 {
-	if (_indices.size() == 0)
+	if (_indicesSize == 0)
 		return;
 	glBindVertexArray(_vao);
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(
@@ -277,11 +288,11 @@ void Chunk::render(const Shader & shader) const
 	if (g_DEBUG_INFO.wireframe)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, _indicesSize, GL_UNSIGNED_INT, 0);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	else
-		glDrawElements(GL_TRIANGLES, _indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, _indicesSize, GL_UNSIGNED_INT, 0);
 }
 
 BlockType Chunk::getBlockAt(const Location & loc)
