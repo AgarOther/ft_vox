@@ -38,7 +38,7 @@ void TextureAtlas::loadTextures(const std::unordered_map<Material, std::vector<s
 	{
 		auto it = texturePaths.find(static_cast<Material>(material));
 		if (it == texturePaths.end())
-			handleExit(7, FAILURE_ATLAS_LOAD);
+			handleExit(FAILURE_ATLAS_LOAD);
 		std::vector<std::pair<BlockFace, std::string>> textureContainer = it->second;
 		if (textureContainer.size() != 6)
 		{
@@ -65,7 +65,7 @@ void TextureAtlas::loadTextures(const std::unordered_map<Material, std::vector<s
 			{
 				if (data)
 					stbi_image_free(data);
-				handleExit(5, FAILURE_ATLAS);
+				handleExit(FAILURE_ATLAS);
 			}
 
 			for (int row = 0; row < TILE_SIZE; ++row)
@@ -105,7 +105,7 @@ const BlockUV & TextureAtlas::getUVForBlock(Material material, BlockFace face) c
 {
 	auto it = _uvMap.find(std::pair<Material, BlockFace>(material, face));
 	if (it == _uvMap.end())
-		handleExit(6, FAILURE_ATLAS_UV);
+		handleExit(FAILURE_ATLAS_UV);
 	return it->second;
 }
 

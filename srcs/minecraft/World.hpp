@@ -30,7 +30,7 @@ struct PlayerHash
 class World
 {
 	public:
-		World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const FastNoiseLite & noise);
+		World(int chunkCountX, int chunkCountZ, const TextureAtlas * atlas, const FastNoiseLite & noise);
 		~World();
 
 		void					render(const Shader & shader, const Player & player) const;

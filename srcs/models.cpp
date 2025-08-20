@@ -11,7 +11,7 @@ Object getObjectFromFile(const std::string & filepath)
 	type = VERTICES;
 	const std::string file = getFileAsString(filepath.c_str());
 	if (file.empty())
-		handleExit(4, FAILURE_OBJECT);
+		handleExit(FAILURE_OBJECT);
 	std::istringstream lineBuffer(file);
 	for (std::string line; std::getline(lineBuffer, line);)
 	{

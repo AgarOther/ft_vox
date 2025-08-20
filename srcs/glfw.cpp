@@ -64,10 +64,10 @@ GLFWwindow * initWindow(int *width, int *height)
 	
 	window = glfwCreateWindow(mode->width, mode->height, "player", nullptr, nullptr);
 	if (!window)
-		handleExit(2, FAILURE_WINDOW);
+		handleExit(FAILURE_WINDOW);
 	glfwMakeContextCurrent(window);
 	if (glewInit() != GLEW_OK)
-		handleExit(3, FAILURE_GLEW);
+		handleExit(FAILURE_GLEW);
 	glfwGetFramebufferSize(window, width, height);
 	glViewport(0, 0, *width, *height);
 	glfwSetFramebufferSizeCallback(window, frameBufferCallback);

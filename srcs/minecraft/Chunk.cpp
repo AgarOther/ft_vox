@@ -6,6 +6,7 @@
 #include "ObjectRegistry.hpp"
 #include "BlockTypeRegistry.hpp"
 #include "Shader.hpp"
+#include "errors.hpp"
 #include "types.hpp"
 #include "utils.hpp"
 #include <future>
@@ -165,7 +166,7 @@ void Chunk::uploadMesh()
 	_blockIDs.shrink_to_fit();
 }
 
-void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
+void Chunk::generateMesh()
 {
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
@@ -174,12 +175,12 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 	const Object & object = ObjectRegistry::getObject(BLOCK);
 	int invisibleFaces;
 
-	if (!world)
-		handleExit(9, "MDRRRRRRR");
-	Chunk * front = world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1);
-	Chunk * back = world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1);
-	Chunk * left = world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ);
-	Chunk * right = world->getChunkAtChunkLocation(_chunkX + 1, _chunkZ);
+	if (!_world)
+		handleExit(FAILURE_WORLD);
+	Chunk * front = _world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1);
+	Chunk * back = _world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1);
+	Chunk * left = _world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ);
+	Chunk * right = _world->getChunkAtChunkLocation(_chunkX + 1, _chunkZ);
 
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
@@ -217,9 +218,9 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 							vertices.push_back(vx);
 							vertices.push_back(vy);
 							vertices.push_back(vz);
-							glm::vec2 baseUV = atlas.getUVForBlock(block.type, static_cast<BlockFace>(face)); // send face
-							float tileSize = 1.0f / atlas.getTilesPerRow();
-							float epsilon = 0.001f / atlas.getWidth();
+							glm::vec2 baseUV = _atlas->getUVForBlock(block.type, static_cast<BlockFace>(face)); // send face
+							float tileSize = 1.0f / _atlas->getTilesPerRow();
+							float epsilon = 0.001f / _atlas->getWidth();
 
 							float localU = blockVertices[vi + 3];
 							float localV = blockVertices[vi + 4];
@@ -261,8 +262,6 @@ void Chunk::generateMesh(const TextureAtlas & atlas, World * world)
 			}
 		}
 	}
-	_atlas = atlas;
-	_world = world;
 	_vertices = vertices;
 	_indices = indices;
 	_blockIDs = blockIDs;
@@ -282,7 +281,7 @@ void Chunk::render(const Shader & shader) const
 	shader.setMat4("model", model);
 	shader.setVec3("lightDir", glm::normalize(glm::vec3(1.0f, -1.5f, 0.8f)));
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _atlas.getTextureID());
+	glBindTexture(GL_TEXTURE_2D, _atlas->getTextureID());
 	shader.setInt("textureAtlas", 0);
 	g_DEBUG_INFO.drawCalls++;
 	if (g_DEBUG_INFO.wireframe)
@@ -331,7 +330,7 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 	}
 	_blocks[localX][localY][localZ] = newMaterial;
 	std::async(std::launch::async, [this]() {
-		generateMesh(_atlas, _world);
+		generateMesh();
 	}).get();
 	uploadMesh();
 }

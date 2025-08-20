@@ -19,7 +19,7 @@ int main(void)
 	int width, height;
 
 	if (!glfwInit())
-		handleExit(1, FAILURE_GLFW);
+		handleExit(FAILURE_GLFW);
 
 	GLFWwindow * window = initWindow(&width, &height);
 
@@ -43,7 +43,7 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(6, 6, atlas, noise);
+	World world(32, 32, &atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
 

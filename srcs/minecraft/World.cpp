@@ -7,7 +7,7 @@
 #include "utils.hpp"
 #include <future>
 
-World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const FastNoiseLite & noise)
+World::World(int chunkCountX, int chunkCountZ, const TextureAtlas * atlas, const FastNoiseLite & noise)
 {
 	std::vector<std::future<void>> tasks;
 
@@ -16,7 +16,7 @@ World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const
 	{
 		for (int z = 0; z < chunkCountZ; z++)
 		{
-			Chunk * chunk = new Chunk(x, z, noise);
+			Chunk * chunk = new Chunk(x, z, noise, this, atlas);
 			_chunks[std::pair<int, int>(x, z)] = chunk;
 		}
 	}
@@ -37,8 +37,8 @@ World::World(int chunkCountX, int chunkCountZ, const TextureAtlas & atlas, const
 	for (auto & pair : _chunks)
 	{
 		Chunk* chunk = pair.second;
-		tasks.push_back(std::async(std::launch::async, [chunk, &atlas, this]() {
-			chunk->generateMesh(atlas, this);
+		tasks.push_back(std::async(std::launch::async, [chunk]() {
+			chunk->generateMesh();
 		}));
 	}
 	for (auto & task : tasks)
