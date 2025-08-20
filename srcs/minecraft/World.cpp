@@ -7,53 +7,16 @@
 #include "utils.hpp"
 #include <future>
 
-World::World(int chunkCountX, int chunkCountZ, const TextureAtlas * atlas, const FastNoiseLite & noise)
+void World::sendToWorkers(std::vector<Chunk * > & chunks)
 {
-	std::vector<std::future<void>> tasks;
-
-	// Allocates chunks
-	for (int x = 0; x < chunkCountX; x++)
-	{
-		for (int z = 0; z < chunkCountZ; z++)
-		{
-			Chunk * chunk = new Chunk(x, z, noise, this, atlas);
-			_chunks[std::pair<int, int>(x, z)] = chunk;
-		}
-	}
-
-	// Generate blocks in chunks
-	for (auto & pair : _chunks)
-	{
-		Chunk* chunk = pair.second;
-		tasks.push_back(std::async(std::launch::async, [chunk]() {
-			chunk->generateBlocks();
-		}));
-	}
-	for (auto& task : tasks)
-		task.get();
-	tasks.clear();
-
-	// Generate meshes for chunks
-	for (auto & pair : _chunks)
-	{
-		Chunk* chunk = pair.second;
-		tasks.push_back(std::async(std::launch::async, [chunk]() {
-			chunk->generateMesh();
-		}));
-	}
-	for (auto & task : tasks)
-		task.get();
-
-	// Upload to OpenGL (must be main thread)
-	for (auto & pair : _chunks)
-	{
-		Chunk* chunk = pair.second;
-		chunk->uploadMesh();
-	}
+	_monitor.queue(chunks);
+	for (Chunk * chunk : chunks)
+		_chunks[std::pair<int, int>(chunk->getChunkX(), chunk->getChunkZ())] = chunk;
 }
 
 World::~World()
 {
+	_monitor.stop();
 	for (auto& [_, chunk] : _chunks)
 		delete chunk;
 }
@@ -64,6 +27,10 @@ void World::render(const Shader & shader, const Player & player) const
 	Frustum frustum(viewProj);
 	for (auto & [_, chunkPtr] : _chunks)
 	{
+		if (chunkPtr->getState() == IDLE)
+			continue;
+		if (chunkPtr->getState() == GENERATED)
+			chunkPtr->uploadMesh();
 		const int chunkX = chunkPtr->getChunkX();
 		const int chunkZ = chunkPtr->getChunkZ();
 		glm::vec3 min = {

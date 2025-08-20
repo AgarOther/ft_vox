@@ -18,6 +18,8 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/BlockTypeRegistry.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Chunk.cpp \
+						srcs/minecraft/ChunkMonitor.cpp \
+						srcs/minecraft/ChunkWorker.cpp \
 						srcs/minecraft/Location.cpp \
 						srcs/minecraft/ObjectRegistry.cpp \
 						srcs/minecraft/Player.cpp \

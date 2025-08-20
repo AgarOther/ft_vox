@@ -43,7 +43,12 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(32, 32, &atlas, noise);
+	World world;
+	std::vector<Chunk * > chunks;
+	for (int x = 0; x < 2; x++)
+		for (int z = 0; z < 2; z++)
+			chunks.push_back(new Chunk(x, z, noise, &world, &atlas));
+	world.sendToWorkers(chunks);
 
 	Player player("Eleonore", width, height, &world);
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ChunkMonitor.hpp"
 #include "fastnoiselite/FastNoiseLite.h"
 #include "Chunk.hpp"
 #include "TextureAtlas.hpp"
@@ -30,7 +31,7 @@ struct PlayerHash
 class World
 {
 	public:
-		World(int chunkCountX, int chunkCountZ, const TextureAtlas * atlas, const FastNoiseLite & noise);
+		World() {};
 		~World();
 
 		void					render(const Shader & shader, const Player & player) const;
@@ -43,9 +44,12 @@ class World
 
 		void					addPlayer(Player * player);
 		void					applyGravity(float deltaTime);
+
+		void					sendToWorkers(std::vector<Chunk * > & chunks);
 	private:
 		typedef std::unordered_map<std::pair<int, int>, Chunk * , PairHash> ChunkMap;
 		ChunkMap				_chunks;
 		typedef std::unordered_map<std::string, Player * > PlayerList;
 		PlayerList				_players;
+		ChunkMonitor			_monitor;
 };

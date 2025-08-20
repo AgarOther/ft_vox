@@ -76,3 +76,10 @@ struct Block
 	Location	position;
 	BlockType	blockType;
 };
+
+enum ChunkState
+{
+	IDLE,
+	GENERATED,
+	UPLOADED
+};

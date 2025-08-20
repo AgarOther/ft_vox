@@ -164,6 +164,7 @@ void Chunk::uploadMesh()
 	_faceIDs.shrink_to_fit();
 	_blockIDs.clear();
 	_blockIDs.shrink_to_fit();
+	_state = UPLOADED;
 }
 
 void Chunk::generateMesh()
@@ -266,6 +267,8 @@ void Chunk::generateMesh()
 	_indices = indices;
 	_blockIDs = blockIDs;
 	_faceIDs = faceIDs;
+	_state = GENERATED;
+	std::cout << "GENERATED" << std::endl;
 }
 
 void Chunk::render(const Shader & shader) const

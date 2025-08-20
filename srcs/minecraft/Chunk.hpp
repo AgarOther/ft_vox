@@ -17,7 +17,8 @@ class Chunk
 {
 	public:
 		Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise, World * world, const TextureAtlas * atlas):
-			_chunkX(chunkX), _chunkZ(chunkZ), _noise(noise), _vao(0), _vbo(0), _ibo(0), _bbo(0), _fbo(0), _generated(false), _world(world), _atlas(atlas) {}
+			_chunkX(chunkX), _chunkZ(chunkZ), _noise(noise), _vao(0), _vbo(0), _ibo(0), _bbo(0), _fbo(0),
+			_generated(false), _world(world), _atlas(atlas), _state(IDLE) {}
 		~Chunk();
 
 		void					generateBlocks();
@@ -30,6 +31,7 @@ class Chunk
 
 		int						getChunkX() const { return _chunkX; }
 		int						getChunkZ() const { return _chunkZ; }
+		ChunkState				getState() const { return _state; }
 	private:
 		int						_chunkX;
 		int						_chunkZ;
@@ -48,6 +50,7 @@ class Chunk
 		bool					_generated;
 		World *					_world;
 		const TextureAtlas *	_atlas;
+		ChunkState				_state;
 
 		bool					isBlockVisible(int x, int y, int z);
 		bool					isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
