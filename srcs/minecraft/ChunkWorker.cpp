@@ -1,10 +1,9 @@
 #include "ChunkWorker.hpp"
 #include "colors.hpp"
+#include "utils.hpp"
 #include <mutex>
 #include <unistd.h>
 #include <iostream>
-
-std::mutex g_CHUNK_INFO;
 
 uint8_t ChunkWorker::_count = 0;
 
@@ -23,9 +22,6 @@ bool ChunkWorker::queue(const std::vector<Chunk * > & chunkQueue)
 	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 		_chunkQueue.push_back(chunk);
-	g_CHUNK_INFO.lock();
-	std::cout << "[Worker #" << (int)_id << "] " << "Queued " << chunkQueue.size() << " chunks. Now has: " << _chunkQueue.size() << " chunks." << std::endl;
-	g_CHUNK_INFO.unlock();
 	return true;
 }
 
@@ -36,16 +32,12 @@ void ChunkWorker::_process()
 	if (_chunkQueue.empty())
 		return;
 
-	g_CHUNK_INFO.lock();
-	std::cout << "[Worker #" << (int)_id << "] " << "Processing " << _chunkQueue.size() << " chunks." << std::endl;
 	_working = true;
 	for (Chunk * chunk : _chunkQueue)
 	{
 		chunk->generateBlocks();
 		chunk->generateMesh();
 	}
-	std::cout << "[Worker #" << (int)_id << "] " << "Cleared" << std::endl;
-	g_CHUNK_INFO.unlock();
 	_chunkQueue.clear();
 	_working = false;
 }

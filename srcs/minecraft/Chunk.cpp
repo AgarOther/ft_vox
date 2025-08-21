@@ -268,7 +268,6 @@ void Chunk::generateMesh()
 	_blockIDs = blockIDs;
 	_faceIDs = faceIDs;
 	_state = GENERATED;
-	std::cout << "GENERATED" << std::endl;
 }
 
 void Chunk::render(const Shader & shader) const

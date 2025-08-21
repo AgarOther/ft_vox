@@ -18,17 +18,14 @@ ChunkMonitor::ChunkMonitor() : _active(false)
 
 void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 {
-	const std::lock_guard<std::mutex> lg(_queueMutex);
-	
 	if (chunkQueue.empty())
 		return;
+
+	const std::lock_guard<std::mutex> lg(_queueMutex);
 
 	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 		_chunkQueue.push_back(chunk);
-	g_CHUNK_INFO.lock();
-	std::cout << "[Monitor] Queued " << chunkQueue.size() << " chunks. Now has: " << _chunkQueue.size() << " chunks." << std::endl;
-	g_CHUNK_INFO.unlock();
 }
 
 void ChunkMonitor::_process()
@@ -41,16 +38,10 @@ void ChunkMonitor::_process()
 	for (ChunkWorker * worker : _workers)
 	{
 		chunksToQueue = std::min(_chunkQueue.size(), static_cast<size_t>(CHUNKS_PER_THREAD));
-		if (!worker->isActive() && chunksToQueue > 0)
+		if (!worker->isWorking() && chunksToQueue > 0)
 		{
 			if (worker->queue({_chunkQueue.begin(), _chunkQueue.begin() + chunksToQueue}))
-			{
-				g_CHUNK_INFO.lock();
-				std::cout << "[Monitor] Processing " << _chunkQueue.size() << " chunks.";
 				_chunkQueue.erase(_chunkQueue.begin(), _chunkQueue.begin() + chunksToQueue);
-				std::cout << " Now has: " << _chunkQueue.size() << " chunks." << std::endl;;
-				g_CHUNK_INFO.unlock();
-			}
 		}
 	}
 }
@@ -67,9 +58,9 @@ void ChunkMonitor::_loop()
 void ChunkMonitor::_start()
 {
 	_active = true;
-	_thread = std::thread(&ChunkMonitor::_loop, this);
 	for (ChunkWorker * worker : _workers)
 		worker->start();
+	_thread = std::thread(&ChunkMonitor::_loop, this);
 	std::cout << GREEN << "[CHUNK] Started ChunkMonitor thread!" << RESET << std::endl;
 }
 
