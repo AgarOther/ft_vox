@@ -4,36 +4,35 @@
 #include <unistd.h>
 #include <iostream>
 
-bool ChunkWorker::queue(std::vector<Chunk * > & chunkQueue)
+bool ChunkWorker::queue(const std::vector<Chunk * > & chunkQueue)
 {
 	std::lock_guard<std::mutex> lg(_queueMutex);
+
 	if (chunkQueue.empty())
 		return false;
 
+	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
-	{
-		if (chunk->getState() == IDLE)
-			_chunkQueue.push_back(chunk);
-	}
-	chunkQueue.clear();
-	chunkQueue.shrink_to_fit();
+		_chunkQueue.push_back(chunk);
 	return true;
 }
 
 void ChunkWorker::_process()
 {
 	std::lock_guard<std::mutex> lg(_queueMutex);
+
 	if (_chunkQueue.empty())
 		return;
 
 	_working = true;
+	std::cout << "Processing " << _chunkQueue.size() << " chunks." << std::endl;
 	for (Chunk * chunk : _chunkQueue)
 	{
 		chunk->generateBlocks();
 		chunk->generateMesh();
 	}
 	_chunkQueue.clear();
-	_chunkQueue.shrink_to_fit();
+	_working = false;
 }
 
 void ChunkWorker::_loop()
@@ -42,7 +41,6 @@ void ChunkWorker::_loop()
 	{
 		_process();
 		usleep(100);
-		_working = false;
 	}
 }
 

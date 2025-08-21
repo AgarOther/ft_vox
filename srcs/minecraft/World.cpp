@@ -5,13 +5,12 @@
 #include "Location.hpp"
 #include "types.hpp"
 #include "utils.hpp"
-#include <future>
 
 void World::sendToWorkers(std::vector<Chunk * > & chunks)
 {
-	_monitor.queue(chunks);
 	for (Chunk * chunk : chunks)
 		_chunks[std::pair<int, int>(chunk->getChunkX(), chunk->getChunkZ())] = chunk;
+	_monitor.queue(chunks);
 }
 
 World::~World()

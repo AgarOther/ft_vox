@@ -22,6 +22,8 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 	
 	if (chunkQueue.empty())
 		return;
+
+	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 		_chunkQueue.push_back(chunk);
 }
@@ -29,27 +31,23 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 void ChunkMonitor::_process()
 {
 	std::lock_guard<std::mutex> lg(_queueMutex);
+	uint8_t	chunksToQueue;
 
 	if (_chunkQueue.empty())
 		return;
 	for (ChunkWorker * worker : _workers)
 	{
-		if (!worker->isActive())
+		chunksToQueue = std::min(_chunkQueue.size(), static_cast<size_t>(CHUNKS_PER_THREAD));
+		if (!worker->isActive() && chunksToQueue > 0)
 		{
-			if (worker->queue(_chunkQueue))
-				_chunkQueue.erase(_chunkQueue.begin(), _chunkQueue.begin() + CHUNKS_PER_THREAD);
+			if (worker->queue({_chunkQueue.begin(), _chunkQueue.begin() + chunksToQueue}))
+				_chunkQueue.erase(_chunkQueue.begin(), _chunkQueue.begin() + chunksToQueue);
 		}
 	}
-
-	if (_chunkQueue.empty())
-		_chunkQueue.shrink_to_fit();
 }
 
 void ChunkMonitor::_loop()
 {
-	std::lock_guard<std::mutex> lg(_queueMutex);
-	if (_chunkQueue.empty())
-		return;
 	while (_active)
 	{
 		_process();
@@ -61,9 +59,9 @@ void ChunkMonitor::_start()
 {
 	_active = true;
 	_thread = std::thread(&ChunkMonitor::_loop, this);
-	std::cout << GREEN << "[CHUNK] Started ChunkMonitor thread!" << RESET << std::endl;
 	for (ChunkWorker * worker : _workers)
 		worker->start();
+	std::cout << GREEN << "[CHUNK] Started ChunkMonitor thread!" << RESET << std::endl;
 }
 
 void ChunkMonitor::stop()

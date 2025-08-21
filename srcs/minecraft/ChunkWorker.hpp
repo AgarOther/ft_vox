@@ -12,8 +12,8 @@ class ChunkWorker
 		ChunkWorker(): _active(false), _working(false) {};
 
 		void					start();
-		bool					queue(std::vector<Chunk * > & chunkQueue);
-		std::atomic_bool &		isActive() { return _active; }
+		bool					queue(const std::vector<Chunk * > & chunkQueue);
+		bool					isActive() { return _active; }
 		void					stop();
 	private:
 		void					_loop();
