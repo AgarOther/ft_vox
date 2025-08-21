@@ -95,7 +95,7 @@ BlockType World::getBlockAt(const Location & loc) const
 	if (loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT)
 		return BlockTypeRegistry::getBlockType(AIR);
 	Chunk * chunk = getChunkAt(loc.getX(), loc.getZ());
-	if (!chunk)
+	if (!chunk || chunk->getState() == IDLE)
 		return BlockTypeRegistry::getBlockType(AIR);
 	return chunk->getBlockAt(loc);
 }

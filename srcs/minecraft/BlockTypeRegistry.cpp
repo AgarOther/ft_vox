@@ -22,7 +22,7 @@ const BlockType & BlockTypeRegistry::getBlockType(uint8_t id)
 	auto it = _types.find(id);
 	if (it != _types.end())
 		return it->second;
-	std::cerr << "[ObjectRegistry] Warning: Requested unknown object ID " << (int)id << ", returning default.\n";
+	std::cerr << "[BlockTypeRegistry] Warning: Requested unknown block ID " << (int)id << ", returning default.\n";
 	return _types[0]; // air
 }
 
@@ -33,7 +33,7 @@ const BlockType & BlockTypeRegistry::getBlockType(const std::string & name)
 		if (pair.second.name == name)
 			return pair.second;
 	}
-	std::cerr << "[ObjectRegistry] Warning: Requested unknown object named " << name << ", returning default.\n";
+	std::cerr << "[BlockTypeRegistry] Warning: Requested unknown block named " << name << ", returning default.\n";
 	return _types[0];
 }
 

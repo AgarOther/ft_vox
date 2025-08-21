@@ -66,3 +66,9 @@ const std::string getFileAsString(const char * name)
 	}
 	return (content);
 }
+
+void voxLog(const std::string & message)
+{
+	srand(time(NULL));
+	std::cout << "[" << rand() % 9 << "]" << message << std::endl;
+}

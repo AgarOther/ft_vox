@@ -6,10 +6,12 @@
 #include <thread>
 #include <vector>
 
+extern std::mutex g_CHUNK_INFO;
+
 class ChunkWorker
 {
 	public:
-		ChunkWorker(): _active(false), _working(false) {};
+		ChunkWorker();
 
 		void					start();
 		bool					queue(const std::vector<Chunk * > & chunkQueue);
@@ -19,6 +21,8 @@ class ChunkWorker
 		void					_loop();
 		void					_process();
 
+		static uint8_t			_count;
+		uint8_t					_id;
 		std::thread				_thread;
 		std::mutex				_queueMutex;
 		std::atomic_bool		_active;

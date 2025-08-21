@@ -26,6 +26,9 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 		_chunkQueue.push_back(chunk);
+	g_CHUNK_INFO.lock();
+	std::cout << "[Monitor] Queued " << chunkQueue.size() << " chunks. Now has: " << _chunkQueue.size() << " chunks." << std::endl;
+	g_CHUNK_INFO.unlock();
 }
 
 void ChunkMonitor::_process()
@@ -41,7 +44,13 @@ void ChunkMonitor::_process()
 		if (!worker->isActive() && chunksToQueue > 0)
 		{
 			if (worker->queue({_chunkQueue.begin(), _chunkQueue.begin() + chunksToQueue}))
+			{
+				g_CHUNK_INFO.lock();
+				std::cout << "[Monitor] Processing " << _chunkQueue.size() << " chunks.";
 				_chunkQueue.erase(_chunkQueue.begin(), _chunkQueue.begin() + chunksToQueue);
+				std::cout << " Now has: " << _chunkQueue.size() << " chunks." << std::endl;;
+				g_CHUNK_INFO.unlock();
+			}
 		}
 	}
 }
