@@ -5,6 +5,7 @@
 #include "fastnoiselite/FastNoiseLite.h"
 #include "Location.hpp"
 #include <cstdint>
+#include <mutex>
 
 #define CHUNK_HEIGHT 256
 #define CHUNK_WIDTH 16
@@ -31,7 +32,9 @@ class Chunk
 
 		int						getChunkX() const { return _chunkX; }
 		int						getChunkZ() const { return _chunkZ; }
-		ChunkState				getState() const { return _state; }
+		ChunkState				getState() { const std::lock_guard<std::mutex> lg(_stateMutex); return _state; }
+
+		void					setState(ChunkState state) { const std::lock_guard<std::mutex> lg(_stateMutex); _state = state; }
 	private:
 		int						_chunkX;
 		int						_chunkZ;
@@ -50,6 +53,7 @@ class Chunk
 		bool					_generated;
 		World *					_world;
 		const TextureAtlas *	_atlas;
+		std::mutex				_stateMutex;
 		ChunkState				_state;
 
 		bool					isBlockVisible(int x, int y, int z);

@@ -45,8 +45,8 @@ int main(void)
 
 	World world;
 	std::vector<Chunk * > chunks;
-	for (int x = 0; x < 2; x++)
-		for (int z = 0; z < 2; z++)
+	for (int x = 0; x < 32; x++)
+		for (int z = 0; z < 32; z++)
 			chunks.push_back(new Chunk(x, z, noise, &world, &atlas));
 	world.sendToWorkers(chunks);
 

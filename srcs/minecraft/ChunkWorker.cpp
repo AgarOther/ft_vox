@@ -1,6 +1,5 @@
 #include "ChunkWorker.hpp"
 #include "colors.hpp"
-#include "utils.hpp"
 #include <mutex>
 #include <unistd.h>
 #include <iostream>
@@ -34,10 +33,7 @@ void ChunkWorker::_process()
 
 	_working = true;
 	for (Chunk * chunk : _chunkQueue)
-	{
-		chunk->generateBlocks();
 		chunk->generateMesh();
-	}
 	_chunkQueue.clear();
 	_working = false;
 }

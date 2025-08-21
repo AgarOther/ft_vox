@@ -47,6 +47,7 @@ void Chunk::generateBlocks()
 			}
 		}
 	}
+	_generated = true;
 }
 
 Chunk::~Chunk()
@@ -164,11 +165,13 @@ void Chunk::uploadMesh()
 	_faceIDs.shrink_to_fit();
 	_blockIDs.clear();
 	_blockIDs.shrink_to_fit();
-	_state = UPLOADED;
+	setState(UPLOADED);
 }
 
 void Chunk::generateMesh()
 {
+	if (!_generated)
+		generateBlocks();
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
 	std::vector<uint8_t> blockIDs;
@@ -267,7 +270,7 @@ void Chunk::generateMesh()
 	_indices = indices;
 	_blockIDs = blockIDs;
 	_faceIDs = faceIDs;
-	_state = GENERATED;
+	setState(GENERATED);
 }
 
 void Chunk::render(const Shader & shader) const
@@ -298,7 +301,7 @@ void Chunk::render(const Shader & shader) const
 
 BlockType Chunk::getBlockAt(const Location & loc)
 {
-	if (_state == IDLE)
+	if (getState() == IDLE)
 		return BlockTypeRegistry::getBlockType(AIR);
 	int localX = (static_cast<int>(std::floor(loc.getX())) % CHUNK_WIDTH + CHUNK_WIDTH) % CHUNK_WIDTH;
 	int localY = static_cast<int>(std::floor(loc.getY()));
@@ -342,7 +345,7 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 
 BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
 {
-	if (_state == IDLE)
+	if (getState() == IDLE)
 		return BlockTypeRegistry::getBlockType(AIR);
 	if (loc.getX() < 0 || loc.getX() >= CHUNK_WIDTH
 		|| loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT
