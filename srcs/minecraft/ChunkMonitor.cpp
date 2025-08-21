@@ -18,7 +18,7 @@ ChunkMonitor::ChunkMonitor() : _active(false)
 
 void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 {
-	std::lock_guard<std::mutex> lg(_queueMutex);
+	const std::lock_guard<std::mutex> lg(_queueMutex);
 	
 	if (chunkQueue.empty())
 		return;
@@ -30,7 +30,7 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 
 void ChunkMonitor::_process()
 {
-	std::lock_guard<std::mutex> lg(_queueMutex);
+	const std::lock_guard<std::mutex> lg(_queueMutex);
 	uint8_t	chunksToQueue;
 
 	if (_chunkQueue.empty())

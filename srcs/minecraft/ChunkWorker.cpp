@@ -6,7 +6,7 @@
 
 bool ChunkWorker::queue(const std::vector<Chunk * > & chunkQueue)
 {
-	std::lock_guard<std::mutex> lg(_queueMutex);
+	const std::lock_guard<std::mutex> lg(_queueMutex);
 
 	if (chunkQueue.empty())
 		return false;
@@ -19,7 +19,7 @@ bool ChunkWorker::queue(const std::vector<Chunk * > & chunkQueue)
 
 void ChunkWorker::_process()
 {
-	std::lock_guard<std::mutex> lg(_queueMutex);
+	const std::lock_guard<std::mutex> lg(_queueMutex);
 
 	if (_chunkQueue.empty())
 		return;
