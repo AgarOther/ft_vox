@@ -298,6 +298,8 @@ void Chunk::render(const Shader & shader) const
 
 BlockType Chunk::getBlockAt(const Location & loc)
 {
+	if (_state == IDLE)
+		return BlockTypeRegistry::getBlockType(AIR);
 	int localX = (static_cast<int>(std::floor(loc.getX())) % CHUNK_WIDTH + CHUNK_WIDTH) % CHUNK_WIDTH;
 	int localY = static_cast<int>(std::floor(loc.getY()));
 	int localZ = (static_cast<int>(std::floor(loc.getZ())) % CHUNK_DEPTH + CHUNK_DEPTH) % CHUNK_DEPTH;
@@ -331,6 +333,7 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 		return ;
 	}
 	_blocks[localX][localY][localZ] = newMaterial;
+	// ew
 	std::async(std::launch::async, [this]() {
 		generateMesh();
 	}).get();
@@ -339,6 +342,8 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 
 BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
 {
+	if (_state == IDLE)
+		return BlockTypeRegistry::getBlockType(AIR);
 	if (loc.getX() < 0 || loc.getX() >= CHUNK_WIDTH
 		|| loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT
 		|| loc.getZ() < 0 || loc.getZ() >= CHUNK_DEPTH)
