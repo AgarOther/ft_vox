@@ -67,7 +67,10 @@ void ChunkMonitor::_start()
 void ChunkMonitor::stop()
 {
 	for (ChunkWorker * worker : _workers)
+	{
 		worker->stop();
+		delete worker;
+	}
 	_active = false;
 	_thread.join();
 	std::cout << YELLOW << "[CHUNK] Stopped ChunkMonitor thread!" << RESET << std::endl;
