@@ -124,7 +124,7 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 		_chunks[std::pair<int, int>(chunk->getChunkX(), chunk->getChunkZ())] = chunk;
 	_monitor.queue(chunks);
 }
-#include <iostream>
+
 void World::generateProcedurally(const Player & player, const FastNoiseLite & noise, const TextureAtlas * atlas)
 {
 	const Location & center = player.getLocation();
@@ -142,8 +142,8 @@ void World::generateProcedurally(const Player & player, const FastNoiseLite & no
 				queue.push_back(new Chunk(x, z, noise, this, atlas));
 		}
 	}
-	std::cout << "Asked to procedurally generate " << queue.size() << " chunks at " << center << std::endl;
-	_sendToWorkers(queue);
+	if (!queue.empty())
+		_sendToWorkers(queue);
 }
 
 void World::shutdown()
