@@ -46,7 +46,7 @@ class Player
 		void				setVelocityY(float velocityY) { _velocity.y = velocityY; }
 		void				setVelocityZ(float velocityZ) { _velocity.z = velocityZ; }
 
-		void				interceptInputs(GLFWwindow * window, float deltaTime);
+		void				interceptInputs(GLFWwindow * window, float deltaTime, const FastNoiseLite & noise, const TextureAtlas * atlas);
 	private:
 		std::string			_name;
 		uint8_t				_health;

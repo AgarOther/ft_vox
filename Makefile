@@ -94,6 +94,9 @@ fclean :
 	@rm -rf $(OBJ_FOLDER)
 	$(ALL_FCLEAN)
 
+run: all
+	./$(NAME)
+
 re : fclean all
 
 debug : CFLAGS += -DDEBUG

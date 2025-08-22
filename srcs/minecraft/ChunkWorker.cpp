@@ -20,7 +20,10 @@ bool ChunkWorker::queue(const std::vector<Chunk * > & chunkQueue)
 
 	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
-		_chunkQueue.push_back(chunk);
+	{
+		if (chunk)
+			_chunkQueue.push_back(chunk);
+	}
 	return true;
 }
 
@@ -51,12 +54,12 @@ void ChunkWorker::start()
 {
 	_active = true;
 	_thread = std::thread(&ChunkWorker::_loop, this);
-	std::cout << GREEN << "[CHUNK] Started ChunkWorker thread!" << RESET << std::endl;
+	std::cout << GREEN << "[CHUNK] Started ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
 }
 
 void ChunkWorker::stop()
 {
 	_active = false;
 	_thread.join();
-	std::cout << YELLOW << "[CHUNK] Stopped ChunkWorker thread!" << RESET << std::endl;
+	std::cout << YELLOW << "[CHUNK] Stopped ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
 }

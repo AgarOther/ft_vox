@@ -44,11 +44,6 @@ int main(void)
 	noise.SetSeed(WORLD_SEED);
 
 	World world;
-	std::vector<Chunk * > chunks;
-	for (int x = 0; x < 32; x++)
-		for (int z = 0; z < 32; z++)
-			chunks.push_back(new Chunk(x, z, noise, &world, &atlas));
-	world.sendToWorkers(chunks);
 
 	Player player("Eleonore", width, height, &world);
 
@@ -66,7 +61,7 @@ int main(void)
 			showImGui(io, &player, deltaTime);
 		g_DEBUG_INFO.drawCalls = 0;
 
-		player.interceptInputs(window, deltaTime);
+		player.interceptInputs(window, deltaTime, noise, &atlas);
 		player.getCamera()->setupMatrix(shader);
 		skybox.render(player.getCamera());
 		shader.bind();
@@ -82,6 +77,7 @@ int main(void)
 		world.applyGravity(deltaTime);
 	}
 
+	world.shutdown();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	shutdownImGui();

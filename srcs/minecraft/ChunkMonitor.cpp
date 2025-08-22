@@ -25,7 +25,10 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 
 	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
-		_chunkQueue.push_back(chunk);
+	{
+		if (chunk && chunk->getState() == IDLE)
+			_chunkQueue.push_back(chunk);
+	}
 }
 
 void ChunkMonitor::_process()

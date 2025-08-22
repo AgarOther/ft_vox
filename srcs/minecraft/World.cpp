@@ -6,20 +6,6 @@
 #include "types.hpp"
 #include "utils.hpp"
 
-void World::sendToWorkers(std::vector<Chunk * > & chunks)
-{
-	for (Chunk * chunk : chunks)
-		_chunks[std::pair<int, int>(chunk->getChunkX(), chunk->getChunkZ())] = chunk;
-	_monitor.queue(chunks);
-}
-
-World::~World()
-{
-	_monitor.stop();
-	for (auto& [_, chunk] : _chunks)
-		delete chunk;
-}
-
 void World::render(const Shader & shader, const Player & player) const
 {
 	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
@@ -130,4 +116,39 @@ void World::applyGravity(float deltaTime)
 			player->teleport(teleportLocation);
 		}
 	}
+}
+
+void World::_sendToWorkers(std::vector<Chunk * > & chunks)
+{
+	for (Chunk * chunk : chunks)
+		_chunks[std::pair<int, int>(chunk->getChunkX(), chunk->getChunkZ())] = chunk;
+	_monitor.queue(chunks);
+}
+#include <iostream>
+void World::generateProcedurally(const Player & player, const FastNoiseLite & noise, const TextureAtlas * atlas)
+{
+	const Location & center = player.getLocation();
+	const int centerX = std::floor(center.getX() / CHUNK_WIDTH);
+	const int centerZ = std::floor(center.getZ() / CHUNK_DEPTH);
+	const uint8_t renderDistance = player.getCamera()->getRenderDistance();
+	std::vector<Chunk * > queue;
+
+	for (int x = centerX + renderDistance; x >= centerX - renderDistance; x--)
+	{
+		for (int z = centerZ + renderDistance; z >= centerZ - renderDistance; z --)
+		{
+			Chunk * tmp = getChunkAt(x, z);
+			if (!tmp)
+				queue.push_back(new Chunk(x, z, noise, this, atlas));
+		}
+	}
+	std::cout << "Asked to procedurally generate " << queue.size() << " chunks at " << center << std::endl;
+	_sendToWorkers(queue);
+}
+
+void World::shutdown()
+{
+	_monitor.stop();
+	for (auto& [_, chunk] : _chunks)
+		delete chunk;
 }

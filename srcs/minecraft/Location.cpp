@@ -125,5 +125,5 @@ glm::vec3 Location::getVec3() const
 
 std::ostream& operator<<(std::ostream& os, const Location& loc)
 {
-	return os << "(" << loc.getX() << ", " << loc.getY() << ", " << loc.getZ() << ")" << std::endl;
+	return os << "(" << loc.getX() << ", " << loc.getY() << ", " << loc.getZ() << ")";
 }

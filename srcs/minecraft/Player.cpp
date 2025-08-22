@@ -36,7 +36,7 @@ static glm::vec3 translateDirection(const float yaw, const float pitch)
 	return (direction);
 }
 
-void Player::interceptInputs(GLFWwindow * window, float deltaTime)
+void Player::interceptInputs(GLFWwindow * window, float deltaTime, const FastNoiseLite & noise, const TextureAtlas * atlas)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE))
 	{
@@ -152,6 +152,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		if (_world->getBlockAt(test).isSolid && _gamemode != CREATIVE)
 			return;
 		teleport(finalLocation);
+		_world->generateProcedurally(*this, noise, atlas);
 	}
 }
 
