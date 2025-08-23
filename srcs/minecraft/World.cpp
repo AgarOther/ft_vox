@@ -158,7 +158,7 @@ void World::generateProcedurally()
 			{
 				Chunk * tmp = getChunkAtChunkLocation(x, z);
 				if (!tmp || tmp->getState() == GENERATED)
-					queue.push_back(new Chunk(x, z, this));
+					queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
 			}
 		}
 		if (!queue.empty())
