@@ -27,7 +27,7 @@ void Chunk::generateBlocks()
 				float worldX = static_cast<float>(_chunkX * CHUNK_WIDTH + x);
 				float worldZ = static_cast<float>(_chunkZ * CHUNK_DEPTH + z);
 
-				float noiseValue = _noise.GetNoise(worldX * frequency, worldZ * frequency);
+				float noiseValue = _world->getNoise().GetNoise(worldX * frequency, worldZ * frequency);
 				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + baseHeight);
 				int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 2;
 
@@ -46,7 +46,7 @@ void Chunk::generateBlocks()
 			}
 		}
 	}
-	_generated = true;
+	setState(GENERATED);
 }
 
 Chunk::~Chunk()
@@ -190,7 +190,7 @@ void Chunk::unloadMesh()
 
 void Chunk::generateMesh()
 {
-	if (!_generated)
+	if (getState() == IDLE)
 		generateBlocks();
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
@@ -242,9 +242,9 @@ void Chunk::generateMesh()
 							vertices.push_back(vx);
 							vertices.push_back(vy);
 							vertices.push_back(vz);
-							glm::vec2 baseUV = _atlas->getUVForBlock(block.type, static_cast<BlockFace>(face)); // send face
-							float tileSize = 1.0f / _atlas->getTilesPerRow();
-							float epsilon = 0.001f / _atlas->getWidth();
+							glm::vec2 baseUV = _world->getAtlas()->getUVForBlock(block.type, static_cast<BlockFace>(face)); // send face
+							float tileSize = 1.0f / _world->getAtlas()->getTilesPerRow();
+							float epsilon = 0.001f / _world->getAtlas()->getWidth();
 
 							float localU = blockVertices[vi + 3];
 							float localV = blockVertices[vi + 4];
@@ -290,7 +290,7 @@ void Chunk::generateMesh()
 	_indices = indices;
 	_blockIDs = blockIDs;
 	_faceIDs = faceIDs;
-	setState(GENERATED);
+	setState(MESHED);
 }
 
 void Chunk::render(const Shader & shader) const
@@ -306,7 +306,7 @@ void Chunk::render(const Shader & shader) const
 	shader.setMat4("model", model);
 	shader.setVec3("lightDir", glm::normalize(glm::vec3(1.0f, -1.5f, 0.8f)));
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _atlas->getTextureID());
+	glBindTexture(GL_TEXTURE_2D, _world->getAtlas()->getTextureID());
 	shader.setInt("textureAtlas", 0);
 	g_DEBUG_INFO.drawCalls++;
 	if (g_DEBUG_INFO.wireframe)

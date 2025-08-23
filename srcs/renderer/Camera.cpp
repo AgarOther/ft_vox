@@ -17,7 +17,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 8;
+	_renderDistance = 1;
 
 	glm::vec3 direction;
 	direction.x = cosf(glm::radians(_yaw)) * cosf(glm::radians(_pitch));

@@ -5,27 +5,28 @@
 #include "Location.hpp"
 #include "types.hpp"
 #include "utils.hpp"
+#include <chrono>
 
 void World::render(const Shader & shader, const Player & player) const
 {
-	const uint8_t renderDistance = player.getCamera()->getRenderDistance();
+	const uint8_t renderDistance = player.getCamera()->getRenderDistance() + 1;
 	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
 	for (auto & [_, chunkPtr] : _chunks)
 	{
 		if (chunkPtr->getState() == IDLE)
 			continue;
-		if (chunkPtr->getState() == GENERATED)
-			chunkPtr->uploadMesh();
 		if (chunkPtr->getState() == UPLOADED &&
-			(chunkPtr->getChunkX() > static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) + renderDistance + 1
-			|| chunkPtr->getChunkX() < static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) - renderDistance + 1
-			|| chunkPtr->getChunkZ() > static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) + renderDistance + 1
-			|| chunkPtr->getChunkZ() < static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) - renderDistance + 1))
+			(chunkPtr->getChunkX() > static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) + renderDistance
+			|| chunkPtr->getChunkX() < static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) - renderDistance
+			|| chunkPtr->getChunkZ() > static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) + renderDistance
+			|| chunkPtr->getChunkZ() < static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) - renderDistance))
 		{
 			chunkPtr->unloadMesh();
 			continue;
 		}
+		if (chunkPtr->getState() == MESHED)
+			chunkPtr->uploadMesh();
 		const int chunkX = chunkPtr->getChunkX();
 		const int chunkZ = chunkPtr->getChunkZ();
 		glm::vec3 min = {
@@ -135,25 +136,34 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 	_monitor.queue(chunks);
 }
 
-void World::generateProcedurally(const Player & player, const FastNoiseLite & noise, const TextureAtlas * atlas)
+void World::generateProcedurally()
 {
-	const Location & center = player.getLocation();
-	const int centerX = std::floor(center.getX() / CHUNK_WIDTH);
-	const int centerZ = std::floor(center.getZ() / CHUNK_DEPTH);
-	const uint8_t renderDistance = player.getCamera()->getRenderDistance();
-	std::vector<Chunk * > queue;
+	static long cooldown = 0;
+	if (cooldown && getTimeAsMilliseconds() - cooldown < 250)
+		return;
+	cooldown = getTimeAsMilliseconds();
 
-	for (int x = centerX + renderDistance; x >= centerX - renderDistance; x--)
+	for (auto it = _players.begin(); it != _players.end(); ++it)
 	{
-		for (int z = centerZ + renderDistance; z >= centerZ - renderDistance; z--)
+		Player * player = it->second;
+		const Location & center = player->getLocation();
+		const int centerX = std::floor(center.getX() / CHUNK_WIDTH);
+		const int centerZ = std::floor(center.getZ() / CHUNK_DEPTH);
+		const uint8_t renderDistance = player->getCamera()->getRenderDistance();
+		std::vector<Chunk * > queue;
+
+		for (int x = centerX - renderDistance; x < centerX + renderDistance; x++)
 		{
-			Chunk * tmp = getChunkAtChunkLocation(x, z);
-			if (!tmp)
-				queue.push_back(new Chunk(x, z, noise, this, atlas));
+			for (int z = centerZ - renderDistance; z < centerZ + renderDistance; z++)
+			{
+				Chunk * tmp = getChunkAtChunkLocation(x, z);
+				if (!tmp || tmp->getState() == GENERATED)
+					queue.push_back(new Chunk(x, z, this));
+			}
 		}
+		if (!queue.empty())
+			_sendToWorkers(queue);
 	}
-	if (!queue.empty())
-		_sendToWorkers(queue);
 }
 
 void World::shutdown()

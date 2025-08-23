@@ -20,6 +20,7 @@ Object						getObjectFromFile(const std::string & filepath);
 int							floorDiv(int value, int divisor);
 void                        dispatchCommand(char * buffer, Player * player);
 void						voxLog(const std::string & message);
+long						getTimeAsMilliseconds();
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);

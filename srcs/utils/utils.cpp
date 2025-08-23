@@ -72,3 +72,10 @@ void voxLog(const std::string & message)
 	srand(time(NULL));
 	std::cout << "[" << rand() % 9 << "]" << message << std::endl;
 }
+
+long getTimeAsMilliseconds()
+{
+	std::chrono::time_point now = std::chrono::system_clock::now();
+	auto ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
+	return std::chrono::duration_cast<std::chrono::milliseconds>(ms.time_since_epoch()).count();
+}

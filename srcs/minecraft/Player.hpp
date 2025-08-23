@@ -46,7 +46,7 @@ class Player
 		void				setVelocityY(float velocityY) { _velocity.y = velocityY; }
 		void				setVelocityZ(float velocityZ) { _velocity.z = velocityZ; }
 
-		void				interceptInputs(GLFWwindow * window, float deltaTime, const FastNoiseLite & noise, const TextureAtlas * atlas);
+		void				interceptInputs(GLFWwindow * window, float deltaTime);
 	private:
 		std::string			_name;
 		uint8_t				_health;
@@ -57,4 +57,5 @@ class Player
 		BoundingBox			_boundingBox;
 		Gamemode			_gamemode;
 		glm::vec3			_velocity;
+		bool				_spawned;
 };

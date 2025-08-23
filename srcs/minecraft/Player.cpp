@@ -6,19 +6,21 @@
 #include <Chunk.hpp>
 #include <cmath>
 #include <cstdlib>
+#include <unistd.h>
 
 Player::Player(const std::string & name, int width, int height, World * world)
 {
 	_name = name;
 	_health = 20;
 	_world = world;
-	_spawnLocation = Location(32.0, static_cast<double>(world->getHighestY(32, 32)), 32.0);
+	_spawnLocation = Location(0.0, 0.0, 0.0);
 	_camera = new Camera(width, height, _spawnLocation.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).getVec3());
 	_location = _spawnLocation.clone();
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
 	_gamemode = CREATIVE;
 	_velocity = glm::vec3(0.0f);
 	_world->addPlayer(this);
+	_spawned = false;
 }
 
 Player::~Player()
@@ -36,12 +38,34 @@ static glm::vec3 translateDirection(const float yaw, const float pitch)
 	return (direction);
 }
 
-void Player::interceptInputs(GLFWwindow * window, float deltaTime, const FastNoiseLite & noise, const TextureAtlas * atlas)
+void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE))
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 		return;
+	}
+
+	static bool lastFramePressedF3 = false;
+	const bool keyPressedF3 = glfwGetKey(window, GLFW_KEY_F3);
+	if (keyPressedF3 && !lastFramePressedF3)
+		_camera->setGui(!_camera->hasGuiOn());
+
+	static bool lastFramePressedF11 = false;
+	const bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
+	if (keyPressedF11 && !lastFramePressedF11)
+		toggleFullscreen(window, _camera);
+
+	if (!_spawned)
+	{
+		if (_world->getChunkAt(0, 0)->getState() >= GENERATED)
+		{
+			_spawnLocation.setY(_world->getHighestY(0, 0));
+			teleport(_spawnLocation);
+			_spawned = true;
+		}
+		else
+			return;
 	}
 	
 	/* GPT Code */
@@ -88,16 +112,6 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime, const FastNoi
 				setVelocityY(JUMP_STRENGTH);
 		}
 	}
-
-	static bool lastFramePressedF3 = false;
-	const bool keyPressedF3 = glfwGetKey(window, GLFW_KEY_F3);
-	if (keyPressedF3 && !lastFramePressedF3)
-		_camera->setGui(!_camera->hasGuiOn());
-
-	static bool lastFramePressedF11 = false;
-	const bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
-	if (keyPressedF11 && !lastFramePressedF11)
-		toggleFullscreen(window, _camera);
 
 	// Mouse inputs
 	if (!_camera->isLocked() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
@@ -152,7 +166,6 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime, const FastNoi
 		if (_world->getBlockAt(test).isSolid && _gamemode != CREATIVE)
 			return;
 		teleport(finalLocation);
-		_world->generateProcedurally(*this, noise, atlas);
 	}
 }
 

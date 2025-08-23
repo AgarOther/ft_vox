@@ -17,9 +17,9 @@ class World;
 class Chunk
 {
 	public:
-		Chunk(int chunkX, int chunkZ, const FastNoiseLite & noise, World * world, const TextureAtlas * atlas):
-			_chunkX(chunkX), _chunkZ(chunkZ), _noise(noise), _vao(0), _vbo(0), _ibo(0), _bbo(0), _fbo(0),
-			_generated(false), _world(world), _atlas(atlas), _state(IDLE) {}
+		Chunk(int chunkX, int chunkZ, World * world):
+			_chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0), _bbo(0), _fbo(0),
+			 _world(world), _state(IDLE) {}
 		~Chunk();
 
 		void					generateBlocks();
@@ -39,7 +39,6 @@ class Chunk
 	private:
 		int						_chunkX;
 		int						_chunkZ;
-		FastNoiseLite			_noise;
 		GLuint					_vao;
 		GLuint					_vbo;
 		GLuint					_ibo;
@@ -51,9 +50,7 @@ class Chunk
 		std::vector<uint32_t>	_indices;
 		std::vector<uint8_t>	_blockIDs;
 		std::vector<uint8_t>	_faceIDs;
-		bool					_generated;
 		World *					_world;
-		const TextureAtlas *	_atlas;
 		std::mutex				_stateMutex;
 		ChunkState				_state;
 

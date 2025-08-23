@@ -29,7 +29,7 @@ struct PlayerHash
 class World
 {
 	public:
-		World() {};
+		World(TextureAtlas * atlas, const FastNoiseLite & noise): _atlas(atlas), _noise(noise) {};
 
 		void					render(const Shader & shader, const Player & player) const;
 
@@ -38,11 +38,13 @@ class World
 		BlockType				getBlockAt(const Location & loc) const;
 		const Player *			getPlayer(const std::string & name) const;
 		int						getHighestY(int x, int z) const;
+		TextureAtlas *			getAtlas() const { return _atlas; }
+		const FastNoiseLite &	getNoise() const { return _noise; }
 
 		void					addPlayer(Player * player);
 		void					applyGravity(float deltaTime);
 
-		void					generateProcedurally(const Player & player, const FastNoiseLite & noise, const TextureAtlas * atlas); // wow!
+		void					generateProcedurally(); // wow!
 		
 		void					shutdown();
 	private:
@@ -53,4 +55,6 @@ class World
 		typedef std::unordered_map<std::string, Player * > PlayerList;
 		PlayerList				_players;
 		ChunkMonitor			_monitor;
+		TextureAtlas *			_atlas;
+		FastNoiseLite			_noise;
 };

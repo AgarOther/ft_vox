@@ -26,7 +26,7 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 	{
-		if (chunk && chunk->getState() == IDLE)
+		if (chunk && chunk->getState() <= GENERATED)
 			_chunkQueue.push_back(chunk);
 	}
 }
@@ -69,12 +69,12 @@ void ChunkMonitor::_start()
 
 void ChunkMonitor::stop()
 {
+	_active = false;
+	_thread.join();
 	for (ChunkWorker * worker : _workers)
 	{
 		worker->stop();
 		delete worker;
 	}
-	_active = false;
-	_thread.join();
 	std::cout << YELLOW << "[CHUNK] Stopped ChunkMonitor thread!" << RESET << std::endl;
 }

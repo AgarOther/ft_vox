@@ -43,7 +43,7 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world;
+	World world(&atlas, noise);
 
 	Player player("Eleonore", width, height, &world);
 
@@ -51,7 +51,6 @@ int main(void)
 	double endTime;
 	double deltaTime = 0;
 
-	world.generateProcedurally(player, noise, &atlas);
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
@@ -63,7 +62,8 @@ int main(void)
 			showImGui(io, &player, deltaTime);
 		g_DEBUG_INFO.drawCalls = 0;
 
-		player.interceptInputs(window, deltaTime, noise, &atlas);
+		world.generateProcedurally();
+		player.interceptInputs(window, deltaTime);
 		player.getCamera()->setupMatrix(shader);
 		skybox.render(player.getCamera());
 		shader.bind();
