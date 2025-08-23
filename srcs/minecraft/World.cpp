@@ -135,9 +135,9 @@ void World::generateProcedurally(const Player & player, const FastNoiseLite & no
 
 	for (int x = centerX + renderDistance; x >= centerX - renderDistance; x--)
 	{
-		for (int z = centerZ + renderDistance; z >= centerZ - renderDistance; z --)
+		for (int z = centerZ + renderDistance; z >= centerZ - renderDistance; z--)
 		{
-			Chunk * tmp = getChunkAt(x, z);
+			Chunk * tmp = getChunkAtChunkLocation(x, z);
 			if (!tmp)
 				queue.push_back(new Chunk(x, z, noise, this, atlas));
 		}

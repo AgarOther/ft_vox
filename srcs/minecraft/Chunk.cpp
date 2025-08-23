@@ -13,8 +13,8 @@
 
 std::mutex g_debugMutex;
 
-float frequency = 2.50f;
-float amplitude = 10.2f; // Max terrain height variation
+float frequency = 3.50f;
+float amplitude = 32.2f; // Max terrain height variation
 int baseHeight = 68;
 
 void Chunk::generateBlocks()

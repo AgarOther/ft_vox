@@ -14,7 +14,7 @@ Player::Player(const std::string & name, int width, int height, World * world)
 	_world = world;
 	_spawnLocation = Location(32.0, static_cast<double>(world->getHighestY(32, 32)), 32.0);
 	_camera = new Camera(width, height, _spawnLocation.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).getVec3());
-	_location = Location(_camera->getPosition()).sub(0.0, CAMERA_OFFSET_Y, 0.0);
+	_location = _spawnLocation.clone();
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
 	_gamemode = CREATIVE;
 	_velocity = glm::vec3(0.0f);
