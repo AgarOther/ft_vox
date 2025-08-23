@@ -107,10 +107,10 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 		camera->setSensitivity(sensitivity);
 
 	// Render Distance
-	int farPlane = static_cast<int>(camera->getFarPlane());
-	ImGui::SliderInt("Render Distance", &farPlane, 10, 1000, "%d Blocks", ImGuiSliderFlags_AlwaysClamp);
-	if (farPlane != static_cast<int>(camera->getFarPlane()))
-		camera->setFarPlane(static_cast<float>(farPlane));
+	int renderDistance = camera->getRenderDistance();
+	ImGui::SliderInt("Render Distance", &renderDistance, 2, 64, "%d Chunks", ImGuiSliderFlags_AlwaysClamp);
+	if (renderDistance != static_cast<int>(camera->getRenderDistance()))
+		camera->setRenderDistance(static_cast<float>(renderDistance));
 
 	// VSync
 	static bool vsync = true;
