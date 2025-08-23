@@ -8,6 +8,7 @@
 
 void World::render(const Shader & shader, const Player & player) const
 {
+	const uint8_t renderDistance = player.getCamera()->getRenderDistance();
 	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
 	for (auto & [_, chunkPtr] : _chunks)
@@ -16,6 +17,15 @@ void World::render(const Shader & shader, const Player & player) const
 			continue;
 		if (chunkPtr->getState() == GENERATED)
 			chunkPtr->uploadMesh();
+		if (chunkPtr->getState() == UPLOADED &&
+			(chunkPtr->getChunkX() > static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) + renderDistance + 1
+			|| chunkPtr->getChunkX() < static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) - renderDistance + 1
+			|| chunkPtr->getChunkZ() > static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) + renderDistance + 1
+			|| chunkPtr->getChunkZ() < static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) - renderDistance + 1))
+		{
+			chunkPtr->unloadMesh();
+			continue;
+		}
 		const int chunkX = chunkPtr->getChunkX();
 		const int chunkZ = chunkPtr->getChunkZ();
 		glm::vec3 min = {

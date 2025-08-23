@@ -25,6 +25,7 @@ class Chunk
 		void					generateBlocks();
 		void					generateMesh();
 		void					uploadMesh();
+		void					unloadMesh();
 		void					render(const Shader & shader) const;
 		BlockType				getBlockAt(const Location & loc);
 		BlockType				getBlockAtChunkLocation(const Location & loc);

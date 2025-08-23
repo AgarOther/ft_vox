@@ -9,7 +9,6 @@
 #include "errors.hpp"
 #include "types.hpp"
 #include "utils.hpp"
-#include <future>
 
 std::mutex g_debugMutex;
 
@@ -52,16 +51,7 @@ void Chunk::generateBlocks()
 
 Chunk::~Chunk()
 {
-	if (_vbo)
-		glDeleteBuffers(1, &_vbo);
-	if (_vao)
-		glDeleteVertexArrays(1, &_vao);
-	if (_ibo)
-		glDeleteBuffers(1, &_ibo);
-	if (_bbo)
-		glDeleteBuffers(1, &_bbo);
-	if (_fbo)
-		glDeleteBuffers(1, &_fbo);
+	unloadMesh();
 }
 
 inline bool Chunk::isBlockVisible(int x, int y, int z)
@@ -166,6 +156,36 @@ void Chunk::uploadMesh()
 	_blockIDs.clear();
 	_blockIDs.shrink_to_fit();
 	setState(UPLOADED);
+}
+
+void Chunk::unloadMesh()
+{
+	if (_vbo)
+	{
+		glDeleteBuffers(1, &_vbo);
+		_vbo = 0;
+	}
+	if (_ibo)
+	{
+		glDeleteBuffers(1, &_ibo);
+		_ibo = 0;
+	}
+	if (_bbo)
+	{
+		glDeleteBuffers(1, &_bbo);
+		_bbo = 0;
+	}
+	if (_fbo)
+	{
+		glDeleteBuffers(1, &_fbo);
+		_fbo = 0;
+	}
+	if (_vao)
+	{
+		glDeleteVertexArrays(1, &_vao);
+		_vao = 0;
+	}
+	setState(GENERATED);
 }
 
 void Chunk::generateMesh()
@@ -336,11 +356,8 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 		return ;
 	}
 	_blocks[localX][localY][localZ] = newMaterial;
-	// ew
-	std::async(std::launch::async, [this]() {
-		generateMesh();
-	}).get();
-	uploadMesh();
+	// need to change mesh too
+	setState(GENERATED);
 }
 
 BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
