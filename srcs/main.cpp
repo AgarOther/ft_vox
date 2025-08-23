@@ -51,7 +51,6 @@ int main(void)
 	double endTime;
 	double deltaTime = 0;
 
-
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{

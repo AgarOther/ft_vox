@@ -5,6 +5,7 @@
 #include "Player.hpp"
 #include "types.hpp"
 #include "imgui/imgui.h"
+#include <iostream>
 
 extern DebugInfo g_DEBUG_INFO;
 extern const unsigned long long WORLD_SEED;
