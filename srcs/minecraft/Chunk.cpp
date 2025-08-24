@@ -32,7 +32,7 @@ void Chunk::generateBlocks()
 				int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 2;
 
 				if (y == height)
-					_blocks[x][y][z] = rand() % 8 + 1;
+					_blocks[x][y][z] = GRASS_BLOCK;
 				else if (y < height && y > height - stoneOffset)
 					_blocks[x][y][z] = DIRT;
 				else if (y <= height - stoneOffset)

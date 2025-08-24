@@ -135,17 +135,6 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 	}
 
 	// Key lock
-	static bool lock = false;
-	static bool lockChanged = false;
-	ImGui::SameLine();
-	ImGui::Checkbox("Lock keys", &lock);
-	if (lock != lockChanged)
-	{
-		camera->setLocked(lock);
-		lockChanged = lock;
-	}
-
-	// Key lock
 	static bool wireframe = false;
 	static bool wireframeChanged = false;
 	ImGui::SameLine();

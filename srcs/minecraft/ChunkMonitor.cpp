@@ -60,11 +60,11 @@ void ChunkMonitor::_loop()
 
 void ChunkMonitor::_start()
 {
+	std::cout << GREEN << "[CHUNK] Started ChunkMonitor thread!" << RESET << std::endl;
 	_active = true;
 	for (ChunkWorker * worker : _workers)
 		worker->start();
 	_thread = std::thread(&ChunkMonitor::_loop, this);
-	std::cout << GREEN << "[CHUNK] Started ChunkMonitor thread!" << RESET << std::endl;
 }
 
 void ChunkMonitor::stop()

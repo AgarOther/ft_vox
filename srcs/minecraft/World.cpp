@@ -5,7 +5,6 @@
 #include "Location.hpp"
 #include "types.hpp"
 #include "utils.hpp"
-#include <chrono>
 
 void World::render(const Shader & shader, const Player & player) const
 {

@@ -56,6 +56,11 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	if (keyPressedF11 && !lastFramePressedF11)
 		toggleFullscreen(window, _camera);
 
+	static bool lastFrameKeysLocked = false;
+	const bool keyPressedL = glfwGetKey(window, GLFW_KEY_L);
+	if (keyPressedL && !lastFrameKeysLocked)
+		_camera->setLocked(!_camera->isLocked());
+
 	if (!_spawned)
 	{
 		if (_world->getChunkAt(0, 0)->getState() >= GENERATED)
@@ -67,7 +72,9 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		else
 			return;
 	}
-	
+
+	Location finalLocation = getLocation();
+
 	/* GPT Code */
 	// GPT my friend who helps me with the weirdest maths
 	// Calculate forward vector for movement based on pitch (only in X-Z plane)
@@ -83,10 +90,9 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	const glm::vec3 right = glm::normalize(glm::cross(forward, _camera->getAltitude())); // Right direction is based on forward and altitude (up vector)
 	/* End GPT Code */
 
-	// Key management
-	Location finalLocation = getLocation();
 	if (!_camera->isLocked())
 	{
+		// Key management
 		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
 
 		// (Base speed * Run speed (if shift pressed) + Velocity acceleration * velocityY (faster if going up, slower if going down)) * deltaTime
@@ -108,23 +114,15 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		}
 		else
 		{
-			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS) && getBlockUnder().isSolid)
+			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+					&& getBlockUnder().isSolid)
 				setVelocityY(JUMP_STRENGTH);
 		}
-	}
 
-	// Mouse inputs
-	if (!_camera->isLocked() && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
-	{
+		// Camera movement
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		double mouseX, mouseY;
 
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-		if (_camera->hasClicked())
-		{
-			glfwSetCursorPos(window, (static_cast<float>(_camera->getWidth()) / 2), (static_cast<float>(_camera->getHeight()) / 2));
-			_camera->setClicked(false);
-		}
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 
 		const float rotX = _camera->getSensitivity() * static_cast<float>(mouseY - (static_cast<float>(_camera->getHeight()) / 2)) / static_cast<float>(_camera->getHeight());
@@ -148,16 +146,11 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		glfwSetCursorPos(window, (static_cast<float>(_camera->getWidth()) / 2), (static_cast<float>(_camera->getHeight()) / 2));
 	}
 	else
-	{
-		if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
-		{
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			glfwSetCursorPos(window, (static_cast<float>(_camera->getWidth()) / 2), (static_cast<float>(_camera->getHeight()) / 2));
-		}
-		_camera->setClicked(true);
-	}
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
 	lastFramePressedF3 = keyPressedF3;
 	lastFramePressedF11 = keyPressedF11;
+	lastFrameKeysLocked = keyPressedL;
 	if (getLocation() != finalLocation)
 	{
 		Location test = finalLocation.clone();

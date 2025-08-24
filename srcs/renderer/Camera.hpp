@@ -29,7 +29,6 @@ class Camera
 		float		getPitch() const { return _pitch; }
 		float		getFOV() const { return _FOV; }
 		float		getFarPlane() const { return _farPlane; }
-		bool		hasClicked() const { return _firstClick; }
 		bool		hasGuiOn() const { return _guiOn; }
 		bool		isLocked() const { return _locked; }
 		bool		isFullscreen() const { return (_fullScreen); }
@@ -48,7 +47,6 @@ class Camera
 		void		setPitch(const float s) { _pitch = s; }
 		void		setFOV(const float s) { _FOV = s; }
 		void		setFarPlane(const float farPlane) { _farPlane = farPlane; }
-		void		setClicked(bool clicked) { _firstClick = clicked; }
 		void		setGui(bool guiOn) { _guiOn = guiOn; }
 		void		setLocked(bool lock) { _locked = lock; }
 		void		setFullscreen(bool fullscreen) { _fullScreen = fullscreen; }
@@ -68,7 +66,6 @@ class Camera
 		float		_pitch;
 		float		_FOV;
 		float		_farPlane;
-		bool		_firstClick;
 		bool		_guiOn;
 		bool		_locked;
 		bool		_fullScreen;

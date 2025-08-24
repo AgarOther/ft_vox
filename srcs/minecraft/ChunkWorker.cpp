@@ -52,9 +52,9 @@ void ChunkWorker::_loop()
 
 void ChunkWorker::start()
 {
+	std::cout << GREEN << "[CHUNK] Started ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
 	_active = true;
 	_thread = std::thread(&ChunkWorker::_loop, this);
-	std::cout << GREEN << "[CHUNK] Started ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
 }
 
 void ChunkWorker::stop()
