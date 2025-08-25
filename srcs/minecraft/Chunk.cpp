@@ -190,8 +190,6 @@ void Chunk::unloadMesh()
 
 void Chunk::generateMesh()
 {
-	if (getState() == IDLE)
-		generateBlocks();
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
 	std::vector<uint8_t> blockIDs;

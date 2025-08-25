@@ -36,7 +36,12 @@ void ChunkWorker::_process()
 
 	_working = true;
 	for (Chunk * chunk : _chunkQueue)
-		chunk->generateMesh();
+	{
+		if (chunk->getState() == IDLE)
+			chunk->generateBlocks();
+		else
+			chunk->generateMesh();
+	}
 	_chunkQueue.clear();
 	_working = false;
 }

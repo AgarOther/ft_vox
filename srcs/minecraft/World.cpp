@@ -138,7 +138,7 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 void World::generateProcedurally()
 {
 	static long cooldown = 0;
-	if (cooldown && getTimeAsMilliseconds() - cooldown < 250)
+	if (cooldown && getTimeAsMilliseconds() - cooldown < 100)
 		return;
 	cooldown = getTimeAsMilliseconds();
 

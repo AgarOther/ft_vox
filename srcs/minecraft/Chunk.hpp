@@ -56,5 +56,4 @@ class Chunk
 
 		bool					isBlockVisible(int x, int y, int z);
 		bool					isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
-		float					getBrightness(BlockFace face, int x, int y, int z);
 };	
