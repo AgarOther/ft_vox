@@ -135,6 +135,7 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 	_monitor.queue(chunks);
 }
 
+// next step is to have new chunks mark neighboring chunks as dirty to rebuild mesh flawlessly by preparing new vbo/vao and then swapping the new with old
 void World::generateProcedurally()
 {
 	static long cooldown = 0;

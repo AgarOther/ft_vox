@@ -81,6 +81,7 @@ enum ChunkState
 {
 	IDLE,
 	GENERATED,
+	DIRTY,
 	MESHED,
 	UPLOADED
 };
