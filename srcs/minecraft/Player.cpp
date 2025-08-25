@@ -61,6 +61,10 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	if (keyPressedL && !lastFrameKeysLocked)
 		_camera->setLocked(!_camera->isLocked());
 
+	lastFramePressedF3 = keyPressedF3;
+	lastFramePressedF11 = keyPressedF11;
+	lastFrameKeysLocked = keyPressedL;
+
 	if (!_spawned)
 	{
 		if (_world->getChunkAt(0, 0)->getState() >= GENERATED)
@@ -73,6 +77,21 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 			return;
 	}
 
+	static bool lastFrameMouseClicked = false;
+	const bool mouseClickedL = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+	if (mouseClickedL && !lastFrameMouseClicked)
+	{
+		Block block = getTargetedBlock();
+		if (block.blockType.type != AIR)
+		{
+			const Location position = getTargetedBlock().position;
+			Chunk * chunk = _world->getChunkAt(position.getX(), position.getZ());
+			if (chunk)
+				chunk->changeBlockAt(getTargetedBlock().position, AIR);
+		}
+	}
+	lastFrameMouseClicked = mouseClickedL;
+	
 	Location finalLocation = getLocation();
 
 	/* GPT Code */
@@ -148,9 +167,6 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	else
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-	lastFramePressedF3 = keyPressedF3;
-	lastFramePressedF11 = keyPressedF11;
-	lastFrameKeysLocked = keyPressedL;
 	if (getLocation() != finalLocation)
 	{
 		Location test = finalLocation.clone();

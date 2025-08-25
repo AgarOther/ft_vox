@@ -12,9 +12,9 @@
 
 std::mutex g_debugMutex;
 
-float frequency = 3.50f;
-float amplitude = 32.2f; // Max terrain height variation
-int baseHeight = 68;
+float frequency = 0.8f;
+float amplitude = 28.f; // Max terrain height variation
+int baseHeight = 64;
 
 void Chunk::generateBlocks()
 {
@@ -356,8 +356,6 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 		return ;
 	}
 	_blocks[localX][localY][localZ] = newMaterial;
-	// need to change mesh too
-	setState(GENERATED);
 }
 
 BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
