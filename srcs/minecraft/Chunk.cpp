@@ -287,7 +287,7 @@ void Chunk::generateMesh()
 
 void Chunk::render(const Shader & shader) const
 {
-	if (_indicesSize == 0)
+	if (_indicesSize == 0 || !_vao)
 		return;
 	glBindVertexArray(_vao);
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(
