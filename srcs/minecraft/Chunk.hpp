@@ -29,6 +29,7 @@ class Chunk
 		void					render(const Shader & shader) const;
 		BlockType				getBlockAt(const Location & loc);
 		BlockType				getBlockAtChunkLocation(const Location & loc);
+		std::vector<Chunk * >	getNeighborChunks();
 		void					changeBlockAt(const Location & loc, Material newMaterial);
 
 		int						getChunkX() const { return _chunkX; }

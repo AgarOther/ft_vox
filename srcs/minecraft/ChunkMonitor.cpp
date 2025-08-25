@@ -1,4 +1,5 @@
 #include "ChunkMonitor.hpp"
+#include "ChunkWorker.hpp"
 #include "colors.hpp"
 #include "errors.hpp"
 #include "utils.hpp"
@@ -29,6 +30,16 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 		if (chunk && chunk->getState() <= GENERATED)
 			_chunkQueue.push_back(chunk);
 	}
+}
+
+bool ChunkMonitor::areWorkersWorking()
+{
+	for (ChunkWorker * worker : _workers)
+	{
+		if (worker->isWorking())
+			return true;
+	}
+	return false;
 }
 
 void ChunkMonitor::_process()

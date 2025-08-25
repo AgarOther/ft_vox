@@ -33,14 +33,14 @@ void Chunk::generateBlocks()
 
 				if (y == height)
 					_blocks[x][y][z] = GRASS_BLOCK;
+				else if (y == 0)
+					_blocks[x][y][z] = BEDROCK;
 				else if (y < height && y > height - stoneOffset)
 					_blocks[x][y][z] = DIRT;
 				else if (y <= height - stoneOffset)
 					_blocks[x][y][z] = STONE;
 				else if (y > height)
 					_blocks[x][y][z] = AIR;
-				else if (y == 0)
-					_blocks[x][y][z] = BEDROCK;
 				else
 					_blocks[x][y][z] = DIRT;
 			}
@@ -214,10 +214,6 @@ void Chunk::generateMesh()
 				const BlockType & block = BlockTypeRegistry::getBlockType(_blocks[x][y][z]);
 				if (block.isVisible && isBlockVisible(x, y, z))
 				{
-					{
-						std::lock_guard<std::mutex> lock(g_debugMutex);
-						g_DEBUG_INFO.blocks++;
-					}
 					std::vector<float> blockVertices = object.vertices;
 					std::vector<uint32_t> blockIndices = object.indices;
 					size_t vertexOffset = vertices.size() / VERTICES_COUNT; // number of vertices added so far
@@ -266,10 +262,6 @@ void Chunk::generateMesh()
 							blockIDs.push_back(static_cast<uint8_t>(block.type));
 							faceIDs.push_back(static_cast<uint8_t>(face));
 						}
-						{
-							std::lock_guard<std::mutex> lock(g_debugMutex);
-							g_DEBUG_INFO.triangles += 2;
-						}
 					}
 					if (invisibleFaces == 6)
 						continue;
@@ -315,6 +307,12 @@ void Chunk::render(const Shader & shader) const
 	}
 	else
 		glDrawElements(GL_TRIANGLES, _indicesSize, GL_UNSIGNED_INT, 0);
+}
+
+std::vector<Chunk * > Chunk::getNeighborChunks()
+{
+	return { _world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ), _world->getChunkAtChunkLocation(_chunkX + 1, _chunkZ),
+			 _world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1), _world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1) };
 }
 
 BlockType Chunk::getBlockAt(const Location & loc)

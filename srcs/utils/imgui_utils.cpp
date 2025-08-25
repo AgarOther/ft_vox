@@ -146,6 +146,17 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 		wireframeChanged = wireframe;
 	}
 
+	// Key lock
+	static bool chunkLock = false;
+	static bool chunkLockChanged = false;
+	ImGui::SameLine();
+	ImGui::Checkbox("Lock Generation", &chunkLock);
+	if (chunkLock != chunkLockChanged)
+	{
+		player->getWorld()->setProcedural(!chunkLock);
+		chunkLockChanged = chunkLock;
+	}
+
 	ImGui::NewLine();
 	ImGui::NewLine();
 	static char buffer[100] = {};

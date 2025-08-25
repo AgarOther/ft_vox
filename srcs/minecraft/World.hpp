@@ -29,7 +29,7 @@ struct PlayerHash
 class World
 {
 	public:
-		World(TextureAtlas * atlas, const FastNoiseLite & noise): _atlas(atlas), _noise(noise) {};
+		World(TextureAtlas * atlas, const FastNoiseLite & noise): _atlas(atlas), _noise(noise), _procedural(true) {};
 
 		void					render(const Shader & shader, const Player & player) const;
 
@@ -40,6 +40,9 @@ class World
 		int						getHighestY(int x, int z) const;
 		TextureAtlas *			getAtlas() const { return _atlas; }
 		const FastNoiseLite &	getNoise() const { return _noise; }
+		bool					isProcedural() const { return _procedural; }
+
+		void					setProcedural(bool procedural) { _procedural = procedural; }
 
 		void					addPlayer(Player * player);
 		void					applyGravity(float deltaTime);
@@ -57,4 +60,5 @@ class World
 		ChunkMonitor			_monitor;
 		TextureAtlas *			_atlas;
 		FastNoiseLite			_noise;
+		bool					_procedural;
 };

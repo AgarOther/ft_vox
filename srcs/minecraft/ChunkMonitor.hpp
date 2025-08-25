@@ -16,6 +16,7 @@ class ChunkMonitor
 		
 		void						queue(std::vector<Chunk * > & chunkQueue);
 		void						stop();
+		bool						areWorkersWorking();
 	private:
 		void						_start();
 		void						_loop();

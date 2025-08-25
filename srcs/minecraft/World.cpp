@@ -139,7 +139,7 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 void World::generateProcedurally()
 {
 	static long cooldown = 0;
-	if (cooldown && getTimeAsMilliseconds() - cooldown < 100)
+	if (_monitor.areWorkersWorking() || !_procedural || (cooldown && getTimeAsMilliseconds() - cooldown < 100))
 		return;
 	cooldown = getTimeAsMilliseconds();
 
@@ -158,7 +158,17 @@ void World::generateProcedurally()
 			{
 				Chunk * tmp = getChunkAtChunkLocation(x, z);
 				if (!tmp || tmp->getState() == GENERATED)
+				{
+					if (tmp)
+					{
+						for (Chunk * chunk : tmp->getNeighborChunks())
+						{
+							if (chunk && chunk->getState() >= MESHED)
+								chunk->setState(DIRTY);
+						}
+					}
 					queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
+				}
 			}
 		}
 		if (!queue.empty())
