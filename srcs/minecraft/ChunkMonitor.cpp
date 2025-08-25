@@ -27,7 +27,7 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 	{
-		if (chunk && chunk->getState() <= GENERATED)
+		if (chunk && chunk->getState() <= DIRTY)
 			_chunkQueue.push_back(chunk);
 	}
 }

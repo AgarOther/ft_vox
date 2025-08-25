@@ -21,7 +21,7 @@ bool ChunkWorker::queue(const std::vector<Chunk * > & chunkQueue)
 	_chunkQueue.reserve(chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 	{
-		if (chunk && chunk->getState() <= GENERATED)
+		if (chunk && chunk->getState() <= DIRTY)
 			_chunkQueue.push_back(chunk);
 	}
 	return true;
@@ -36,7 +36,7 @@ void ChunkWorker::_process()
 
 	_working = true;
 	for (Chunk * chunk : _chunkQueue)
-	{
+	{		
 		if (chunk->getState() == IDLE)
 			chunk->generateBlocks();
 		else

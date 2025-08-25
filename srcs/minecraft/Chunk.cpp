@@ -280,7 +280,9 @@ void Chunk::generateMesh()
 	_indices = indices;
 	_blockIDs = blockIDs;
 	_faceIDs = faceIDs;
-	setState(MESHED);
+
+	ChunkState state = getState();
+	setState(state == DIRTY ? CLEANED : MESHED);
 }
 
 void Chunk::render(const Shader & shader) const

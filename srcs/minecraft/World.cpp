@@ -13,9 +13,10 @@ void World::render(const Shader & shader, const Player & player) const
 	Frustum frustum(viewProj);
 	for (auto & [_, chunkPtr] : _chunks)
 	{
-		if (chunkPtr->getState() == IDLE)
+		ChunkState state = chunkPtr->getState();
+		if (state == IDLE)
 			continue;
-		if (chunkPtr->getState() == UPLOADED &&
+		if (_procedural && state == UPLOADED &&
 			(chunkPtr->getChunkX() > static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) + renderDistance
 			|| chunkPtr->getChunkX() < static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) - renderDistance
 			|| chunkPtr->getChunkZ() > static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) + renderDistance
@@ -24,8 +25,13 @@ void World::render(const Shader & shader, const Player & player) const
 			chunkPtr->unloadMesh();
 			continue;
 		}
-		if (chunkPtr->getState() == MESHED)
+		if (state == MESHED)
 			chunkPtr->uploadMesh();
+		if (state == CLEANED)
+		{
+			chunkPtr->unloadMesh();
+			chunkPtr->uploadMesh();
+		}
 		const int chunkX = chunkPtr->getChunkX();
 		const int chunkZ = chunkPtr->getChunkZ();
 		glm::vec3 min = {
@@ -139,7 +145,7 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 void World::generateProcedurally()
 {
 	static long cooldown = 0;
-	if (_monitor.areWorkersWorking() || !_procedural || (cooldown && getTimeAsMilliseconds() - cooldown < 100))
+	if (!_procedural || _monitor.areWorkersWorking() || (cooldown && getTimeAsMilliseconds() - cooldown < 100))
 		return;
 	cooldown = getTimeAsMilliseconds();
 
@@ -164,7 +170,10 @@ void World::generateProcedurally()
 						for (Chunk * chunk : tmp->getNeighborChunks())
 						{
 							if (chunk && chunk->getState() >= MESHED)
+							{
 								chunk->setState(DIRTY);
+								queue.push_back(chunk);
+							}
 						}
 					}
 					queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
