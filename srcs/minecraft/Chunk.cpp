@@ -12,7 +12,7 @@
 
 std::mutex g_debugMutex;
 
-float frequency = 0.8f;
+float frequency = 3.8f;
 float amplitude = 28.f; // Max terrain height variation
 int baseHeight = 64;
 

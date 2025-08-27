@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <tuple>
 #include <vector>
 #include <string>
 #include "Location.hpp"
@@ -85,4 +86,18 @@ enum ChunkState
 	CLEANED,
 	MESHED,
 	UPLOADED
+};
+
+enum StructureType
+{
+	TREE
+};
+
+typedef std::vector<std::pair<std::tuple<int, int, int>, Material>> StructureData;
+
+struct Structure
+{
+	StructureType	type;
+	std::string		name;
+	StructureData	data;
 };
