@@ -23,6 +23,7 @@ class Chunk
 		~Chunk();
 
 		void					generateBlocks();
+		void					generateStructures();
 		void					generateMesh();
 		void					uploadMesh();
 		void					unloadMesh();

@@ -3,6 +3,7 @@
 #include "Crosshair.hpp"
 #include "Skybox.hpp"
 #include "minecraft/BlockTypeRegistry.hpp"
+#include "minecraft/StructureRegistry.hpp"
 #include "minecraft/ObjectRegistry.hpp"
 #include "minecraft/Player.hpp"
 #include "minecraft/TextureAtlas.hpp"
@@ -32,6 +33,7 @@ int main(void)
 
 	ObjectRegistry::init();
 	BlockTypeRegistry::init();
+	StructureRegistry::init();
 	TextureAtlas atlas;
 	atlas.init();
 

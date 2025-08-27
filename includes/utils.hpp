@@ -22,6 +22,7 @@ int							floorDiv(int value, int divisor);
 void                        dispatchCommand(char * buffer, Player * player);
 void						voxLog(const std::string & message);
 long						getTimeAsMilliseconds();
+Material					getMaterialFromString(std::string & name);
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);

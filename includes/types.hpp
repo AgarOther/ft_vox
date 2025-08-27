@@ -97,7 +97,6 @@ typedef std::vector<std::pair<std::tuple<int, int, int>, Material>> StructureDat
 
 struct Structure
 {
-	StructureType	type;
 	std::string		name;
 	StructureData	data;
 };

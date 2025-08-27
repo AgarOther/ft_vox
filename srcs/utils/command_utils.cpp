@@ -15,7 +15,7 @@
 #include "types.hpp"
 #include "utils.hpp"
 
-static Material getMaterialFromString(std::string & name)
+Material getMaterialFromString(std::string & name)
 {
 	for (char i = 0; i < (char)name.length(); i++)
 		name[i] = std::tolower(name[i]);

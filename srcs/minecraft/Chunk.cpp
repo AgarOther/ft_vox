@@ -5,6 +5,7 @@
 #include "Chunk.hpp"
 #include "ObjectRegistry.hpp"
 #include "BlockTypeRegistry.hpp"
+#include "StructureRegistry.hpp"
 #include "Shader.hpp"
 #include "errors.hpp"
 #include "types.hpp"
@@ -15,6 +16,28 @@ std::mutex g_debugMutex;
 float frequency = 3.8f;
 float amplitude = 28.f; // Max terrain height variation
 int baseHeight = 64;
+
+void Chunk::generateStructures()
+{
+	if (rand() % 3)
+		return;
+	const Structure & tree = StructureRegistry::getStructure(TREE);
+	const int x = rand() % 16;
+	const int z = rand() % 16;
+	int y = baseHeight;
+	while (_blocks[x][y][z] == AIR)
+		y++;
+
+	for (std::pair<std::tuple<int, int, int>, Material> data : tree.data)
+	{
+		const int dx = x + std::get<0>(data.first);
+		const int dy = y + std::get<1>(data.first) + 1;
+		const int dz = z + std::get<2>(data.first);
+		if (dx >= CHUNK_WIDTH || dy >= CHUNK_HEIGHT || dz >= CHUNK_DEPTH)
+			continue;
+		_blocks[dx][dy][dz] = data.second;
+	}
+}
 
 void Chunk::generateBlocks()
 {
@@ -46,6 +69,7 @@ void Chunk::generateBlocks()
 			}
 		}
 	}
+	generateStructures();
 	setState(GENERATED);
 }
 

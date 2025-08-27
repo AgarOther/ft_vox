@@ -10,33 +10,36 @@ StructureRegistry::StructureMap StructureRegistry::_structures;
 static StructureData getDataFromFile(const std::string & filename)
 {
 	const std::string path = "assets/structures/" + filename;
+	const std::string file = getFileAsString(path.c_str());
 	StructureData data;
 
-	std::istringstream lineBuffer(path);
+	if (file.empty())
+		handleExit(FAILURE_STRUCTURE);
+	std::istringstream lineBuffer(file);
 	for (std::string line; std::getline(lineBuffer, line);)
 	{
 		if ((!line.empty() && line[0] == '#') || line.empty() || (!line.empty() && line[0] == '\n'))
 			continue;
 		std::vector<std::string> tmp = ft_split(line, ',');
 		if (tmp.empty())
-		{
 			continue;
+		else if (tmp.size() != 4 || tmp[0].length() < 3 || tmp[1].length() < 3 || tmp[2].length() < 3 || tmp[3].length() < 6)
+		{
+			std::cerr << "Faulty line: " << line << ". ";
+			handleExit(FAILURE_STRUCTURE_DATA);
 		}
 		std::pair<std::tuple<int, int, int>, Material> block;
-		for (std::string str : tmp)
-		{
-			if (str.size() != 4)
-				handleExit(FAILURE_STRUCTURE_DATA);
-			std::vector<std::string> values = ft_split(str, ':');
-			if (values.size() != 2)
-				handleExit(FAILURE_STRUCTURE_DATA);
-		}
+		std::string type = &tmp[3][5];
+		block.first = { std::atoi(&tmp[0][2]), std::atoi(&tmp[1][2]), std::atoi(&tmp[2][2]) };
+		block.second = getMaterialFromString(type);
+		data.push_back(block);
 	}
+	return data;
 }
 
 void StructureRegistry::init()
 {
-	_structures[0] = { TREE, "tree", getDataFromFile("tree.struct") };
+	_structures[TREE] = { "tree", getDataFromFile("tree.struct") };
 }
 
 const Structure & StructureRegistry::getStructure(uint8_t id)

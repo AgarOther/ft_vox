@@ -41,6 +41,7 @@ class World
 		BlockType				getBlockAt(const Location & loc) const;
 		const Player *			getPlayer(const std::string & name) const;
 		int						getHighestY(int x, int z) const;
+		int						getHighestYAtChunkLocation(int x, int z) const;
 		TextureAtlas *			getAtlas() const { return _atlas; }
 		const FastNoiseLite &	getNoise() const { return _noise; }
 		bool					isProcedural() const { return _procedural; }

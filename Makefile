@@ -23,6 +23,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/Location.cpp \
 						srcs/minecraft/ObjectRegistry.cpp \
 						srcs/minecraft/Player.cpp \
+						srcs/minecraft/StructureRegistry.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
 						srcs/minecraft/World.cpp \
 						srcs/renderer/Camera.cpp \
