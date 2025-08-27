@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/04/22 13:06:14 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/08/27 14:46:04 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 	// Position infos
 	ImGui::TextColored(ImVec4(0.0f, 0.6f, 0.8f, 1.0f), "Gamemode: %s", player->getGamemode() == CREATIVE ? "Creative" : "Survival");
 	ImGui::TextColored(ImVec4(0.75f, 1.0f, 0.0f, 1.0f), "Velocity: %.3f / %.3f / %.3f", player->getVelocityX(), player->getVelocityY(), player->getVelocityZ());
-	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f", position.getX(), position.getY(), position.getZ());
+	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f (Block: %d / %d / %d)",
+		position.getX(), position.getY(), position.getZ(),
+		static_cast<int>(std::floor(position.getX())), static_cast<int>(std::floor(position.getY())), static_cast<int>(std::floor(position.getZ())));
 	ImGui::TextColored(ImVec4(1.0f, 0.74f, 0.0f, 1.0f), "Chunk XZ: %d / %d (%d / %d)",
 		abs(static_cast<int>(camera->getPosition().x) % CHUNK_WIDTH), abs(static_cast<int>(camera->getPosition().z) % CHUNK_DEPTH),
 		static_cast<int>(camera->getPosition().x / 16), static_cast<int>(camera->getPosition().z / 16));
