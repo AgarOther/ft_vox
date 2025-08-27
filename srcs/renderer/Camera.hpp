@@ -7,6 +7,8 @@
 #include <glm/gtx/vector_angle.hpp>
 #include "Shader.hpp"
 
+#define PLAYER_SPEED 3.75f
+
 class Camera
 {
 	public:

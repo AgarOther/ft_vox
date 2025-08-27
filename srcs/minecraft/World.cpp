@@ -6,13 +6,15 @@
 #include "types.hpp"
 #include "utils.hpp"
 
-void World::render(const Shader & shader, const Player & player) const
+void World::render(const Shader & shader, const Player & player)
 {
 	const uint8_t renderDistance = player.getCamera()->getRenderDistance() + 1;
 	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
 	for (auto & [_, chunkPtr] : _chunks)
 	{
+		if (!chunkPtr)
+			continue;
 		ChunkState state = chunkPtr->getState();
 		if (state == IDLE)
 			continue;
@@ -23,6 +25,8 @@ void World::render(const Shader & shader, const Player & player) const
 			|| chunkPtr->getChunkZ() < static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) - renderDistance))
 		{
 			chunkPtr->unloadMesh();
+			if (std::find(_oldChunks.begin(), _oldChunks.end(), chunkPtr) == _oldChunks.end())
+				_oldChunks.push_back(chunkPtr);
 			continue;
 		}
 		if (state == MESHED)
@@ -46,6 +50,26 @@ void World::render(const Shader & shader, const Player & player) const
 		};
 		if (frustum.isChunkVisible(min, max))
 			chunkPtr->render(shader);
+	}
+	for (auto it = _oldChunks.begin(); it != _oldChunks.end(); ++it)
+	{
+		Chunk * chunk = *it;
+		if (chunk && player.getLocation().distance(Location(chunk->getChunkX(), static_cast<int>(player.getLocation().getY()), chunk->getChunkZ()))
+				>= player.getCamera()->getRenderDistance() * std::max(CHUNK_WIDTH, CHUNK_DEPTH) * CHUNK_DELETION_DISTANCE)
+		{
+			deleteChunk(chunk);
+			it = _oldChunks.erase(it) - 1;
+		}
+	}
+}
+
+void World::deleteChunk(Chunk * chunk)
+{
+	auto it = _chunks.find(chunk->getChunkLocation());
+	if (it != _chunks.end())
+	{
+		_chunks.erase(it);
+		delete chunk;
 	}
 }
 

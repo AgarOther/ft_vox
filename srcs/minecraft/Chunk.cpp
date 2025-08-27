@@ -51,7 +51,16 @@ void Chunk::generateBlocks()
 
 Chunk::~Chunk()
 {
-	unloadMesh();
+	if (_vbo)
+		glDeleteBuffers(1, &_vbo);
+	if (_ibo)
+		glDeleteBuffers(1, &_ibo);
+	if (_bbo)
+		glDeleteBuffers(1, &_bbo);
+	if (_fbo)
+		glDeleteBuffers(1, &_fbo);
+	if (_vao)
+		glDeleteVertexArrays(1, &_vao);
 }
 
 inline bool Chunk::isBlockVisible(int x, int y, int z)

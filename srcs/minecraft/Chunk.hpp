@@ -18,7 +18,7 @@ class Chunk
 {
 	public:
 		Chunk(int chunkX, int chunkZ, World * world):
-			_chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0), _bbo(0), _fbo(0),
+			_chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0), _bbo(0), _fbo(0), _indicesSize(0),
 			 _world(world), _state(IDLE) {}
 		~Chunk();
 
@@ -34,12 +34,13 @@ class Chunk
 
 		int						getChunkX() const { return _chunkX; }
 		int						getChunkZ() const { return _chunkZ; }
+		std::pair<int, int>		getChunkLocation() const { return { _chunkX, _chunkZ }; }
 		ChunkState				getState() { const std::lock_guard<std::mutex> lg(_stateMutex); return _state; }
 
 		void					setState(ChunkState state) { const std::lock_guard<std::mutex> lg(_stateMutex); _state = state; }
 	private:
-		int						_chunkX;
-		int						_chunkZ;
+		const int				_chunkX;
+		const int				_chunkZ;
 		GLuint					_vao;
 		GLuint					_vbo;
 		GLuint					_ibo;

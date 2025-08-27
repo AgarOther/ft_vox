@@ -6,6 +6,8 @@
 #include <functional>
 #include <unordered_map>
 
+#define CHUNK_DELETION_DISTANCE 5
+
 class Player;
 
 struct PairHash
@@ -31,8 +33,9 @@ class World
 	public:
 		World(TextureAtlas * atlas, const FastNoiseLite & noise): _atlas(atlas), _noise(noise), _procedural(true) {};
 
-		void					render(const Shader & shader, const Player & player) const;
+		void					render(const Shader & shader, const Player & player);
 
+		void					deleteChunk(Chunk * chunk);
 		Chunk *					getChunkAt(int x, int z) const;
 		Chunk *					getChunkAtChunkLocation(int x, int z) const;
 		BlockType				getBlockAt(const Location & loc) const;
@@ -61,4 +64,5 @@ class World
 		TextureAtlas *			_atlas;
 		FastNoiseLite			_noise;
 		bool					_procedural;
+		std::vector<Chunk * >	_oldChunks;
 };

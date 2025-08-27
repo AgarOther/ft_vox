@@ -6,7 +6,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_width = width;
 	_height = height;
 	_position = position;
-	_speed = 3.75f;
+	_speed = 50.f;
 	_baseSpeed = _speed;
 	_sensitivity = 200.0f;
 	_farPlane = 1000.0f;
@@ -16,7 +16,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 2;
+	_renderDistance = 16;
 
 	glm::vec3 direction;
 	direction.x = cosf(glm::radians(_yaw)) * cosf(glm::radians(_pitch));
