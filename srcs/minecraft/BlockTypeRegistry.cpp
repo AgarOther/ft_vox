@@ -5,16 +5,18 @@ BlockTypeRegistry::BlockTypeMap BlockTypeRegistry::_types;
 
 void BlockTypeRegistry::init()
 {
-	_types[0]	= { UNKNOWN, "unknown", true, true };
-	_types[1]	= { STONE, "stone", true, true };
-	_types[2]	= { DIRT, "dirt", true, true };
-	_types[3]	= { BEDROCK, "bedrock", true, true };
-	_types[4]	= { SAND, "sand", true, true };
-	_types[5]	= { END_STONE, "end_stone", true, true };
-	_types[6]	= { ACACIA_LOG, "acacia_log", true, true };
-	_types[7]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true };
-	_types[8]	= { GRASS_BLOCK, "grass_block", true, true };
-	_types[255]	= {  AIR, "air",false, false };
+	_types[UNKNOWN]				= { UNKNOWN, "unknown", true, true };
+	_types[STONE]				= { STONE, "stone", true, true };
+	_types[DIRT]				= { DIRT, "dirt", true, true };
+	_types[BEDROCK]				= { BEDROCK, "bedrock", true, true };
+	_types[SAND]				= { SAND, "sand", true, true };
+	_types[END_STONE]			= { END_STONE, "end_stone", true, true };
+	_types[OAK_LOG]				= { OAK_LOG, "oak_log", true, true };
+	_types[OAK_LEAVES]			= { OAK_LEAVES, "oak_leaves", true, false };
+	_types[ACACIA_LOG]			= { ACACIA_LOG, "acacia_log", true, true };
+	_types[CARTOGRAPHY_TABLE]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true };
+	_types[GRASS_BLOCK]			= { GRASS_BLOCK, "grass_block", true, true };
+	_types[AIR]					= {  AIR, "air",false, false };
 }
 
 const BlockType & BlockTypeRegistry::getBlockType(uint8_t id)

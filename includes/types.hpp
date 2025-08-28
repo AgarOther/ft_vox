@@ -15,14 +15,16 @@ enum ObjectType
 enum Material
 {
 	UNKNOWN,
+	GRASS_BLOCK,
 	STONE,
 	DIRT,
 	BEDROCK,
 	SAND,
 	END_STONE,
+	OAK_LOG,
+	OAK_LEAVES,
 	ACACIA_LOG,
 	CARTOGRAPHY_TABLE,
-	GRASS_BLOCK,
 	AIR = 255
 };
 
@@ -38,7 +40,6 @@ struct BlockType
 	std::string	name;
 	bool		isVisible;
 	bool		isSolid;
-	void		setType(Material newType) { type = newType; }
 };
 
 enum ModelType
@@ -93,10 +94,11 @@ enum StructureType
 	TREE
 };
 
-typedef std::vector<std::pair<std::tuple<int, int, int>, Material>> StructureData;
+typedef std::vector<std::pair<glm::vec3, Material>> StructureData;
 
 struct Structure
 {
-	std::string		name;
-	StructureData	data;
+	std::string			name;
+	StructureData		data;
+	glm::vec3			size;
 };

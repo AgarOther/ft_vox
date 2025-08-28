@@ -13,8 +13,8 @@
 
 std::mutex g_debugMutex;
 
-float frequency = 3.8f;
-float amplitude = 28.f; // Max terrain height variation
+float frequency = 1.0f;
+float amplitude = 5.f; // Max terrain height variation
 int baseHeight = 64;
 
 void Chunk::generateStructures()
@@ -25,14 +25,16 @@ void Chunk::generateStructures()
 	const int x = rand() % 16;
 	const int z = rand() % 16;
 	int y = baseHeight;
+	if (x + tree.size.x >= CHUNK_WIDTH || y + tree.size.y >= CHUNK_HEIGHT || z + tree.size.z >= CHUNK_DEPTH)
+		return;
 	while (_blocks[x][y][z] == AIR)
 		y++;
 
-	for (std::pair<std::tuple<int, int, int>, Material> data : tree.data)
+	for (std::pair<glm::vec3, Material> data : tree.data)
 	{
-		const int dx = x + std::get<0>(data.first);
-		const int dy = y + std::get<1>(data.first) + 1;
-		const int dz = z + std::get<2>(data.first);
+		const int dx = x + data.first.x;
+		const int dy = y + data.first.y + 1;
+		const int dz = z + data.first.z;
 		if (dx >= CHUNK_WIDTH || dy >= CHUNK_HEIGHT || dz >= CHUNK_DEPTH)
 			continue;
 		_blocks[dx][dy][dz] = data.second;
@@ -255,7 +257,7 @@ void Chunk::generateMesh()
 					// Add vertices, offsetting positions by chunk coordinates
 					for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
 					{
-						bool faceVisible = isFaceVisible(static_cast<BlockFace>(face), x, y, z, front, back, left, right);
+						bool faceVisible = !block.isSolid || isFaceVisible(static_cast<BlockFace>(face), x, y, z, front, back, left, right);
 						if (!faceVisible)
 						{
 							invisibleFaces++;

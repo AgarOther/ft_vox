@@ -28,7 +28,7 @@ static StructureData getDataFromFile(const std::string & filename)
 			std::cerr << "Faulty line: " << line << ". ";
 			handleExit(FAILURE_STRUCTURE_DATA);
 		}
-		std::pair<std::tuple<int, int, int>, Material> block;
+		std::pair<glm::vec3, Material> block;
 		std::string type = &tmp[3][5];
 		block.first = { std::atoi(&tmp[0][2]), std::atoi(&tmp[1][2]), std::atoi(&tmp[2][2]) };
 		block.second = getMaterialFromString(type);
@@ -39,7 +39,25 @@ static StructureData getDataFromFile(const std::string & filename)
 
 void StructureRegistry::init()
 {
-	_structures[TREE] = { "tree", getDataFromFile("tree.struct") };
+	_structures[TREE] = { "tree", getDataFromFile("tree.struct"), glm::vec3(0) };
+
+	for (auto it = _structures.begin(); it != _structures.end(); ++it)
+	{
+		int biggestX = 0;
+		int biggestY = 0;
+		int biggestZ = 0;
+		Structure structure = it->second;
+		for (std::pair<glm::vec3, Material> block : structure.data)
+		{
+			if (block.first.x > biggestX)
+				biggestX = block.first.x;
+			if (block.first.y > biggestY)
+				biggestY = block.first.y;
+			if (block.first.z > biggestZ)
+				biggestZ = block.first.z;
+		}
+		it->second.size = glm::vec3(biggestX, biggestY, biggestZ);
+	}
 }
 
 const Structure & StructureRegistry::getStructure(uint8_t id)

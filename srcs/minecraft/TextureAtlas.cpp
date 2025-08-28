@@ -120,8 +120,10 @@ void TextureAtlas::init()
 	textureMap[BEDROCK] = loadUnique("bedrock.png");
 	textureMap[DIRT] = loadUnique("dirt.png");
 	textureMap[SAND] = loadUnique("sand.png");
+	textureMap[OAK_LEAVES] = loadUnique("oak_leaves.png");
 
 	// Multi-textured blocks
+	textureMap[OAK_LOG] = loadSideTop("oak_log.png", "oak_log_top.png");
 	textureMap[ACACIA_LOG] = loadSideTop("acacia_log.png", "acacia_log_top.png");
 
 	TextureBuffer cartography;
