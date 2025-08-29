@@ -40,6 +40,7 @@ struct BlockType
 	std::string	name;
 	bool		isVisible;
 	bool		isSolid;
+	bool		isTransparent;
 };
 
 enum ModelType
