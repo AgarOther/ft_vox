@@ -16,7 +16,10 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 8;
+	_renderDistance = 16;
+	_fogStart = 9.0f;
+	_fogEnd = 20.0f;
+	_fogColor = glm::vec3(0.7f, 0.7f, 1.0f);
 
 	glm::vec3 direction;
 	direction.x = cosf(glm::radians(_yaw)) * cosf(glm::radians(_pitch));
@@ -31,4 +34,12 @@ void Camera::setupMatrix(const Shader & shader)
 	_view = glm::lookAt(_position, _position + _orientation, _altitude);
 	_proj = glm::perspective(glm::radians(_FOV), static_cast<float>(_width) / static_cast<float>(_height), 0.01f, _farPlane);
 	shader.setMat4("camMatrix", _proj * _view);
+}
+
+void Camera::setupFog(const Shader & shader)
+{
+	shader.setFloat("fogStart", _fogStart * _renderDistance);
+	shader.setFloat("fogEnd", _fogEnd * _renderDistance);
+	shader.setVec3("fogColor", _fogColor);
+	shader.setVec3("cameraPos", _position);
 }

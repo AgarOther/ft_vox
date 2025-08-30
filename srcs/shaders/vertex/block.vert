@@ -8,6 +8,7 @@ layout (location = 3) in vec3 aTint;
 out vec2 texCoord;
 out vec3 normal;
 out vec3 tint;
+out vec4 worldPos;
 
 uniform mat4 camMatrix;
 uniform mat4 model;
@@ -18,4 +19,5 @@ void main()
 	texCoord = aTex;
 	normal = mat3(transpose(inverse(model))) * aNormal;
 	tint = aTint;
+	worldPos = model * vec4(aPos, 1.0);
 }

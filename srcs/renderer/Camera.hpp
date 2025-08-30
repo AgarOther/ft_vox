@@ -14,7 +14,8 @@ class Camera
 	public:
 		Camera(int width, int height, glm::vec3 position);
 
-		void setupMatrix(const Shader & shader);
+		void		setupMatrix(const Shader & shader);
+		void		setupFog(const Shader & shader);
 
 		// Getters
 		glm::mat4	getViewMatrix() const { return _view; }
@@ -72,4 +73,7 @@ class Camera
 		bool		_locked;
 		bool		_fullScreen;
 		uint8_t		_renderDistance;
+		float		_fogStart;
+		float		_fogEnd;
+		glm::vec3	_fogColor;
 };

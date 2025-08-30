@@ -67,7 +67,6 @@ int main(void)
 		player.interceptInputs(window, deltaTime);
 		player.getCamera()->setupMatrix(shader);
 		skybox.render(player.getCamera());
-		shader.bind();
 		world.render(shader, player);
 		crosshair.draw(static_cast<float>(player.getCamera()->getWidth()) / static_cast<float>(player.getCamera()->getHeight()));
 
