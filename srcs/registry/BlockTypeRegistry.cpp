@@ -35,7 +35,7 @@ void BlockTypeRegistry::init()
 	_types[ACACIA_LOG]			= { ACACIA_LOG, "acacia_log", true, true, false };
 	_types[CARTOGRAPHY_TABLE]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true, false };
 	_types[GRASS_BLOCK]			= { GRASS_BLOCK, "grass_block", true, true, false };
-	_types[AIR]					= {  AIR, "air",false, false, true };
+	_types[AIR]					= {  AIR, "air",false, false, false };
 
 	initTints();
 }

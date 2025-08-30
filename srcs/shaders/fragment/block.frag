@@ -13,6 +13,9 @@ void main()
 {
 	vec4 texColor = texture(textureAtlas, texCoord);
 
+	if (texColor.a < 0.5)
+		discard;
+
 	// Calculate lighting
 	vec3 norm = normalize(normal);
 	vec3 light = normalize(-lightDir);

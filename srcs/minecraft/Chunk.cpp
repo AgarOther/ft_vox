@@ -89,16 +89,31 @@ Chunk::~Chunk()
 		glDeleteVertexArrays(1, &_vao);
 }
 
+static bool isFaceRenderable(uint8_t b1, uint8_t b2)
+{
+    BlockType blockToCheck   = BlockTypeRegistry::getBlockType(b1);
+    BlockType blockToCompare = BlockTypeRegistry::getBlockType(b2);
+
+    if (!blockToCompare.isVisible)
+        return true;
+    if (blockToCompare.isVisible && !blockToCompare.isTransparent)
+        return false;
+    if (blockToCheck.isTransparent && blockToCompare.isTransparent)
+        return true;
+    return true;
+}
+
+
 inline bool Chunk::isBlockVisible(int x, int y, int z)
 {
-	return (x == 0 || y == 0 || z == 0
-		|| x == CHUNK_WIDTH - 1 || y == CHUNK_HEIGHT - 1 || z == CHUNK_DEPTH - 1
-		|| (x - 1 >= 0 && BlockTypeRegistry::getBlockType(_blocks[x - 1][y][z]).isTransparent)
-		|| (x + 1 < CHUNK_WIDTH && BlockTypeRegistry::getBlockType(_blocks[x + 1][y][z]).isTransparent)
-		|| (y - 1 >= 0 && BlockTypeRegistry::getBlockType(_blocks[x][y - 1][z]).isTransparent)
-		|| (y + 1 < CHUNK_HEIGHT && BlockTypeRegistry::getBlockType(_blocks[x][y + 1][z]).isTransparent)
-		|| (z - 1 >= 0 && BlockTypeRegistry::getBlockType(_blocks[x][y][z - 1]).isTransparent)
-		|| (z + 1 < CHUNK_DEPTH && BlockTypeRegistry::getBlockType(_blocks[x][y][z + 1]).isTransparent));
+    return (x == 0 || y == 0 || z == 0
+        || x == CHUNK_WIDTH  - 1 || y == CHUNK_HEIGHT - 1 || z == CHUNK_DEPTH - 1
+        || (x - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x - 1][y][z]))
+        || (x + 1 < CHUNK_WIDTH  && isFaceRenderable(_blocks[x][y][z], _blocks[x + 1][y][z]))
+        || (y - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y - 1][z]))
+        || (y + 1 < CHUNK_HEIGHT && isFaceRenderable(_blocks[x][y][z], _blocks[x][y + 1][z]))
+        || (z - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z - 1]))
+        || (z + 1 < CHUNK_DEPTH  && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z + 1])));
 }
 
 bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right)
@@ -109,26 +124,26 @@ bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Ch
 			if (z == CHUNK_DEPTH - 1 && front && front->getBlockAtChunkLocation(Location(x, y, 0)).isVisible)
 				return false;
 			else
-				return (z + 1 < CHUNK_DEPTH && BlockTypeRegistry::getBlockType(_blocks[x][y][z + 1]).isTransparent) || z == CHUNK_DEPTH - 1;
+				return (z + 1 < CHUNK_DEPTH && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z + 1])) || z == CHUNK_DEPTH - 1;
 		case FACE_BACK:
 			if (z == 0 && back && back->getBlockAtChunkLocation(Location(x, y, CHUNK_DEPTH - 1)).isVisible)
 				return false;
 			else
-				return (z - 1 >= 0 && BlockTypeRegistry::getBlockType(_blocks[x][y][z - 1]).isTransparent) || z == 0;
+				return (z - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z - 1])) || z == 0;
 		case FACE_LEFT:
 			if (x == 0 && left && left->getBlockAtChunkLocation(Location(CHUNK_WIDTH - 1, y, z)).isVisible)
 				return false;
 			else
-				return (x - 1 >= 0 && BlockTypeRegistry::getBlockType(_blocks[x - 1][y][z]).isTransparent) || x == 0;
+				return (x - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x - 1][y][z])) || x == 0;
 		case FACE_RIGHT:
 			if (x == CHUNK_WIDTH - 1 && right && right->getBlockAtChunkLocation(Location(0, y, z)).isVisible)
 				return false;
 			else
-				return (x + 1 < CHUNK_WIDTH && BlockTypeRegistry::getBlockType(_blocks[x + 1][y][z]).isTransparent) || x == CHUNK_WIDTH - 1;
+				return (x + 1 < CHUNK_WIDTH && isFaceRenderable(_blocks[x][y][z], _blocks[x + 1][y][z])) || x == CHUNK_WIDTH - 1;
 		case FACE_TOP:
-			return (y + 1 < CHUNK_HEIGHT && BlockTypeRegistry::getBlockType(_blocks[x][y + 1][z]).isTransparent) || y == CHUNK_HEIGHT - 1;
+			return (y + 1 < CHUNK_HEIGHT && isFaceRenderable(_blocks[x][y][z], _blocks[x][y + 1][z])) || y == CHUNK_HEIGHT - 1;
 		case FACE_BOTTOM:
-			return (y - 1 >= 0 && BlockTypeRegistry::getBlockType(_blocks[x][y - 1][z]).isTransparent) || y == 0;
+			return (y - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y - 1][z])) || y == 0;
 	}
 	return false;
 }

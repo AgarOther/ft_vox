@@ -11,6 +11,8 @@ void World::render(const Shader & shader, const Player & player)
 	const uint8_t renderDistance = player.getCamera()->getRenderDistance() + 1;
 	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	for (auto & [_, chunkPtr] : _chunks)
 	{
 		if (!chunkPtr)
