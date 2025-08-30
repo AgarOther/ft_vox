@@ -1,5 +1,5 @@
 #include "Skybox.hpp"
-#include "../minecraft/ObjectRegistry.hpp"
+#include "ObjectRegistry.hpp"
 #include "Shader.hpp"
 #include "utils.hpp"
 #include "errors.hpp"

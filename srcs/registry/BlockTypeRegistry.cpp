@@ -2,9 +2,28 @@
 #include "BlockTypeRegistry.hpp"
 
 BlockTypeRegistry::BlockTypeMap BlockTypeRegistry::_types;
+BlockTypeRegistry::TintMap BlockTypeRegistry::_tints;
+
+void BlockTypeRegistry::initTints()
+{
+	if (!_tints.empty())
+		return;
+
+	_tints[{GRASS_BLOCK, FACE_TOP}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+
+	_tints[{OAK_LEAVES, FACE_FRONT}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+	_tints[{OAK_LEAVES, FACE_BACK}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+	_tints[{OAK_LEAVES, FACE_LEFT}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+	_tints[{OAK_LEAVES, FACE_RIGHT}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+	_tints[{OAK_LEAVES, FACE_TOP}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+	_tints[{OAK_LEAVES, FACE_BOTTOM}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+}
 
 void BlockTypeRegistry::init()
 {
+	if (!_types.empty())
+		return;
+
 	_types[UNKNOWN]				= { UNKNOWN, "unknown", true, true, false };
 	_types[STONE]				= { STONE, "stone", true, true, false };
 	_types[DIRT]				= { DIRT, "dirt", true, true, false };
@@ -17,6 +36,8 @@ void BlockTypeRegistry::init()
 	_types[CARTOGRAPHY_TABLE]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true, false };
 	_types[GRASS_BLOCK]			= { GRASS_BLOCK, "grass_block", true, true, false };
 	_types[AIR]					= {  AIR, "air",false, false, true };
+
+	initTints();
 }
 
 const BlockType & BlockTypeRegistry::getBlockType(uint8_t id)
@@ -37,6 +58,14 @@ const BlockType & BlockTypeRegistry::getBlockType(const std::string & name)
 	}
 	std::cerr << "[BlockTypeRegistry] Warning: Requested unknown block named " << name << ", returning default.\n";
 	return _types[0];
+}
+
+uint32_t BlockTypeRegistry::getTint(Material material, BlockFace blockface)
+{
+	auto it = _tints.find({material, blockface});
+	if (it != _tints.end())
+		return it->second;
+	return 0xFFFFFFFF; // normal (uint max)
 }
 
 const BlockTypeRegistry::BlockTypeMap & BlockTypeRegistry::getBlockTypeMap()

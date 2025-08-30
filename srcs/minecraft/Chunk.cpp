@@ -81,10 +81,8 @@ Chunk::~Chunk()
 		glDeleteBuffers(1, &_vbo);
 	if (_ibo)
 		glDeleteBuffers(1, &_ibo);
-	if (_bbo)
-		glDeleteBuffers(1, &_bbo);
-	if (_fbo)
-		glDeleteBuffers(1, &_fbo);
+	if (_tbo)
+		glDeleteBuffers(1, &_tbo);
 	if (_vao)
 		glDeleteVertexArrays(1, &_vao);
 }
@@ -141,10 +139,8 @@ void Chunk::uploadMesh()
 		glGenBuffers(1, &_vbo);
 	if (!_ibo)
 		glGenBuffers(1, &_ibo);
-	if (!_bbo)
-		glGenBuffers(1, &_bbo);
-	if (!_fbo)
-		glGenBuffers(1, &_fbo);
+	if (!_tbo)
+		glGenBuffers(1, &_tbo);
 
 	glBindVertexArray(_vao);
 
@@ -162,34 +158,26 @@ void Chunk::uploadMesh()
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTICES_COUNT * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-	// Block IDs
-	glBindBuffer(GL_ARRAY_BUFFER, _bbo);
-	glBufferData(GL_ARRAY_BUFFER, _blockIDs.size() * sizeof(uint8_t), _blockIDs.data(), GL_STATIC_DRAW);
-	glVertexAttribIPointer(3, 1, GL_UNSIGNED_BYTE, 0, nullptr);
+	// Tints
+	glBindBuffer(GL_ARRAY_BUFFER, _tbo);
+	glBufferData(GL_ARRAY_BUFFER, _tints.size() * sizeof(GLuint), _tints.data(), GL_STATIC_DRAW);
+	glVertexAttribIPointer(3, 1, GL_UNSIGNED_INT, 0, nullptr);
 	glEnableVertexAttribArray(3);
 
-	// Face IDs
-	glBindBuffer(GL_ARRAY_BUFFER, _fbo);
-	glBufferData(GL_ARRAY_BUFFER, _faceIDs.size() * sizeof(uint8_t), _faceIDs.data(), GL_STATIC_DRAW);
-	glVertexAttribIPointer(4, 1, GL_UNSIGNED_BYTE, 0, nullptr);
-	glEnableVertexAttribArray(4);
-
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(uint32_t), _indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(GLuint), _indices.data(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
 	_indicesSize = _indices.size();
 
+	_tints.clear();
+	_tints.shrink_to_fit();
 	_vertices.clear();
 	_vertices.shrink_to_fit();
 	_indices.clear();
 	_indices.shrink_to_fit();
-	_faceIDs.clear();
-	_faceIDs.shrink_to_fit();
-	_blockIDs.clear();
-	_blockIDs.shrink_to_fit();
 	setState(UPLOADED);
 }
 
@@ -205,15 +193,10 @@ void Chunk::unloadMesh()
 		glDeleteBuffers(1, &_ibo);
 		_ibo = 0;
 	}
-	if (_bbo)
+	if (_tbo)
 	{
-		glDeleteBuffers(1, &_bbo);
-		_bbo = 0;
-	}
-	if (_fbo)
-	{
-		glDeleteBuffers(1, &_fbo);
-		_fbo = 0;
+		glDeleteBuffers(1, &_tbo);
+		_tbo = 0;
 	}
 	if (_vao)
 	{
@@ -229,8 +212,7 @@ void Chunk::generateMesh()
 		return;
 	std::vector<float> vertices;
 	std::vector<uint32_t> indices;
-	std::vector<uint8_t> blockIDs;
-	std::vector<uint8_t> faceIDs;
+	std::vector<uint32_t> tints;
 	const Object & object = ObjectRegistry::getObject(BLOCK);
 	int invisibleFaces;
 
@@ -273,7 +255,7 @@ void Chunk::generateMesh()
 							vertices.push_back(vx);
 							vertices.push_back(vy);
 							vertices.push_back(vz);
-							glm::vec2 baseUV = _world->getAtlas()->getUVForBlock(block.type, static_cast<BlockFace>(face)); // send face
+							glm::vec2 baseUV = _world->getAtlas()->getUVForBlock(block.type, static_cast<BlockFace>(face));
 							float tileSize = 1.0f / _world->getAtlas()->getTilesPerRow();
 							float epsilon = 0.001f / _world->getAtlas()->getWidth();
 
@@ -296,8 +278,7 @@ void Chunk::generateMesh()
 							vertices.push_back(normal.x);
 							vertices.push_back(normal.y);
 							vertices.push_back(normal.z);
-							blockIDs.push_back(static_cast<uint8_t>(block.type));
-							faceIDs.push_back(static_cast<uint8_t>(face));
+							tints.push_back(BlockTypeRegistry::getTint(block.type, static_cast<BlockFace>(face)));
 						}
 					}
 					if (invisibleFaces == 6)
@@ -315,8 +296,7 @@ void Chunk::generateMesh()
 	}
 	_vertices = vertices;
 	_indices = indices;
-	_blockIDs = blockIDs;
-	_faceIDs = faceIDs;
+	_tints = tints;
 
 	ChunkState state = getState();
 	setState(state == DIRTY ? CLEANED : MESHED);

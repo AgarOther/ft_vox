@@ -15,17 +15,17 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/utils/imgui_utils.cpp \
 						srcs/utils/utils.cpp \
 						srcs/utils/textureatlas_utils.cpp \
-						srcs/minecraft/BlockTypeRegistry.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Chunk.cpp \
 						srcs/minecraft/ChunkMonitor.cpp \
 						srcs/minecraft/ChunkWorker.cpp \
 						srcs/minecraft/Location.cpp \
-						srcs/minecraft/ObjectRegistry.cpp \
 						srcs/minecraft/Player.cpp \
-						srcs/minecraft/StructureRegistry.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
 						srcs/minecraft/World.cpp \
+						srcs/registry/BlockTypeRegistry.cpp \
+						srcs/registry/ObjectRegistry.cpp \
+						srcs/registry/StructureRegistry.cpp \
 						srcs/renderer/Camera.cpp \
 						srcs/renderer/Crosshair.cpp \
 						srcs/renderer/Frustum.cpp \
@@ -42,8 +42,9 @@ LIBS_SRC			=	libs/stb/stb_image.cpp \
 OBJ_FOLDER			=	objs
 INCLUDES			=	-I includes \
 						-I srcs/engine \
-						-I srcs/renderer \
 						-I srcs/minecraft \
+						-I srcs/registry \
+						-I srcs/renderer \
 						-I libs/imgui \
 						-I libs
 
@@ -103,6 +104,11 @@ re : fclean all
 debug : CFLAGS += -DDEBUG
 debug :
 	$(MAKE) CFLAGS="$(CFLAGS)" -j4 $(NAME)
+
+debugrun : CFLAGS += -DDEBUG
+debugrun :
+	$(MAKE) CFLAGS="$(CFLAGS)" -j4 $(NAME)
+	./$(NAME)
 
 download_glfw:
 	@cd libs; \

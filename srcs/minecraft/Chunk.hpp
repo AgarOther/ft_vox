@@ -18,7 +18,7 @@ class Chunk
 {
 	public:
 		Chunk(int chunkX, int chunkZ, World * world):
-			_chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0), _bbo(0), _fbo(0), _indicesSize(0),
+			_chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0), _tbo(0), _indicesSize(0),
 			 _world(world), _state(IDLE) {}
 		~Chunk();
 
@@ -45,14 +45,12 @@ class Chunk
 		GLuint					_vao;
 		GLuint					_vbo;
 		GLuint					_ibo;
-		GLuint					_bbo;
-		GLuint					_fbo;
+		GLuint					_tbo;
 		uint8_t					_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
 		unsigned int			_indicesSize;
 		std::vector<float>		_vertices;
 		std::vector<uint32_t>	_indices;
-		std::vector<uint8_t>	_blockIDs;
-		std::vector<uint8_t>	_faceIDs;
+		std::vector<uint32_t>	_tints;
 		World *					_world;
 		std::mutex				_stateMutex;
 		ChunkState				_state;
