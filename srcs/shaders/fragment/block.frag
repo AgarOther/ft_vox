@@ -13,7 +13,7 @@ void main()
 {
 	vec4 texColor = texture(textureAtlas, texCoord);
 
-	if (texColor.a < 0.5)
+	if (texColor.a == 0.0)
 		discard;
 
 	// Calculate lighting
