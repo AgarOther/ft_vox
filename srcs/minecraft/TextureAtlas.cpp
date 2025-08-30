@@ -114,17 +114,18 @@ void TextureAtlas::init()
 	TextureMap textureMap;
 
 	// Unique textures (one texture for the whole block)
-	textureMap[UNKNOWN] = loadUnique("unknown.png");
-	textureMap[STONE] = loadUnique("stone.png");
-	textureMap[END_STONE] = loadUnique("end_stone.png");
-	textureMap[BEDROCK] = loadUnique("bedrock.png");
-	textureMap[DIRT] = loadUnique("dirt.png");
-	textureMap[SAND] = loadUnique("sand.png");
-	textureMap[OAK_LEAVES] = loadUnique("oak_leaves.png");
+	textureMap[UNKNOWN]				= loadUnique("unknown.png");
+	textureMap[STONE]				= loadUnique("stone.png");
+	textureMap[END_STONE]			= loadUnique("end_stone.png");
+	textureMap[BEDROCK]				= loadUnique("bedrock.png");
+	textureMap[DIRT]				= loadUnique("dirt.png");
+	textureMap[SAND]				= loadUnique("sand.png");
+	textureMap[OAK_LEAVES]			= loadUnique("oak_leaves.png");
+	textureMap[WATER]				= loadUnique("water_full.png");
 
 	// Multi-textured blocks
-	textureMap[OAK_LOG] = loadSideTop("oak_log.png", "oak_log_top.png");
-	textureMap[ACACIA_LOG] = loadSideTop("acacia_log.png", "acacia_log_top.png");
+	textureMap[OAK_LOG]				= loadSideTop("oak_log.png", "oak_log_top.png");
+	textureMap[ACACIA_LOG]			= loadSideTop("acacia_log.png", "acacia_log_top.png");
 
 	TextureBuffer cartography;
 	cartography.push_back(std::pair<BlockFace, std::string>((FACE_FRONT), "cartography_table_side1.png"));
@@ -133,8 +134,8 @@ void TextureAtlas::init()
 	cartography.push_back(std::pair<BlockFace, std::string>((FACE_RIGHT), "cartography_table_side3.png"));
 	cartography.push_back(std::pair<BlockFace, std::string>((FACE_TOP), "cartography_table_top.png"));
 	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BOTTOM), "dark_oak_planks.png"));
-	textureMap[CARTOGRAPHY_TABLE] = cartography;
+	textureMap[CARTOGRAPHY_TABLE]	= cartography;
 
-	textureMap[GRASS_BLOCK] = loadSideTopBottom("grass_block_side.png", "grass_block_top.png", "dirt.png");
+	textureMap[GRASS_BLOCK]			= loadSideTopBottom("grass_block_side.png", "grass_block_top.png", "dirt.png");
 	loadTextures(textureMap);
 }

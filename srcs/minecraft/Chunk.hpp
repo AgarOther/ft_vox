@@ -23,7 +23,6 @@ class Chunk
 		~Chunk();
 
 		void						generateBlocks();
-		void						generateStructures();
 		void						generateMesh();
 		void						uploadMesh();
 		void						unloadMesh();
@@ -55,6 +54,7 @@ class Chunk
 		std::mutex					_stateMutex;
 		ChunkState					_state;
 
-		bool					isBlockVisible(int x, int y, int z);
-		bool					isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
+		bool					_isBlockVisible(int x, int y, int z);
+		bool					_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
+		void					_generateStructures();
 };	

@@ -15,27 +15,30 @@
 
 std::mutex g_debugMutex;
 
-float frequency = 3.0f;
-float amplitude = 3.f; // Max terrain height variation
-int baseHeight = 64;
+float frequency = 0.80f;
+float amplitude = 34.f; // Max terrain height variation
 
-void Chunk::generateStructures()
+void Chunk::_generateStructures()
 {
 	if (rand() % 3)
 		return;
 	const Structure & tree = StructureRegistry::getStructure(TREE);
 	const int x = rand() % 16;
 	const int z = rand() % 16;
-	int y = baseHeight;
+	int y = SEA_LEVEL;
 	if (x + tree.size.x >= CHUNK_WIDTH || y + tree.size.y >= CHUNK_HEIGHT || z + tree.size.z >= CHUNK_DEPTH)
 		return;
-	while (_blocks[x][y][z] == AIR)
+	while (_blocks[x][y][z] != AIR)
+	{
+		if (_blocks[x][y][z] == WATER)
+			return;
 		y++;
+	}
 
 	for (std::pair<glm::vec3, Material> data : tree.data)
 	{
 		const int dx = x + data.first.x;
-		const int dy = y + data.first.y + 1;
+		const int dy = y + data.first.y;
 		const int dz = z + data.first.z;
 		if (dx >= CHUNK_WIDTH || dy >= CHUNK_HEIGHT || dz >= CHUNK_DEPTH)
 			continue;
@@ -55,10 +58,10 @@ void Chunk::generateBlocks()
 				float worldZ = static_cast<float>(_chunkZ * CHUNK_DEPTH + z);
 
 				float noiseValue = _world->getNoise().GetNoise(worldX * frequency, worldZ * frequency);
-				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + baseHeight);
-				int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 2;
+				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + SEA_LEVEL);
+				int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 3;
 
-				if (y == height)
+				if (y == height && y >= SEA_LEVEL)
 					_blocks[x][y][z] = GRASS_BLOCK;
 				else if (y == 0)
 					_blocks[x][y][z] = BEDROCK;
@@ -67,13 +70,13 @@ void Chunk::generateBlocks()
 				else if (y <= height - stoneOffset)
 					_blocks[x][y][z] = STONE;
 				else if (y > height)
-					_blocks[x][y][z] = AIR;
+					_blocks[x][y][z] = y <= SEA_LEVEL ? WATER : AIR;
 				else
 					_blocks[x][y][z] = DIRT;
 			}
 		}
 	}
-	generateStructures();
+	_generateStructures();
 	setState(GENERATED);
 }
 
@@ -91,52 +94,66 @@ Chunk::~Chunk()
 
 static bool isFaceRenderable(uint8_t b1, uint8_t b2)
 {
-    BlockType blockToCheck   = BlockTypeRegistry::getBlockType(b1);
-    BlockType blockToCompare = BlockTypeRegistry::getBlockType(b2);
+	BlockType blockToCheck   = BlockTypeRegistry::getBlockType(b1);
+	BlockType blockToCompare = BlockTypeRegistry::getBlockType(b2);
 
-    if (!blockToCompare.isVisible)
-        return true;
-    if (blockToCompare.isVisible && !blockToCompare.isTransparent)
-        return false;
-    if (blockToCheck.isTransparent && blockToCompare.isTransparent)
-        return true;
-    return true;
+	if (blockToCheck.isLiquid && blockToCompare.isLiquid)
+		return false;
+	if (blockToCompare.isVisible && !blockToCompare.isTransparent && !blockToCompare.isLiquid)
+		return false;
+	return true;
 }
 
-
-inline bool Chunk::isBlockVisible(int x, int y, int z)
+inline bool Chunk::_isBlockVisible(int x, int y, int z)
 {
-    return (x == 0 || y == 0 || z == 0
-        || x == CHUNK_WIDTH  - 1 || y == CHUNK_HEIGHT - 1 || z == CHUNK_DEPTH - 1
-        || (x - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x - 1][y][z]))
-        || (x + 1 < CHUNK_WIDTH  && isFaceRenderable(_blocks[x][y][z], _blocks[x + 1][y][z]))
-        || (y - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y - 1][z]))
-        || (y + 1 < CHUNK_HEIGHT && isFaceRenderable(_blocks[x][y][z], _blocks[x][y + 1][z]))
-        || (z - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z - 1]))
-        || (z + 1 < CHUNK_DEPTH  && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z + 1])));
+	return (x == 0 || y == 0 || z == 0
+		|| x == CHUNK_WIDTH - 1 || y == CHUNK_HEIGHT - 1 || z == CHUNK_DEPTH - 1
+		|| (x - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x - 1][y][z]))
+		|| (x + 1 < CHUNK_WIDTH && isFaceRenderable(_blocks[x][y][z], _blocks[x + 1][y][z]))
+		|| (y - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y - 1][z]))
+		|| (y + 1 < CHUNK_HEIGHT && isFaceRenderable(_blocks[x][y][z], _blocks[x][y + 1][z]))
+		|| (z - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z - 1]))
+		|| (z + 1 < CHUNK_DEPTH && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z + 1])));
 }
 
-bool Chunk::isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right)
+bool Chunk::_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right)
 {
+	BlockType block = BlockTypeRegistry::getBlockType(AIR);
 	switch (face)
 	{
 		case FACE_FRONT:
-			if (z == CHUNK_DEPTH - 1 && front && front->getBlockAtChunkLocation(Location(x, y, 0)).isVisible)
+			if (front)
+				block = front->getBlockAtChunkLocation(Location(x, y, 0));
+			if (block.isLiquid && BlockTypeRegistry::getBlockType(_blocks[x][y][z]).isLiquid)
+				return false;
+			if (z == CHUNK_DEPTH - 1 && front && block.isVisible && !block.isLiquid)
 				return false;
 			else
 				return (z + 1 < CHUNK_DEPTH && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z + 1])) || z == CHUNK_DEPTH - 1;
 		case FACE_BACK:
-			if (z == 0 && back && back->getBlockAtChunkLocation(Location(x, y, CHUNK_DEPTH - 1)).isVisible)
+			if (back)
+				block = back->getBlockAtChunkLocation(Location(x, y, CHUNK_DEPTH - 1));
+			if (block.isLiquid && BlockTypeRegistry::getBlockType(_blocks[x][y][z]).isLiquid)
+				return false;
+			if (z == 0 && back && block.isVisible && !block.isLiquid)
 				return false;
 			else
 				return (z - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z - 1])) || z == 0;
 		case FACE_LEFT:
-			if (x == 0 && left && left->getBlockAtChunkLocation(Location(CHUNK_WIDTH - 1, y, z)).isVisible)
+			if (left)
+				block = left->getBlockAtChunkLocation(Location(CHUNK_WIDTH - 1, y, z));
+			if (block.isLiquid && BlockTypeRegistry::getBlockType(_blocks[x][y][z]).isLiquid)
+				return false;
+			if (x == 0 && left && block.isVisible && !block.isLiquid)
 				return false;
 			else
 				return (x - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x - 1][y][z])) || x == 0;
 		case FACE_RIGHT:
-			if (x == CHUNK_WIDTH - 1 && right && right->getBlockAtChunkLocation(Location(0, y, z)).isVisible)
+			if (right)
+				block = right->getBlockAtChunkLocation(Location(0, y, z));
+			if (block.isLiquid && BlockTypeRegistry::getBlockType(_blocks[x][y][z]).isLiquid)
+				return false;
+			if (x == CHUNK_WIDTH - 1 && right && block.isVisible && !block.isLiquid)
 				return false;
 			else
 				return (x + 1 < CHUNK_WIDTH && isFaceRenderable(_blocks[x][y][z], _blocks[x + 1][y][z])) || x == CHUNK_WIDTH - 1;
@@ -248,7 +265,7 @@ void Chunk::generateMesh()
 			{
 				invisibleFaces = 0;
 				const BlockType & block = BlockTypeRegistry::getBlockType(_blocks[x][y][z]);
-				if ((block.isTransparent && block.isVisible) || (block.isVisible && isBlockVisible(x, y, z)))
+				if ((block.isTransparent && block.isVisible) || (block.isVisible && _isBlockVisible(x, y, z)))
 				{
 					std::vector<float> blockVertices = object.vertices;
 					std::vector<uint16_t> blockIndices = object.indices;
@@ -256,7 +273,7 @@ void Chunk::generateMesh()
 					// Add vertices, offsetting positions by chunk coordinates
 					for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
 					{
-						bool faceVisible = block.isTransparent || isFaceVisible(static_cast<BlockFace>(face), x, y, z, front, back, left, right);
+						bool faceVisible = block.isTransparent || _isFaceVisible(static_cast<BlockFace>(face), x, y, z, front, back, left, right);
 						if (!faceVisible)
 						{
 							invisibleFaces++;
@@ -270,6 +287,8 @@ void Chunk::generateMesh()
 							float vz = blockVertices[vi + 2] + z;
 
 							vertices.push_back(vx);
+							if (block.type == WATER && face != FACE_BOTTOM && _blocks[x][y + 1][z] == AIR)
+								vy -= 0.125f;
 							vertices.push_back(vy);
 							vertices.push_back(vz);
 							glm::vec2 baseUV = _world->getAtlas()->getUVForBlock(block.type, static_cast<BlockFace>(face));
@@ -403,7 +422,7 @@ BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
 		return BlockTypeRegistry::getBlockType(AIR);
 	}
 	return BlockTypeRegistry::getBlockType(
-    	_blocks
+		_blocks
 		[static_cast<int>(std::floor(loc.getX()))]
 		[static_cast<int>(std::floor(loc.getY()))]
 		[static_cast<int>(std::floor(loc.getZ()))]

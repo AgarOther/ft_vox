@@ -25,6 +25,7 @@ enum Material
 	OAK_LEAVES,
 	ACACIA_LOG,
 	CARTOGRAPHY_TABLE,
+	WATER,
 	AIR = 255
 };
 
@@ -41,6 +42,7 @@ struct BlockType
 	bool		isVisible;
 	bool		isSolid;
 	bool		isTransparent;
+	bool		isLiquid;
 };
 
 enum ModelType

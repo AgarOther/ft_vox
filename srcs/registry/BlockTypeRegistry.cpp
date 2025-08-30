@@ -8,15 +8,6 @@ void BlockTypeRegistry::initTints()
 {
 	if (!_tints.empty())
 		return;
-
-	_tints[{GRASS_BLOCK, FACE_TOP}]	= {140, 204, 89};
-
-	_tints[{OAK_LEAVES, FACE_FRONT}]	= {140, 204, 89};
-	_tints[{OAK_LEAVES, FACE_BACK}]	= {140, 204, 89};
-	_tints[{OAK_LEAVES, FACE_LEFT}]	= {140, 204, 89};
-	_tints[{OAK_LEAVES, FACE_RIGHT}]	= {140, 204, 89};
-	_tints[{OAK_LEAVES, FACE_TOP}]	= {140, 204, 89};
-	_tints[{OAK_LEAVES, FACE_BOTTOM}]	= {140, 204, 89};
 }
 
 void BlockTypeRegistry::init()
@@ -24,18 +15,19 @@ void BlockTypeRegistry::init()
 	if (!_types.empty())
 		return;
 
-	_types[UNKNOWN]				= { UNKNOWN, "unknown", true, true, false };
-	_types[STONE]				= { STONE, "stone", true, true, false };
-	_types[DIRT]				= { DIRT, "dirt", true, true, false };
-	_types[BEDROCK]				= { BEDROCK, "bedrock", true, true, false };
-	_types[SAND]				= { SAND, "sand", true, true, false };
-	_types[END_STONE]			= { END_STONE, "end_stone", true, true, false };
-	_types[OAK_LOG]				= { OAK_LOG, "oak_log", true, true, false };
-	_types[OAK_LEAVES]			= { OAK_LEAVES, "oak_leaves", true, true, true };
-	_types[ACACIA_LOG]			= { ACACIA_LOG, "acacia_log", true, true, false };
-	_types[CARTOGRAPHY_TABLE]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true, false };
-	_types[GRASS_BLOCK]			= { GRASS_BLOCK, "grass_block", true, true, false };
-	_types[AIR]					= {  AIR, "air",false, false, false };
+	_types[UNKNOWN]				= { UNKNOWN, "unknown", true, true, false, false };
+	_types[STONE]				= { STONE, "stone", true, true, false, false };
+	_types[DIRT]				= { DIRT, "dirt", true, true, false, false };
+	_types[BEDROCK]				= { BEDROCK, "bedrock", true, true, false, false };
+	_types[SAND]				= { SAND, "sand", true, true, false, false };
+	_types[END_STONE]			= { END_STONE, "end_stone", true, true, false, false };
+	_types[OAK_LOG]				= { OAK_LOG, "oak_log", true, true, false, false };
+	_types[OAK_LEAVES]			= { OAK_LEAVES, "oak_leaves", true, true, true, false };
+	_types[ACACIA_LOG]			= { ACACIA_LOG, "acacia_log", true, true, false, false };
+	_types[CARTOGRAPHY_TABLE]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true, false, false };
+	_types[GRASS_BLOCK]			= { GRASS_BLOCK, "grass_block", true, true, false, false };
+	_types[WATER]				= { WATER, "water", true, false, false, true };
+	_types[AIR]					= { AIR, "air",false, false, false, false };
 
 	initTints();
 }

@@ -7,6 +7,7 @@
 #include <unordered_map>
 
 #define CHUNK_DELETION_DISTANCE 5
+#define SEA_LEVEL 64
 
 class Player;
 
