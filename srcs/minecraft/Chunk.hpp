@@ -22,38 +22,38 @@ class Chunk
 			 _world(world), _state(IDLE) {}
 		~Chunk();
 
-		void					generateBlocks();
-		void					generateStructures();
-		void					generateMesh();
-		void					uploadMesh();
-		void					unloadMesh();
-		void					render(const Shader & shader) const;
-		BlockType				getBlockAt(const Location & loc);
-		BlockType				getBlockAtChunkLocation(const Location & loc);
-		std::vector<Chunk * >	getNeighborChunks();
-		void					changeBlockAt(const Location & loc, Material newMaterial);
+		void						generateBlocks();
+		void						generateStructures();
+		void						generateMesh();
+		void						uploadMesh();
+		void						unloadMesh();
+		void						render(const Shader & shader) const;
+		BlockType					getBlockAt(const Location & loc);
+		BlockType					getBlockAtChunkLocation(const Location & loc);
+		std::vector<Chunk * >		getNeighborChunks();
+		void						changeBlockAt(const Location & loc, Material newMaterial);
 
-		int						getChunkX() const { return _chunkX; }
-		int						getChunkZ() const { return _chunkZ; }
-		std::pair<int, int>		getChunkLocation() const { return { _chunkX, _chunkZ }; }
-		ChunkState				getState() { const std::lock_guard<std::mutex> lg(_stateMutex); return _state; }
+		int							getChunkX() const { return _chunkX; }
+		int							getChunkZ() const { return _chunkZ; }
+		std::pair<int, int>			getChunkLocation() const { return { _chunkX, _chunkZ }; }
+		ChunkState					getState() { const std::lock_guard<std::mutex> lg(_stateMutex); return _state; }
 
-		void					setState(ChunkState state) { const std::lock_guard<std::mutex> lg(_stateMutex); _state = state; }
+		void						setState(ChunkState state) { const std::lock_guard<std::mutex> lg(_stateMutex); _state = state; }
 	private:
-		const int				_chunkX;
-		const int				_chunkZ;
-		GLuint					_vao;
-		GLuint					_vbo;
-		GLuint					_ibo;
-		GLuint					_tbo;
-		uint8_t					_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
-		unsigned int			_indicesSize;
-		std::vector<float>		_vertices;
-		std::vector<uint32_t>	_indices;
-		std::vector<uint32_t>	_tints;
-		World *					_world;
-		std::mutex				_stateMutex;
-		ChunkState				_state;
+		const int					_chunkX;
+		const int					_chunkZ;
+		GLuint						_vao;
+		GLuint						_vbo;
+		GLuint						_ibo;
+		GLuint						_tbo;
+		uint8_t						_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
+		unsigned int				_indicesSize;
+		std::vector<float>			_vertices;
+		std::vector<uint16_t>		_indices;
+		std::vector<glm::u8vec3>	_tints;
+		World *						_world;
+		std::mutex					_stateMutex;
+		ChunkState					_state;
 
 		bool					isBlockVisible(int x, int y, int z);
 		bool					isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);

@@ -9,14 +9,14 @@ void BlockTypeRegistry::initTints()
 	if (!_tints.empty())
 		return;
 
-	_tints[{GRASS_BLOCK, FACE_TOP}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+	_tints[{GRASS_BLOCK, FACE_TOP}]	= {140, 204, 89};
 
-	_tints[{OAK_LEAVES, FACE_FRONT}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
-	_tints[{OAK_LEAVES, FACE_BACK}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
-	_tints[{OAK_LEAVES, FACE_LEFT}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
-	_tints[{OAK_LEAVES, FACE_RIGHT}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
-	_tints[{OAK_LEAVES, FACE_TOP}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
-	_tints[{OAK_LEAVES, FACE_BOTTOM}]	= 140 << 24 | 204 << 16 | 89 << 8 | 255;
+	_tints[{OAK_LEAVES, FACE_FRONT}]	= {140, 204, 89};
+	_tints[{OAK_LEAVES, FACE_BACK}]	= {140, 204, 89};
+	_tints[{OAK_LEAVES, FACE_LEFT}]	= {140, 204, 89};
+	_tints[{OAK_LEAVES, FACE_RIGHT}]	= {140, 204, 89};
+	_tints[{OAK_LEAVES, FACE_TOP}]	= {140, 204, 89};
+	_tints[{OAK_LEAVES, FACE_BOTTOM}]	= {140, 204, 89};
 }
 
 void BlockTypeRegistry::init()
@@ -60,12 +60,12 @@ const BlockType & BlockTypeRegistry::getBlockType(const std::string & name)
 	return _types[0];
 }
 
-uint32_t BlockTypeRegistry::getTint(Material material, BlockFace blockface)
+glm::u8vec3 BlockTypeRegistry::getTint(Material material, BlockFace blockface)
 {
 	auto it = _tints.find({material, blockface});
 	if (it != _tints.end())
 		return it->second;
-	return 0xFFFFFFFF; // normal (uint max)
+	return {255, 255, 255}; // normal (uint max)
 }
 
 const BlockTypeRegistry::BlockTypeMap & BlockTypeRegistry::getBlockTypeMap()

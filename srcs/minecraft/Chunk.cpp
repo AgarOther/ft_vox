@@ -11,10 +11,12 @@
 #include "types.hpp"
 #include "utils.hpp"
 
+// If chunk does weird stuff, revert indices back to uint32_t
+
 std::mutex g_debugMutex;
 
-float frequency = 1.0f;
-float amplitude = 5.f; // Max terrain height variation
+float frequency = 3.0f;
+float amplitude = 3.f; // Max terrain height variation
 int baseHeight = 64;
 
 void Chunk::generateStructures()
@@ -160,12 +162,12 @@ void Chunk::uploadMesh()
 
 	// Tints
 	glBindBuffer(GL_ARRAY_BUFFER, _tbo);
-	glBufferData(GL_ARRAY_BUFFER, _tints.size() * sizeof(GLuint), _tints.data(), GL_STATIC_DRAW);
-	glVertexAttribIPointer(3, 1, GL_UNSIGNED_INT, 0, nullptr);
+	glBufferData(GL_ARRAY_BUFFER, _tints.size() * sizeof(glm::u8vec3), _tints.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(3, 3, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(glm::u8vec3), nullptr);
 	glEnableVertexAttribArray(3);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(GLuint), _indices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(uint16_t), _indices.data(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -211,8 +213,8 @@ void Chunk::generateMesh()
 	if (getState() == IDLE)
 		return;
 	std::vector<float> vertices;
-	std::vector<uint32_t> indices;
-	std::vector<uint32_t> tints;
+	std::vector<uint16_t> indices;
+	std::vector<glm::u8vec3> tints;
 	const Object & object = ObjectRegistry::getObject(BLOCK);
 	int invisibleFaces;
 
@@ -234,7 +236,7 @@ void Chunk::generateMesh()
 				if ((block.isTransparent && block.isVisible) || (block.isVisible && isBlockVisible(x, y, z)))
 				{
 					std::vector<float> blockVertices = object.vertices;
-					std::vector<uint32_t> blockIndices = object.indices;
+					std::vector<uint16_t> blockIndices = object.indices;
 					size_t vertexOffset = vertices.size() / VERTICES_COUNT; // number of vertices added so far
 					// Add vertices, offsetting positions by chunk coordinates
 					for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
@@ -247,7 +249,7 @@ void Chunk::generateMesh()
 						}
 						for (int i = 0; i < 4; ++i)
 						{
-							size_t vi = (face * 4 + i) * 5;
+							uint16_t vi = (face * 4 + i) * 5;
 							float vx = blockVertices[vi + 0] + x;
 							float vy = blockVertices[vi + 1] + y;
 							float vz = blockVertices[vi + 2] + z;
@@ -321,11 +323,11 @@ void Chunk::render(const Shader & shader) const
 	if (g_DEBUG_INFO.wireframe)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glDrawElements(GL_TRIANGLES, _indicesSize, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, _indicesSize, GL_UNSIGNED_SHORT, 0);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	else
-		glDrawElements(GL_TRIANGLES, _indicesSize, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, _indicesSize, GL_UNSIGNED_SHORT, 0);
 }
 
 std::vector<Chunk * > Chunk::getNeighborChunks()

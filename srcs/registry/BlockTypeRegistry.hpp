@@ -13,10 +13,10 @@ class BlockTypeRegistry
 		typedef std::unordered_map<uint8_t, BlockType> BlockTypeMap;
 		static const BlockTypeMap &	getBlockTypeMap();
 		static void					initTints();
-		static uint32_t				getTint(Material material, BlockFace blockface);
+		static glm::u8vec3				getTint(Material material, BlockFace blockface);
 	private:
 
 		static BlockTypeMap 		_types;
-		typedef std::unordered_map<std::pair<Material, BlockFace>, uint32_t, PairHash> TintMap;
+		typedef std::unordered_map<std::pair<Material, BlockFace>, glm::u8vec3, PairHash> TintMap;
 		static TintMap				_tints;
 };

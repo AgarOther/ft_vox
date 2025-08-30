@@ -31,7 +31,7 @@ enum Material
 struct Object
 {
 	std::vector<float>		vertices;
-	std::vector<uint32_t>	indices;
+	std::vector<uint16_t>	indices;
 };
 
 struct BlockType

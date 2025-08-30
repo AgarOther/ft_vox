@@ -3,7 +3,7 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTex;
 layout (location = 2) in vec3 aNormal;
-layout (location = 3) in int aTint;
+layout (location = 3) in vec3 aTint;
 
 out vec2 texCoord;
 out vec3 normal;
@@ -17,5 +17,5 @@ void main()
 	gl_Position = camMatrix * model * vec4(aPos, 1);
 	texCoord = aTex;
 	normal = mat3(transpose(inverse(model))) * aNormal;
-	tint = vec3(((aTint >> 24) & 0xFF) / 255.0f, ((aTint >> 16) & 0xFF) / 255.0f, ((aTint >> 8) & 0xFF) / 255.0f);
+	tint = aTint;
 }
