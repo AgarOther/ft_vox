@@ -219,7 +219,7 @@ void World::generateProcedurally()
 					{
 						for (Chunk * chunk : tmp->getNeighborChunks())
 						{
-							if (chunk && chunk->getState() >= MESHED)
+							if (chunk && chunk->getState() == UPLOADED)
 							{
 								chunk->setState(DIRTY);
 								queue.push_back(chunk);
@@ -227,6 +227,22 @@ void World::generateProcedurally()
 						}
 					}
 					queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
+				}
+			}
+		}
+		// Pregenerating chunks that are far from the player when workers aren't active
+		if (queue.empty() && !_monitor.areWorkersWorking())
+		{
+			for (int x = centerX - (renderDistance * 1.5); x < centerX + (renderDistance * 1.5); x++)
+			{
+				for (int z = centerZ - (renderDistance * 1.5); z < centerZ + (renderDistance * 1.5); z++)
+				{
+					if (x >= centerX - renderDistance && x < centerX + renderDistance &&
+							z >= centerZ - renderDistance && z < centerZ + renderDistance)
+						continue;
+					Chunk * tmp = getChunkAtChunkLocation(x, z);
+					if (!tmp)
+						queue.push_back(new Chunk(x, z, this));
 				}
 			}
 		}
