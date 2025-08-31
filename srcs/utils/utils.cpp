@@ -4,15 +4,6 @@
 #include "../includes/utils.hpp"
 #include "colors.hpp"
 
-int floorDiv(int value, int divisor)
-{
-    int div = value / divisor;
-    int rem = value % divisor;
-    if (rem < 0)
-        div--;
-    return div;
-}
-
 std::vector<std::string> ft_split(const std::string & str, char delimiter)
 {
 	std::vector<std::string> tab;

@@ -82,8 +82,8 @@ Chunk * World::getChunkAt(int x, int z) const
 	int chunkX;
 	int chunkZ;
 
-	chunkX = floorDiv(x, CHUNK_WIDTH);
-	chunkZ = floorDiv(z, CHUNK_DEPTH);
+	chunkX = std::floor(static_cast<double>(x) / CHUNK_WIDTH);
+	chunkZ = std::floor(static_cast<double>(z) / CHUNK_DEPTH);
 	return getChunkAtChunkLocation(chunkX, chunkZ);
 }
 
@@ -97,8 +97,8 @@ Chunk * World::getChunkAtChunkLocation(int x, int z) const
 
 int World::getHighestYAtChunkLocation(int x, int z) const
 {
-	const int chunkX = x - (x % 16);
-	const int chunkZ = z - (z % 16);
+	const int chunkX = x - (x % CHUNK_WIDTH);
+	const int chunkZ = z - (z % CHUNK_DEPTH);
 	Chunk * chunk = getChunkAtChunkLocation(chunkX, chunkZ);
 	if (chunk)
 	{
@@ -146,7 +146,7 @@ BlockType World::getBlockAt(const Location & loc) const
 {
 	if (loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT)
 		return BlockTypeRegistry::getBlockType(AIR);
-	Chunk * chunk = getChunkAt(loc.getX(), loc.getZ());
+	Chunk * chunk = getChunkAt(static_cast<int>(loc.getX()), static_cast<int>(loc.getZ()));
 	if (!chunk || chunk->getState() == IDLE)
 		return BlockTypeRegistry::getBlockType(AIR);
 	return chunk->getBlockAt(loc);
@@ -171,13 +171,14 @@ void World::applyGravity(float deltaTime)
 			);
 			if (getBlockAt(teleportLocation).isSolid && player->getVelocityY() < 0)
 			{
-				Location tmp = teleportLocation.clone();
-				tmp.setX(round(tmp.getX()));
-				tmp.setZ(round(tmp.getZ()));
 				player->setVelocityY(0);
-				while (getBlockAt(tmp.add(0.0, 1.0, 0.0)).isSolid)
+
+				Location tmp = teleportLocation.clone();
+				tmp.setX(std::round(tmp.getX()));
+				tmp.setZ(std::round(tmp.getZ()));
+				while (getBlockAt(tmp.add(0.0, 1.0, 0.0)).isSolid && tmp.getY() < CHUNK_HEIGHT)
 					;
-				teleportLocation.setY(floor(tmp.getY()));
+				teleportLocation.setY(std::floor(tmp.getY()));
 			}
 			player->teleport(teleportLocation);
 		}

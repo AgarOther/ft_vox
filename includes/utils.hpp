@@ -18,7 +18,6 @@ GLFWwindow *				initWindow(int *width, int *height);
 void						toggleFullscreen(GLFWwindow * window, Camera * camera);
 std::vector<std::string>	ft_split(const std::string & str, char delimiter);
 Object						getObjectFromFile(const std::string & filepath);
-int							floorDiv(int value, int divisor);
 void                        dispatchCommand(char * buffer, Player * player);
 void						voxLog(const std::string & message);
 long						getTimeAsMilliseconds();

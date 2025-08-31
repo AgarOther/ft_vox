@@ -82,7 +82,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 		static_cast<int>(std::floor(position.getX())), static_cast<int>(std::floor(position.getY())), static_cast<int>(std::floor(position.getZ())));
 	ImGui::TextColored(ImVec4(1.0f, 0.74f, 0.0f, 1.0f), "Chunk XZ: %d / %d (%d / %d)",
 		abs(static_cast<int>(camera->getPosition().x) % CHUNK_WIDTH), abs(static_cast<int>(camera->getPosition().z) % CHUNK_DEPTH),
-		static_cast<int>(camera->getPosition().x / 16), static_cast<int>(camera->getPosition().z / 16));
+		static_cast<int>(camera->getPosition().x / CHUNK_WIDTH), static_cast<int>(camera->getPosition().z / CHUNK_DEPTH));
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "Facing: %s (Towards %s) (%.1f / %.1f)",
 		getDirectionAsString(camera->getYaw()).c_str(), getAxisDirectionAsString(camera->getYaw()).c_str(), camera->getYaw(), camera->getPitch());
 	
