@@ -13,7 +13,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_farPlane = 1000.0f;
 	_FOV = 80.0f;
 	_pitch = 0.0f;
-	_yaw = 90.0f;
+	_yaw = -90.0f;
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
