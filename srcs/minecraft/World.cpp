@@ -105,23 +105,9 @@ int World::getHighestYAtChunkLocation(int x, int z) const
 		for (int y = CHUNK_HEIGHT - 1; y >= 0; --y)
 		{
 			BlockType block = chunk->getBlockAtChunkLocation(Location(chunkX, y, chunkZ));
-			if (block.isSolid && block.type != BEDROCK)
-				return y + 1;
-		}
-	}
-	std::cout << "[Warning] Requesting unknown chunk at (" << x << ", " << z << ")." << std::endl;
-	return 0;
-}
-
-int World::getHighestY(int x, int z) const
-{
-	Chunk * chunk = getChunkAt(x, z);
-	if (chunk)
-	{
-		for (int y = CHUNK_HEIGHT - 1; y >= 0; --y)
-		{
-			BlockType block = chunk->getBlockAt(Location(x, y, z));
-			if (block.isSolid && block.type != BEDROCK)
+			if (block.isSolid && block.type != BEDROCK &&
+					(y + 1 < CHUNK_HEIGHT && !chunk->getBlockAtChunkLocation(Location(chunkX, y + 1, chunkZ)).isSolid)
+				 	&& (y + 2 < CHUNK_HEIGHT && !chunk->getBlockAtChunkLocation(Location(chunkX, y + 2, chunkZ)).isSolid))
 				return y + 1;
 		}
 	}
@@ -192,7 +178,6 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 	_monitor.queue(chunks);
 }
 
-// next step is to have new chunks mark neighboring chunks as dirty to rebuild mesh flawlessly by preparing new vbo/vao and then swapping the new with old
 void World::generateProcedurally()
 {
 	static long cooldown = 0;
