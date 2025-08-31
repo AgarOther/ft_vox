@@ -15,6 +15,5 @@ class Skybox
 	private:
 		GLuint	_vao;
 		GLuint	_vbo;
-		GLuint	_textureID;
 		Shader	_shader;
 };

@@ -3,10 +3,13 @@
 in vec3 texCoord;
 out vec4 color;
 
-uniform samplerCube skybox;
-
 void main()
 {
-	color = vec4(102.0f / 255.0f, 154.0f / 255.0f, 1.0f, 1.0f);
-	// color = texture(skybox, texCoord);
+	// Normalize to [0, 1]
+	float normalized = normalize(texCoord).y;
+	normalized = clamp((normalized + 1.0) * 0.5, 0.0, 1.0);
+
+	vec3 skyColor = vec3(102.0/255.0, 154.0/255.0, 1.0);
+	vec3 gradientColor = vec3(1.0, 1.0, 1.0);
+    color = vec4(mix(gradientColor, skyColor, normalized), 1.0);
 }

@@ -1,4 +1,5 @@
 #include "Camera.hpp"
+#include "Chunk.hpp"
 
 Camera::Camera(int width, int height, glm::vec3 position)
 {
@@ -17,8 +18,8 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_guiOn = false;
 	_locked = false;
 	_renderDistance = 8;
-	_fogStart = 9.0f;
-	_fogEnd = 20.0f;
+	_fogStart = 0.5f;
+	_fogEnd = 1.0f;
 	_fogColor = glm::vec3(180.0f / 255.0f, 210.0f / 255.0f, 1.0f);
 
 	glm::vec3 direction;
@@ -38,8 +39,8 @@ void Camera::setupMatrix(const Shader & shader)
 
 void Camera::setupFog(const Shader & shader)
 {
-	shader.setFloat("fogStart", _fogStart * _renderDistance);
-	shader.setFloat("fogEnd", _fogEnd * _renderDistance);
+	shader.setFloat("fogStart", _fogStart * _renderDistance * CHUNK_DEPTH);
+	shader.setFloat("fogEnd", _fogEnd * _renderDistance * CHUNK_DEPTH);
 	shader.setVec3("fogColor", _fogColor);
 	shader.setVec3("cameraPos", _position);
 }

@@ -69,7 +69,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	{
 		if (_world->getChunkAt(0, 0)->getState() >= GENERATED)
 		{
-			_spawnLocation.setY(_world->getHighestY(0, 0));
+			_spawnLocation.setY(_world->getHighestYAtChunkLocation(0, 0));
 			teleport(_spawnLocation);
 			_spawned = true;
 		}
