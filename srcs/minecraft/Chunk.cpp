@@ -15,9 +15,6 @@
 
 std::mutex g_debugMutex;
 
-float frequency = 0.80f;
-float amplitude = 34.f; // Max terrain height variation
-
 void Chunk::_generateStructures()
 {
 	if (rand() % 3)
@@ -46,8 +43,35 @@ void Chunk::_generateStructures()
 	}
 }
 
+void Chunk::_generateSand()
+{
+	for (int x = 0; x < CHUNK_WIDTH; ++x)
+	{
+		for (int y = 0; y < CHUNK_HEIGHT; ++y)
+		{
+			for (int z = 0; z < CHUNK_DEPTH; ++z)
+			{
+				if (_blocks[x][y][z] == WATER)
+				{
+					if (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] != WATER)
+						_blocks[x + 1][y][z] = SAND;
+					if (x - 1 >= 0 && _blocks[x - 1][y][z] != WATER)
+						_blocks[x - 1][y][z] = SAND;
+					if (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] != WATER)
+						_blocks[x][y][z + 1] = SAND;
+					if (z - 1 >= 0 && _blocks[x][y][z - 1] != WATER)
+						_blocks[x][y][z - 1] = SAND;
+				}
+			}
+		}
+	}
+}
+
 void Chunk::generateBlocks()
 {
+	const float frequency = 0.91f;
+	const float amplitude = 54.f; // Max terrain height variation
+
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
 		for (int y = 0; y < CHUNK_HEIGHT; ++y)
@@ -76,6 +100,7 @@ void Chunk::generateBlocks()
 			}
 		}
 	}
+	_generateSand();
 	_generateStructures();
 	setState(GENERATED);
 }
