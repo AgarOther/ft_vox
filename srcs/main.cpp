@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <chrono>
 #include "Camera.hpp"
 #include "Crosshair.hpp"
 #include "Skybox.hpp"
@@ -82,7 +83,7 @@ int main(void)
 		deltaTime = endTime - timeStart;
 		sleepTime = fpsInterval - deltaTime;
 		if (sleepTime > 0.001)
-			usleep((sleepTime - 0.001) * 1000000);
+			USLEEP(static_cast<int>((sleepTime - 0.001) * 1000000));
 		while ((glfwGetTime() - timeStart) < fpsInterval)
 			;
 

@@ -1,7 +1,7 @@
 #include "ChunkWorker.hpp"
 #include "colors.hpp"
+#include "utils.hpp"
 #include <mutex>
-#include <unistd.h>
 #include <iostream>
 
 uint8_t ChunkWorker::_count = 0;
@@ -51,7 +51,7 @@ void ChunkWorker::_loop()
 	while (_active)
 	{
 		_process();
-		usleep(100);
+		USLEEP(100);
 	}
 }
 

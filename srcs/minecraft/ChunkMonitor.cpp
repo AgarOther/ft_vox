@@ -4,7 +4,6 @@
 #include "errors.hpp"
 #include "utils.hpp"
 #include <mutex>
-#include <unistd.h>
 #include <iostream>
 
 ChunkMonitor::ChunkMonitor() : _active(false)
@@ -65,7 +64,7 @@ void ChunkMonitor::_loop()
 	while (_active)
 	{
 		_process();
-		usleep(100);
+		USLEEP(100);
 	}
 }
 
