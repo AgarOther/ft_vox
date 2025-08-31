@@ -16,10 +16,10 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 16;
-	_fogStart = 9.0f;
-	_fogEnd = 20.0f;
-	_fogColor = glm::vec3(0.7f, 0.7f, 1.0f);
+	_renderDistance = 8;
+	_fogStart = 12.5f;
+	_fogEnd = 21.0f;
+	_fogColor = glm::vec3(180.0f / 255.0f, 210.0f / 255.0f, 1.0f);
 
 	glm::vec3 direction;
 	direction.x = cosf(glm::radians(_yaw)) * cosf(glm::radians(_pitch));

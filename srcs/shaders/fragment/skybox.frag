@@ -7,6 +7,6 @@ uniform samplerCube skybox;
 
 void main()
 {
-	color = vec4(0.1f, 0.5f, 0.7f, 1.0f);
+	color = vec4(102.0f / 255.0f, 154.0f / 255.0f, 1.0f, 1.0f);
 	// color = texture(skybox, texCoord);
 }

@@ -27,6 +27,9 @@ void BlockTypeRegistry::init()
 	_types[CARTOGRAPHY_TABLE]	= { CARTOGRAPHY_TABLE, "cartography_table", true, true, false, false };
 	_types[GRASS_BLOCK]			= { GRASS_BLOCK, "grass_block", true, true, false, false };
 	_types[WATER]				= { WATER, "water", true, false, false, true };
+	_types[LAVA]				= { LAVA, "lava", true, false, false, true };
+	_types[NETHERRACK]			= { NETHERRACK, "netherrack", true, true, false, false };
+	_types[GLOWSTONE]			= { GLOWSTONE, "glowstone", true, true, false, false };
 	_types[AIR]					= { AIR, "air",false, false, false, false };
 
 	initTints();

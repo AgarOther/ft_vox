@@ -69,8 +69,8 @@ void Chunk::_generateSand()
 
 void Chunk::generateBlocks()
 {
-	const float frequency = 0.91f;
-	const float amplitude = 54.f; // Max terrain height variation
+	const float frequency = 2.0f;
+	const float amplitude = 69.f; // Max terrain height variation
 
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
@@ -151,7 +151,7 @@ bool Chunk::_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, C
 				block = front->getBlockAtChunkLocation(Location(x, y, 0));
 			if (block.isLiquid && BlockTypeRegistry::getBlockType(_blocks[x][y][z]).isLiquid)
 				return false;
-			if (z == CHUNK_DEPTH - 1 && front && block.isVisible && !block.isLiquid)
+			if (z == CHUNK_DEPTH - 1 && front && block.isVisible && !block.isLiquid && !block.isTransparent)
 				return false;
 			else
 				return (z + 1 < CHUNK_DEPTH && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z + 1])) || z == CHUNK_DEPTH - 1;
@@ -160,7 +160,7 @@ bool Chunk::_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, C
 				block = back->getBlockAtChunkLocation(Location(x, y, CHUNK_DEPTH - 1));
 			if (block.isLiquid && BlockTypeRegistry::getBlockType(_blocks[x][y][z]).isLiquid)
 				return false;
-			if (z == 0 && back && block.isVisible && !block.isLiquid)
+			if (z == 0 && back && block.isVisible && !block.isLiquid && !block.isTransparent)
 				return false;
 			else
 				return (z - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x][y][z - 1])) || z == 0;
@@ -169,7 +169,7 @@ bool Chunk::_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, C
 				block = left->getBlockAtChunkLocation(Location(CHUNK_WIDTH - 1, y, z));
 			if (block.isLiquid && BlockTypeRegistry::getBlockType(_blocks[x][y][z]).isLiquid)
 				return false;
-			if (x == 0 && left && block.isVisible && !block.isLiquid)
+			if (x == 0 && left && block.isVisible && !block.isLiquid && !block.isTransparent)
 				return false;
 			else
 				return (x - 1 >= 0 && isFaceRenderable(_blocks[x][y][z], _blocks[x - 1][y][z])) || x == 0;
@@ -178,7 +178,7 @@ bool Chunk::_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, C
 				block = right->getBlockAtChunkLocation(Location(0, y, z));
 			if (block.isLiquid && BlockTypeRegistry::getBlockType(_blocks[x][y][z]).isLiquid)
 				return false;
-			if (x == CHUNK_WIDTH - 1 && right && block.isVisible && !block.isLiquid)
+			if (x == CHUNK_WIDTH - 1 && right && block.isVisible && !block.isLiquid && !block.isTransparent)
 				return false;
 			else
 				return (x + 1 < CHUNK_WIDTH && isFaceRenderable(_blocks[x][y][z], _blocks[x + 1][y][z])) || x == CHUNK_WIDTH - 1;
@@ -312,7 +312,7 @@ void Chunk::generateMesh()
 							float vz = blockVertices[vi + 2] + z;
 
 							vertices.push_back(vx);
-							if (block.type == WATER && face != FACE_BOTTOM && _blocks[x][y + 1][z] == AIR)
+							if ((block.type == WATER || block.type == LAVA) && face != FACE_BOTTOM && _blocks[x][y + 1][z] == AIR)
 								vy -= 0.125f;
 							vertices.push_back(vy);
 							vertices.push_back(vz);

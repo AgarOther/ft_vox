@@ -103,8 +103,11 @@ int World::getHighestYAtChunkLocation(int x, int z) const
 	if (chunk)
 	{
 		for (int y = CHUNK_HEIGHT - 1; y >= 0; --y)
-			if (chunk->getBlockAtChunkLocation(Location(chunkX, y, chunkZ)).isSolid)
+		{
+			BlockType block = chunk->getBlockAtChunkLocation(Location(chunkX, y, chunkZ));
+			if (block.isSolid && block.type != BEDROCK)
 				return y + 1;
+		}
 	}
 	std::cout << "[Warning] Requesting unknown chunk at (" << x << ", " << z << ")." << std::endl;
 	return 0;
@@ -116,8 +119,11 @@ int World::getHighestY(int x, int z) const
 	if (chunk)
 	{
 		for (int y = CHUNK_HEIGHT - 1; y >= 0; --y)
-			if (chunk->getBlockAt(Location(x, y, z)).isSolid)
+		{
+			BlockType block = chunk->getBlockAt(Location(x, y, z));
+			if (block.isSolid && block.type != BEDROCK)
 				return y + 1;
+		}
 	}
 	std::cout << "[Warning] Requesting unknown chunk at (" << x << ", " << z << ")." << std::endl;
 	return 0;

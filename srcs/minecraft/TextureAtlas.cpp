@@ -122,6 +122,9 @@ void TextureAtlas::init()
 	textureMap[SAND]				= loadUnique("sand.png");
 	textureMap[OAK_LEAVES]			= loadUnique("oak_leaves.png");
 	textureMap[WATER]				= loadUnique("water_full.png");
+	textureMap[LAVA]				= loadUnique("lava_still.png");
+	textureMap[NETHERRACK]			= loadUnique("netherrack.png");
+	textureMap[GLOWSTONE]			= loadUnique("glowstone.png");
 
 	// Multi-textured blocks
 	textureMap[OAK_LOG]				= loadSideTop("oak_log.png", "oak_log_top.png");
