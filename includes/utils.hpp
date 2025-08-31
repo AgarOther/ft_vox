@@ -7,6 +7,8 @@
 #include "imgui/imgui.h"
 #include <iostream>
 
+#define USLEEP(x) std::this_thread::sleep_for(std::chrono::microseconds(x))
+
 extern DebugInfo g_DEBUG_INFO;
 extern const unsigned long long WORLD_SEED;
 

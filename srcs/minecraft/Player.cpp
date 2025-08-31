@@ -6,7 +6,6 @@
 #include <Chunk.hpp>
 #include <cmath>
 #include <cstdlib>
-#include <unistd.h>
 
 Player::Player(const std::string & name, int width, int height, World * world)
 {
