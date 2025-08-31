@@ -20,6 +20,7 @@ enum Material
 	DIRT,
 	BEDROCK,
 	SAND,
+	GRAVEL,
 	END_STONE,
 	OAK_LOG,
 	OAK_LEAVES,

@@ -20,6 +20,7 @@ void BlockTypeRegistry::init()
 	_types[DIRT]				= { DIRT, "dirt", true, true, false, false };
 	_types[BEDROCK]				= { BEDROCK, "bedrock", true, true, false, false };
 	_types[SAND]				= { SAND, "sand", true, true, false, false };
+	_types[GRAVEL]				= { GRAVEL, "gravel", true, true, false, false };
 	_types[END_STONE]			= { END_STONE, "end_stone", true, true, false, false };
 	_types[OAK_LOG]				= { OAK_LOG, "oak_log", true, true, false, false };
 	_types[OAK_LEAVES]			= { OAK_LEAVES, "oak_leaves", true, true, true, false };

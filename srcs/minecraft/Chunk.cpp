@@ -62,6 +62,8 @@ void Chunk::_generateSand()
 					if (z - 1 >= 0 && _blocks[x][y][z - 1] != WATER)
 						_blocks[x][y][z - 1] = SAND;
 				}
+				else if (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == WATER)
+						_blocks[x][y][z] = GRAVEL;
 			}
 		}
 	}
@@ -69,8 +71,8 @@ void Chunk::_generateSand()
 
 void Chunk::generateBlocks()
 {
-	const float frequency = 2.0f;
-	const float amplitude = 69.f; // Max terrain height variation
+	const float frequency = 1.0f;
+	const float amplitude = 42.f; // Max terrain height variation
 
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
@@ -82,7 +84,7 @@ void Chunk::generateBlocks()
 				float worldZ = static_cast<float>(_chunkZ * CHUNK_DEPTH + z);
 
 				float noiseValue = _world->getNoise().GetNoise(worldX * frequency, worldZ * frequency);
-				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + SEA_LEVEL);
+				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + SEA_LEVEL + 2);
 				int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 3;
 
 				if (y == height && y >= SEA_LEVEL)

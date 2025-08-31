@@ -17,8 +17,8 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_guiOn = false;
 	_locked = false;
 	_renderDistance = 8;
-	_fogStart = 12.5f;
-	_fogEnd = 21.0f;
+	_fogStart = 9.0f;
+	_fogEnd = 20.0f;
 	_fogColor = glm::vec3(180.0f / 255.0f, 210.0f / 255.0f, 1.0f);
 
 	glm::vec3 direction;
