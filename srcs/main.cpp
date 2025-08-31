@@ -18,11 +18,12 @@ constexpr unsigned long long WORLD_SEED = 42;
 int main(void)
 {
 	int width, height;
+	int fpsGoal = 60;
 
 	if (!glfwInit())
 		handleExit(FAILURE_GLFW);
 
-	GLFWwindow * window = initWindow(&width, &height);
+	GLFWwindow * window = initWindow(&width, &height, &fpsGoal);
 
 	#ifdef DEBUG
 	glEnable(GL_DEBUG_OUTPUT);
@@ -49,18 +50,19 @@ int main(void)
 
 	Player player("Eleonore", width, height, &world);
 
-	double timeStart = glfwGetTime();
-	double endTime;
-	double deltaTime = 0;
+	double timeStart, endTime, fpsInterval, sleepTime;
+	double deltaTime = io.DeltaTime;
 
 	// Main loop
 	while (!glfwWindowShouldClose(window))
 	{
 		timeStart = glfwGetTime();
+		fpsInterval = 1.0 / fpsGoal;
+
 		const bool hasGui = player.getCamera()->hasGuiOn();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
-			showImGui(io, &player, deltaTime);
+			showImGui(io, &player, deltaTime, &fpsGoal);
 		g_DEBUG_INFO.drawCalls = 0;
 
 		world.generateProcedurally();
@@ -74,9 +76,17 @@ int main(void)
 			renderImGui();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+		world.applyGravity(deltaTime);
+
 		endTime = glfwGetTime();
 		deltaTime = endTime - timeStart;
-		world.applyGravity(deltaTime);
+		sleepTime = fpsInterval - deltaTime;
+		if (sleepTime > 0.001)
+			usleep((sleepTime - 0.001) * 1000000);
+		while ((glfwGetTime() - timeStart) < fpsInterval)
+			;
+
+		deltaTime = glfwGetTime() - timeStart;
 	}
 
 	world.shutdown();

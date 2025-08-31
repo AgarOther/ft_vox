@@ -52,7 +52,7 @@ static void frameBufferCallback(GLFWwindow * window, int width, int height)
 	glViewport(viewportX, viewportY, viewportWidth, viewportHeight);
 }
 
-GLFWwindow * initWindow(int *width, int *height)
+GLFWwindow * initWindow(int * width, int * height, int * fpsGoal)
 {
 	GLFWwindow * window;
 	GLFWmonitor * monitor = glfwGetPrimaryMonitor();
@@ -81,5 +81,6 @@ GLFWwindow * initWindow(int *width, int *height)
 	// just clearing window so it doesn't look weird on start
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glfwSwapBuffers(window);
+	*fpsGoal = mode->refreshRate;
 	return window;
 }

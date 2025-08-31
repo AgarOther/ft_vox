@@ -59,7 +59,7 @@ static std::string getAxisDirectionAsString(const float yaw)
     return "negative X";
 }
 
-void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
+void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGoal)
 {
 	Camera * camera = player->getCamera();
 	const Location & position = player->getLocation();
@@ -91,6 +91,9 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 
 	ImGui::TextColored(ImVec4(0.4f, 0.84f, 1.0f, 1.0f), "Targeted block: %s", player->getTargetedBlock().blockType.name.c_str());
 
+	// FPS
+	ImGui::SliderInt("FPS", fpsGoal, 15.0f, 1000.0f, "%d FPS", ImGuiSliderFlags_AlwaysClamp);
+
 	// Speed
 	float cameraSpeed = camera->getBaseSpeed();
 	ImGui::SliderFloat("Player Speed", &cameraSpeed, 0.0f, 150.0f);
@@ -116,7 +119,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime)
 		camera->setRenderDistance(static_cast<float>(renderDistance));
 
 	// VSync
-	static bool vsync = true;
+	static bool vsync = false;
 	static bool vsyncChanged = false;
 	ImGui::Checkbox("VSync", &vsync);
 	if (vsync != vsyncChanged)
