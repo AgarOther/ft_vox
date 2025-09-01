@@ -9,7 +9,6 @@
 #include "Shader.hpp"
 #include "World.hpp"
 #include "errors.hpp"
-#include "types.hpp"
 #include "utils.hpp"
 
 // If chunk does weird stuff, revert indices back to uint32_t

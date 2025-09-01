@@ -15,6 +15,16 @@
 
 class World;
 
+enum ChunkState
+{
+	IDLE,
+	GENERATED,
+	DIRTY,
+	CLEANED,
+	MESHED,
+	UPLOADED
+};
+
 class Chunk
 {
 	public:

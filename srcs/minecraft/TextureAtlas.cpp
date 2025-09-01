@@ -1,6 +1,5 @@
 #include "TextureAtlas.hpp"
 #include "errors.hpp"
-#include "types.hpp"
 #include "utils.hpp"
 #include <BlockTypeRegistry.hpp>
 #include <cmath>

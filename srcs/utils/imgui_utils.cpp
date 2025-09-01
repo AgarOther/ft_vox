@@ -12,7 +12,6 @@
 
 #include "Chunk.hpp"
 #include "imgui/imgui.h"
-#include "types.hpp"
 #include "utils.hpp"
 #include <GLFW/glfw3.h>
 #include <unordered_map>

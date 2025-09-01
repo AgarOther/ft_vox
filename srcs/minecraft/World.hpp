@@ -2,7 +2,6 @@
 
 #include "ChunkMonitor.hpp"
 #include "Chunk.hpp"
-#include "types.hpp"
 #include <cstddef>
 #include <functional>
 #include <unordered_map>

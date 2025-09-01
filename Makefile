@@ -10,11 +10,6 @@ NAME				=	player
 SRCS				= 	srcs/debug.cpp \
 						srcs/glfw.cpp \
 						srcs/main.cpp \
-						srcs/models.cpp \
-						srcs/utils/command_utils.cpp \
-						srcs/utils/imgui_utils.cpp \
-						srcs/utils/utils.cpp \
-						srcs/utils/textureatlas_utils.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Chunk.cpp \
 						srcs/minecraft/ChunkMonitor.cpp \
@@ -30,7 +25,11 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/renderer/Crosshair.cpp \
 						srcs/renderer/Frustum.cpp \
 						srcs/renderer/Shader.cpp \
-						srcs/renderer/Skybox.cpp
+						srcs/renderer/Skybox.cpp \
+						srcs/utils/command_utils.cpp \
+						srcs/utils/imgui_utils.cpp \
+						srcs/utils/utils.cpp \
+						srcs/utils/textureatlas_utils.cpp
 LIBS_SRC			=	libs/stb/stb_image.cpp \
 						libs/imgui/imgui_demo.cpp \
 						libs/imgui/imgui_draw.cpp \

@@ -12,6 +12,18 @@
 #define VELOCITY_ACCELERATION 0.15f
 #define CAMERA_OFFSET_Y 1.5f
 
+enum Gamemode
+{
+	CREATIVE,
+	SURVIVAL
+};
+
+struct Block
+{
+	Location	position;
+	BlockType	blockType;
+};
+
 class Player
 {
 	public:

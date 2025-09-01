@@ -1,8 +1,25 @@
 #pragma once
+
 #include <unordered_map>
 #include <cstdint>
 #include <string>
-#include "types.hpp"
+#include <vector>
+#include "glm/glm.hpp"
+#include "BlockTypeRegistry.hpp"
+
+enum StructureType
+{
+	TREE
+};
+
+typedef std::vector<std::pair<glm::vec3, Material>> StructureData;
+
+struct Structure
+{
+	std::string			name;
+	StructureData		data;
+	glm::vec3			size;
+};
 
 class StructureRegistry
 {

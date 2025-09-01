@@ -3,7 +3,6 @@
 #include "Frustum.hpp"
 #include "Player.hpp"
 #include "Location.hpp"
-#include "types.hpp"
 #include "utils.hpp"
 #include "colors.hpp"
 

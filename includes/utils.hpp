@@ -3,7 +3,6 @@
 #include <string>
 #include "Camera.hpp"
 #include "Player.hpp"
-#include "types.hpp"
 #include "imgui/imgui.h"
 #include <iostream>
 
@@ -19,7 +18,6 @@ const						std::string getShaderAsString(std::string path);
 GLFWwindow *				initWindow(int * width, int * height, int * fpsGoal);
 void						toggleFullscreen(GLFWwindow * window, Camera * camera);
 std::vector<std::string>	ft_split(const std::string & str, char delimiter);
-Object						getObjectFromFile(const std::string & filepath);
 void						dispatchCommand(char * buffer, Player * player, std::unordered_map<Environment, World * > & worlds);
 void						voxLog(const std::string & message);
 long						getTimeAsMilliseconds();

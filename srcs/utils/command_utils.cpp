@@ -12,7 +12,6 @@
 
 #include "BlockTypeRegistry.hpp"
 #include "Chunk.hpp"
-#include "types.hpp"
 #include "utils.hpp"
 
 Material getMaterialFromString(std::string & name)

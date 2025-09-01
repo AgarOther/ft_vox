@@ -1,7 +1,6 @@
 #include "Skybox.hpp"
 #include "ObjectRegistry.hpp"
 #include "Shader.hpp"
-#include "types.hpp"
 #include "utils.hpp"
 #include "errors.hpp"
 #include "stb/stb_image.h"
