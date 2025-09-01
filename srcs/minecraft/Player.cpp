@@ -19,8 +19,10 @@ Player::Player(const std::string & name, int width, int height, World * world)
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
 	_gamemode = CREATIVE;
 	_velocity = glm::vec3(0.0f);
-	_world->addPlayer(this);
 	_spawned = false;
+
+	_world->addPlayer(this);
+	_world->load();
 }
 
 Player::~Player()
@@ -215,7 +217,11 @@ BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const
 
 void Player::setWorld(World * world)
 {
-	_world = world;
 	_world->removePlayer(this);
+	_world->shutdown();
+
+	world->load();
 	world->addPlayer(this);
+
+	_world = world;
 }

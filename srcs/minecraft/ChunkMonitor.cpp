@@ -6,14 +6,21 @@
 #include <mutex>
 #include <iostream>
 
-ChunkMonitor::ChunkMonitor(Environment environment) : _active(false)
+void ChunkMonitor::start()
 {
-	const int threadCount = (std::thread::hardware_concurrency() - 2) / 2; // minus main & this one
-	if (threadCount <= 0)
-		handleExit(FAILURE_THREAD);
-	for (int i = 0; i < threadCount; ++i)
-		_workers.push_back(new ChunkWorker(environment));
-	_start();
+	std::cout << GREEN << "[CHUNK] Started ChunkMonitor thread!" << RESET << std::endl;
+	if (_workers.empty())
+	{
+		const int threadCount = (std::thread::hardware_concurrency() - 2); // minus main & this one
+		if (threadCount <= 0)
+			handleExit(FAILURE_THREAD);
+		for (int i = 0; i < threadCount; ++i)
+			_workers.push_back(new ChunkWorker(_environment));
+	}
+	_active = true;
+	for (ChunkWorker * worker : _workers)
+		worker->start();
+	_thread = std::thread(&ChunkMonitor::_loop, this);
 }
 
 void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
@@ -35,7 +42,7 @@ bool ChunkMonitor::areWorkersWorking()
 {
 	for (ChunkWorker * worker : _workers)
 	{
-		if (worker->isWorking())
+		if (worker && worker->isWorking())
 			return true;
 	}
 	return false;
@@ -68,15 +75,6 @@ void ChunkMonitor::_loop()
 	}
 }
 
-void ChunkMonitor::_start()
-{
-	std::cout << GREEN << "[CHUNK] Started ChunkMonitor thread!" << RESET << std::endl;
-	_active = true;
-	for (ChunkWorker * worker : _workers)
-		worker->start();
-	_thread = std::thread(&ChunkMonitor::_loop, this);
-}
-
 void ChunkMonitor::stop()
 {
 	_active = false;
@@ -86,5 +84,6 @@ void ChunkMonitor::stop()
 		worker->stop();
 		delete worker;
 	}
+	_workers.clear();
 	std::cout << YELLOW << "[CHUNK] Stopped ChunkMonitor thread!" << RESET << std::endl;
 }

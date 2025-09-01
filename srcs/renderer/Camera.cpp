@@ -17,7 +17,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 8;
+	_renderDistance = 2;
 	_fogStart = 0.5f;
 	_fogEnd = 1.0f;
 	_fogColorOverworld = glm::vec3(180.0f / 255.0f, 210.0f / 255.0f, 1.0f);

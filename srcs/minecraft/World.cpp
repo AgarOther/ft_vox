@@ -5,9 +5,23 @@
 #include "Location.hpp"
 #include "types.hpp"
 #include "utils.hpp"
+#include "colors.hpp"
+
+void World::load()
+{
+	if (_loaded)
+	{
+		std::cerr << YELLOW << "[Warning] Tried to load an already loaded world." << RESET << std::endl;
+		return;
+	}
+	_monitor.start();
+	_loaded = true;
+}
 
 void World::render(const Shader & shader, const Player & player)
 {
+	if (!_loaded)
+		return;
 	shader.bind();
 	const uint8_t renderDistance = player.getCamera()->getRenderDistance() + 1;
 	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
@@ -247,7 +261,13 @@ void World::generateProcedurally()
 
 void World::shutdown()
 {
-	_monitor.stop();
+	if (_loaded)
+		_monitor.stop();
+	_loaded = false;
+}
+
+World::~World()
+{
 	for (auto& [_, chunk] : _chunks)
 		delete chunk;
 }

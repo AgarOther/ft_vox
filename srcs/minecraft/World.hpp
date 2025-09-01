@@ -25,7 +25,8 @@ class World
 {
 	public:
 		World(TextureAtlas * atlas, const FastNoiseLite & noise, Environment environment = OVERWORLD): _monitor(environment), _atlas(atlas),
-			_noise(noise), _procedural(true), _environment(environment) {}
+			_noise(noise), _procedural(true), _environment(environment), _loaded(false) {}
+		~World();
 
 		void					render(const Shader & shader, const Player & player);
 
@@ -39,6 +40,7 @@ class World
 		const FastNoiseLite &	getNoise() const { return _noise; }
 		bool					isProcedural() const { return _procedural; }
 		Environment				getEnvironment() const { return _environment; }
+		bool					isLoaded() const { return _loaded; }
 
 		void					setProcedural(bool procedural) { _procedural = procedural; }
 
@@ -48,6 +50,7 @@ class World
 
 		void					generateProcedurally(); // wow!
 		
+		void					load();
 		void					shutdown();
 	private:
 		void					_sendToWorkers(std::vector<Chunk * > & chunks);
@@ -62,4 +65,5 @@ class World
 		bool					_procedural;
 		std::vector<Chunk * >	_oldChunks;
 		Environment				_environment;
+		bool					_loaded;
 };

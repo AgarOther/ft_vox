@@ -12,16 +12,17 @@
 class ChunkMonitor
 {
 	public:
-		ChunkMonitor(Environment environment);
+		ChunkMonitor(Environment environment): _environment(environment), _active(false) {}
 		
 		void						queue(std::vector<Chunk * > & chunkQueue);
+		void						start();
 		void						stop();
 		bool						areWorkersWorking();
 	private:
-		void						_start();
 		void						_loop();
 		void						_process();
 
+		Environment					_environment;
 		std::thread					_thread;
 		std::atomic_bool			_active;
 		std::mutex					_queueMutex;

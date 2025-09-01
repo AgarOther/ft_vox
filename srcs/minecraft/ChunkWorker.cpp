@@ -36,7 +36,7 @@ void ChunkWorker::_process()
 
 	_working = true;
 	for (Chunk * chunk : _chunkQueue)
-	{		
+	{
 		if (chunk->getState() == IDLE)
 			chunk->generateBlocks(_environment);
 		else
