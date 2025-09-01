@@ -8,7 +8,6 @@ NAME				=	player
 
 # Sources & Includes
 SRCS				= 	srcs/debug.cpp \
-						srcs/glfw.cpp \
 						srcs/main.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Chunk.cpp \
@@ -27,6 +26,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/renderer/Shader.cpp \
 						srcs/renderer/Skybox.cpp \
 						srcs/utils/command_utils.cpp \
+						srcs/utils/glfw_utils.cpp \
 						srcs/utils/imgui_utils.cpp \
 						srcs/utils/utils.cpp \
 						srcs/utils/textureatlas_utils.cpp
