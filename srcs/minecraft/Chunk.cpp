@@ -69,7 +69,7 @@ void Chunk::_generateSand()
 	}
 }
 
-void Chunk::generateBlocks()
+void Chunk::generateBlocks(Environment environment)
 {
 	const float frequency = 1.0f;
 	const float amplitude = 42.f; // Max terrain height variation
@@ -83,27 +83,49 @@ void Chunk::generateBlocks()
 				float worldX = static_cast<float>(_chunkX * CHUNK_WIDTH + x);
 				float worldZ = static_cast<float>(_chunkZ * CHUNK_DEPTH + z);
 
-				float noiseValue = _world->getNoise().GetNoise(worldX * frequency, worldZ * frequency);
-				int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + SEA_LEVEL + 2);
-				int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 3;
 
-				if (y == height && y >= SEA_LEVEL)
-					_blocks[x][y][z] = GRASS_BLOCK;
-				else if (y == 0)
-					_blocks[x][y][z] = BEDROCK;
-				else if (y < height && y > height - stoneOffset)
-					_blocks[x][y][z] = DIRT;
-				else if (y <= height - stoneOffset)
-					_blocks[x][y][z] = STONE;
-				else if (y > height)
-					_blocks[x][y][z] = y <= SEA_LEVEL ? WATER : AIR;
+
+				if (environment == OVERWORLD)
+				{
+					const float noiseValue = _world->getNoise().GetNoise(worldX * frequency, worldZ * frequency);
+					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + SEA_LEVEL + 2);
+					const int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 3;
+					if (y == height && y >= SEA_LEVEL)
+						_blocks[x][y][z] = GRASS_BLOCK;
+					else if (y == 0)
+						_blocks[x][y][z] = BEDROCK;
+					else if (y == CHUNK_HEIGHT - 1 && environment == NETHER)
+						_blocks[x][y][z] = BEDROCK;
+					else if (y < height && y > height - stoneOffset)
+						_blocks[x][y][z] = DIRT;
+					else if (y <= height - stoneOffset)
+						_blocks[x][y][z] = STONE;
+					else if (y > height)
+						_blocks[x][y][z] = y <= SEA_LEVEL ? WATER : AIR;
+					else
+						_blocks[x][y][z] = DIRT;
+				}
 				else
-					_blocks[x][y][z] = DIRT;
+				{
+					const float noiseValue = _world->getNoise().GetNoise(worldX * (frequency * 0.5f), worldZ * (frequency * 0.5f));
+					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (amplitude * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
+					if (y == 0)
+						_blocks[x][y][z] = BEDROCK;
+					else if (y == CHUNK_HEIGHT - 1)
+						_blocks[x][y][z] = BEDROCK;
+					else if (y > height)
+						_blocks[x][y][z] = y <= LAVA_LEVEL ? LAVA : AIR;
+					else
+						_blocks[x][y][z] = NETHERRACK;
+				}
 			}
 		}
 	}
-	_generateSand();
-	_generateStructures();
+	if (environment == OVERWORLD)
+	{
+		_generateSand();
+		_generateStructures();
+	}
 	setState(GENERATED);
 }
 

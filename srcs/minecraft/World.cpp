@@ -14,7 +14,7 @@ void World::render(const Shader & shader, const Player & player)
 	Frustum frustum(viewProj);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	player.getCamera()->setupFog(shader);
+	player.getCamera()->setupFog(shader, _environment);
 	for (auto & [_, chunkPtr] : _chunks)
 	{
 		if (!chunkPtr)

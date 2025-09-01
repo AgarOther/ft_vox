@@ -6,6 +6,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/vector_angle.hpp>
 #include "Shader.hpp"
+#include "types.hpp"
 
 #define PLAYER_SPEED 3.75f
 
@@ -15,7 +16,7 @@ class Camera
 		Camera(int width, int height, glm::vec3 position);
 
 		void		setupMatrix(const Shader & shader);
-		void		setupFog(const Shader & shader);
+		void		setupFog(const Shader & shader, Environment environment);
 
 		// Getters
 		glm::mat4	getViewMatrix() const { return _view; }
@@ -75,5 +76,6 @@ class Camera
 		uint8_t		_renderDistance;
 		float		_fogStart;
 		float		_fogEnd;
-		glm::vec3	_fogColor;
+		glm::vec3	_fogColorOverworld;
+		glm::vec3	_fogColorNether;
 };

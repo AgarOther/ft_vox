@@ -6,7 +6,7 @@
 
 uint8_t ChunkWorker::_count = 0;
 
-ChunkWorker::ChunkWorker(): _active(false), _working(false)
+ChunkWorker::ChunkWorker(Environment environment): _active(false), _working(false), _environment(environment)
 {
 	_id = ChunkWorker::_count++;
 }
@@ -38,7 +38,7 @@ void ChunkWorker::_process()
 	for (Chunk * chunk : _chunkQueue)
 	{		
 		if (chunk->getState() == IDLE)
-			chunk->generateBlocks();
+			chunk->generateBlocks(_environment);
 		else
 			chunk->generateMesh();
 	}

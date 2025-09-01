@@ -12,7 +12,7 @@
 class ChunkMonitor
 {
 	public:
-		ChunkMonitor();
+		ChunkMonitor(Environment environment);
 		
 		void						queue(std::vector<Chunk * > & chunkQueue);
 		void						stop();

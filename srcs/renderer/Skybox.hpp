@@ -11,7 +11,7 @@ class Skybox
 		Skybox();
 		~Skybox();
 
-		void	render(const Camera * camera);
+		void	render(const Camera * camera, const Environment environment);
 	private:
 		GLuint	_vao;
 		GLuint	_vbo;

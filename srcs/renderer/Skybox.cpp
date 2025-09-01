@@ -1,6 +1,7 @@
 #include "Skybox.hpp"
 #include "ObjectRegistry.hpp"
 #include "Shader.hpp"
+#include "types.hpp"
 #include "utils.hpp"
 #include "errors.hpp"
 #include "stb/stb_image.h"
@@ -26,13 +27,14 @@ Skybox::~Skybox()
 		glDeleteVertexArrays(1, &_vao);
 }
 
-void Skybox::render(const Camera * camera)
+void Skybox::render(const Camera * camera, const Environment environment)
 {
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 	_shader.bind();
 	_shader.setMat4("view", glm::mat4(glm::mat3(camera->getViewMatrix())));
 	_shader.setMat4("projection", camera->getProjectionMatrix());
+	_shader.setInt("environment", environment);
 
 	glBindVertexArray(_vao);
 	glDrawArrays(GL_TRIANGLES, 0, 36);

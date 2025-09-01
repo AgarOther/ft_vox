@@ -20,7 +20,8 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_renderDistance = 8;
 	_fogStart = 0.5f;
 	_fogEnd = 1.0f;
-	_fogColor = glm::vec3(180.0f / 255.0f, 210.0f / 255.0f, 1.0f);
+	_fogColorOverworld = glm::vec3(180.0f / 255.0f, 210.0f / 255.0f, 1.0f);
+	_fogColorNether = glm::vec3(30.0f / 255.0f, 0.0f, 0.0f);
 
 	glm::vec3 direction;
 	direction.x = cosf(glm::radians(_yaw)) * cosf(glm::radians(_pitch));
@@ -37,10 +38,10 @@ void Camera::setupMatrix(const Shader & shader)
 	shader.setMat4("camMatrix", _proj * _view);
 }
 
-void Camera::setupFog(const Shader & shader)
+void Camera::setupFog(const Shader & shader, Environment environment)
 {
 	shader.setFloat("fogStart", _fogStart * _renderDistance * CHUNK_DEPTH);
 	shader.setFloat("fogEnd", _fogEnd * _renderDistance * CHUNK_DEPTH);
-	shader.setVec3("fogColor", _fogColor);
+	shader.setVec3("fogColor", environment == OVERWORLD ? _fogColorOverworld : _fogColorNether);
 	shader.setVec3("cameraPos", _position);
 }

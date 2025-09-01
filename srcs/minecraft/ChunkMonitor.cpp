@@ -6,13 +6,13 @@
 #include <mutex>
 #include <iostream>
 
-ChunkMonitor::ChunkMonitor() : _active(false)
+ChunkMonitor::ChunkMonitor(Environment environment) : _active(false)
 {
 	const int threadCount = std::thread::hardware_concurrency() - 2; // minus main & this one
 	if (threadCount <= 0)
 		handleExit(FAILURE_THREAD);
 	for (int i = 0; i < threadCount; ++i)
-		_workers.push_back(new ChunkWorker);
+		_workers.push_back(new ChunkWorker(environment));
 	_start();
 }
 

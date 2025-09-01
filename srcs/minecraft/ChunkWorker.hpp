@@ -9,7 +9,7 @@
 class ChunkWorker
 {
 	public:
-		ChunkWorker();
+		ChunkWorker(Environment environment);
 
 		void					start();
 		bool					queue(const std::vector<Chunk * > & chunkQueue);
@@ -26,4 +26,5 @@ class ChunkWorker
 		std::atomic_bool		_active;
 		std::atomic_bool		_working;
 		std::vector<Chunk * >	_chunkQueue;
+		Environment				_environment;
 };

@@ -47,9 +47,9 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World world(&atlas, noise);
+	World overworld(&atlas, noise, OVERWORLD);
 
-	Player player("Eleonore", width, height, &world);
+	Player player("Eleonore", width, height, &overworld);
 
 	double timeStart, endTime, fpsInterval, sleepTime;
 	double deltaTime = io.DeltaTime;
@@ -66,18 +66,18 @@ int main(void)
 			showImGui(io, &player, deltaTime, &fpsGoal);
 		g_DEBUG_INFO.drawCalls = 0;
 
-		world.generateProcedurally();
+		player.getWorld()->generateProcedurally();
 		player.interceptInputs(window, deltaTime);
 		player.getCamera()->setupMatrix(shader);
-		skybox.render(player.getCamera());
-		world.render(shader, player);
+		skybox.render(player.getCamera(), player.getWorld()->getEnvironment());
+		player.getWorld()->render(shader, player);
 		crosshair.draw(static_cast<float>(player.getCamera()->getWidth()) / static_cast<float>(player.getCamera()->getHeight()));
 
 		if (hasGui)
 			renderImGui();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-		world.applyGravity(deltaTime);
+		player.getWorld()->applyGravity(deltaTime);
 
 		endTime = glfwGetTime();
 		deltaTime = endTime - timeStart;
@@ -90,7 +90,7 @@ int main(void)
 		deltaTime = glfwGetTime() - timeStart;
 	}
 
-	world.shutdown();
+	overworld.shutdown();
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	shutdownImGui();

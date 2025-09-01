@@ -4,6 +4,7 @@
 #include "TextureAtlas.hpp"
 #include "fastnoiselite/FastNoiseLite.h"
 #include "Location.hpp"
+#include "types.hpp"
 #include <cstdint>
 #include <mutex>
 
@@ -22,7 +23,7 @@ class Chunk
 			 _world(world), _state(IDLE) {}
 		~Chunk();
 
-		void						generateBlocks();
+		void						generateBlocks(Environment environment);
 		void						generateMesh();
 		void						uploadMesh();
 		void						unloadMesh();

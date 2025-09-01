@@ -2,12 +2,14 @@
 
 #include "ChunkMonitor.hpp"
 #include "Chunk.hpp"
+#include "types.hpp"
 #include <cstddef>
 #include <functional>
 #include <unordered_map>
 
 #define CHUNK_DELETION_DISTANCE 5
 #define SEA_LEVEL 64
+#define LAVA_LEVEL 25
 
 class Player;
 
@@ -22,7 +24,8 @@ struct PlayerHash
 class World
 {
 	public:
-		World(TextureAtlas * atlas, const FastNoiseLite & noise): _atlas(atlas), _noise(noise), _procedural(true) {};
+		World(TextureAtlas * atlas, const FastNoiseLite & noise, Environment environment = OVERWORLD): _monitor(environment), _atlas(atlas),
+			_noise(noise), _procedural(true), _environment(environment) {}
 
 		void					render(const Shader & shader, const Player & player);
 
@@ -35,6 +38,7 @@ class World
 		TextureAtlas *			getAtlas() const { return _atlas; }
 		const FastNoiseLite &	getNoise() const { return _noise; }
 		bool					isProcedural() const { return _procedural; }
+		Environment				getEnvironment() const { return _environment; }
 
 		void					setProcedural(bool procedural) { _procedural = procedural; }
 
@@ -56,4 +60,5 @@ class World
 		FastNoiseLite			_noise;
 		bool					_procedural;
 		std::vector<Chunk * >	_oldChunks;
+		Environment				_environment;
 };
