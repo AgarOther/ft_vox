@@ -7,6 +7,7 @@
 #include "BlockTypeRegistry.hpp"
 #include "StructureRegistry.hpp"
 #include "Shader.hpp"
+#include "World.hpp"
 #include "errors.hpp"
 #include "types.hpp"
 #include "utils.hpp"
@@ -43,7 +44,7 @@ void Chunk::_generateStructures()
 	}
 }
 
-void Chunk::_generateSand()
+void Chunk::_generateSand(Environment environment)
 {
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
@@ -51,19 +52,40 @@ void Chunk::_generateSand()
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
-				if (_blocks[x][y][z] == WATER)
+				if (environment == OVERWORLD)
 				{
-					if (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] != WATER)
-						_blocks[x + 1][y][z] = SAND;
-					if (x - 1 >= 0 && _blocks[x - 1][y][z] != WATER)
-						_blocks[x - 1][y][z] = SAND;
-					if (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] != WATER)
-						_blocks[x][y][z + 1] = SAND;
-					if (z - 1 >= 0 && _blocks[x][y][z - 1] != WATER)
-						_blocks[x][y][z - 1] = SAND;
-				}
-				else if (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == WATER)
+					if (_blocks[x][y][z] == WATER)
+					{
+						if (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] != WATER)
+							_blocks[x + 1][y][z] = SAND;
+						if (x - 1 >= 0 && _blocks[x - 1][y][z] != WATER)
+							_blocks[x - 1][y][z] = SAND;
+						if (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] != WATER)
+							_blocks[x][y][z + 1] = SAND;
+						if (z - 1 >= 0 && _blocks[x][y][z - 1] != WATER)
+							_blocks[x][y][z - 1] = SAND;
+						if (y - 1 >= 0 && _blocks[x][y - 1][z] != WATER)
+							_blocks[x][y - 1][z] = GRAVEL;
+					}
+					else if (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == WATER)
 						_blocks[x][y][z] = GRAVEL;
+				}
+				else
+				{
+					if (_blocks[x][y][z] == LAVA)
+					{
+						if (x + 1 < CHUNK_WIDTH && _blocks[x + 1][y][z] != LAVA)
+							_blocks[x + 1][y][z] = SOUL_SAND;
+						if (x - 1 >= 0 && _blocks[x - 1][y][z] != LAVA)
+							_blocks[x - 1][y][z] = SOUL_SAND;
+						if (z + 1 < CHUNK_DEPTH && _blocks[x][y][z + 1] != LAVA)
+							_blocks[x][y][z + 1] = SOUL_SAND;
+						if (z - 1 >= 0 && _blocks[x][y][z - 1] != LAVA)
+							_blocks[x][y][z - 1] = SOUL_SAND;
+						if (y - 1 >= 0 && _blocks[x][y - 1][z] != LAVA)
+							_blocks[x][y - 1][z] = SOUL_SAND;
+					}
+				}
 			}
 		}
 	}
@@ -121,11 +143,9 @@ void Chunk::generateBlocks(Environment environment)
 			}
 		}
 	}
+	_generateSand(environment);
 	if (environment == OVERWORLD)
-	{
-		_generateSand();
 		_generateStructures();
-	}
 	setState(GENERATED);
 }
 

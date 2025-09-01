@@ -6,7 +6,7 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 23:27:04 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/08/28 16:27:10 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/09/01 17:32:17 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ Material getMaterialFromString(std::string & name)
 	return UNKNOWN;
 }
 
-void dispatchCommand(char * buffer, Player * player)
+void dispatchCommand(char * buffer, Player * player, std::unordered_map<Environment, World * > & worlds)
 {
 	std::string command;
 	std::vector<std::string> args;
@@ -47,4 +47,8 @@ void dispatchCommand(char * buffer, Player * player)
 	}
 	else if (args.size() == 4 && command.rfind("tp ", 0) == 0)
 		player->teleport(Location(atof(args[1].c_str()), atof(args[2].c_str()), atof(args[3].c_str())));
+	else if (command.rfind("cw") == 0)
+	{
+		player->setWorld(worlds[player->getWorld()->getEnvironment() == NETHER ? OVERWORLD : NETHER]);
+	}
 }

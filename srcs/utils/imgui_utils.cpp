@@ -6,14 +6,16 @@
 /*   By: scraeyme <scraeyme@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/19 20:22:03 by scraeyme          #+#    #+#             */
-/*   Updated: 2025/08/27 14:46:04 by scraeyme         ###   ########.fr       */
+/*   Updated: 2025/09/01 15:29:11 by scraeyme         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Chunk.hpp"
 #include "imgui/imgui.h"
+#include "types.hpp"
 #include "utils.hpp"
 #include <GLFW/glfw3.h>
+#include <unordered_map>
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_glfw.h"
 
@@ -59,7 +61,7 @@ static std::string getAxisDirectionAsString(const float yaw)
     return "negative X";
 }
 
-void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGoal)
+void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGoal, std::unordered_map<Environment, World * > & worlds)
 {
 	Camera * camera = player->getCamera();
 	const Location & position = player->getLocation();
@@ -168,7 +170,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 	ImGui::InputText("Command line", buffer, 100);
 	if (ImGui::Button("Enter"))
 	{
-		dispatchCommand(buffer, player);
+		dispatchCommand(buffer, player, worlds);
 		buffer[0] = 0;
 	}
 	ImGui::End();

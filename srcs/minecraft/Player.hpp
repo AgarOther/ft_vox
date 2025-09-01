@@ -45,6 +45,7 @@ class Player
 		void				setVelocityX(float velocityX) { _velocity.x = velocityX; }
 		void				setVelocityY(float velocityY) { _velocity.y = velocityY; }
 		void				setVelocityZ(float velocityZ) { _velocity.z = velocityZ; }
+		void				setWorld(World * world);
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
 	private:

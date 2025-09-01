@@ -6,6 +6,7 @@
 #include <Chunk.hpp>
 #include <cmath>
 #include <cstdlib>
+#include <unordered_map>
 
 Player::Player(const std::string & name, int width, int height, World * world)
 {
@@ -210,4 +211,11 @@ BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const
 	blockLocation.setY(ceil(blockLocation.getY() - yOffset - 1));
 	blockLocation.setZ(round(blockLocation.getZ() - zOffset));
 	return _world->getBlockAt(blockLocation);
+}
+
+void Player::setWorld(World * world)
+{
+	_world = world;
+	_world->removePlayer(this);
+	world->addPlayer(this);
 }

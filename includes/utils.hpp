@@ -20,18 +20,19 @@ GLFWwindow *				initWindow(int * width, int * height, int * fpsGoal);
 void						toggleFullscreen(GLFWwindow * window, Camera * camera);
 std::vector<std::string>	ft_split(const std::string & str, char delimiter);
 Object						getObjectFromFile(const std::string & filepath);
-void                        dispatchCommand(char * buffer, Player * player);
+void						dispatchCommand(char * buffer, Player * player, std::unordered_map<Environment, World * > & worlds);
 void						voxLog(const std::string & message);
 long						getTimeAsMilliseconds();
 Material					getMaterialFromString(std::string & name);
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);
-void						showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGoal);
+void						showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGoal,
+								std::unordered_map<Environment, World * > & worlds);
 void						renderImGui();
 void						shutdownImGui();
 
 // Texture Atlas
-TextureBuffer               loadUnique(const std::string & texturePath);
-TextureBuffer               loadSideTop(const std::string & side, const std::string & topBottom);
-TextureBuffer               loadSideTopBottom(const std::string & side, const std::string & top, const std::string & bottom);
+TextureBuffer				loadUnique(const std::string & texturePath);
+TextureBuffer				loadSideTop(const std::string & side, const std::string & topBottom);
+TextureBuffer				loadSideTopBottom(const std::string & side, const std::string & top, const std::string & bottom);

@@ -120,6 +120,14 @@ void World::addPlayer(Player * player)
 	_players[player->getName()] = player;
 }
 
+void World::removePlayer(Player * player)
+{
+	auto it = _players.find(player->getName());
+	if (it != _players.end())
+		_players.erase(it);
+	_players[player->getName()] = player;
+}
+
 const Player * World::getPlayer(const std::string & name) const
 {
 	auto it = _players.find(name);

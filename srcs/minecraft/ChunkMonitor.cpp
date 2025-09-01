@@ -8,7 +8,7 @@
 
 ChunkMonitor::ChunkMonitor(Environment environment) : _active(false)
 {
-	const int threadCount = std::thread::hardware_concurrency() - 2; // minus main & this one
+	const int threadCount = (std::thread::hardware_concurrency() - 2) / 2; // minus main & this one
 	if (threadCount <= 0)
 		handleExit(FAILURE_THREAD);
 	for (int i = 0; i < threadCount; ++i)

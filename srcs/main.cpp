@@ -47,9 +47,11 @@ int main(void)
 	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
 	noise.SetSeed(WORLD_SEED);
 
-	World overworld(&atlas, noise, OVERWORLD);
+	std::unordered_map<Environment, World * > worlds;
+	worlds[OVERWORLD] = new World(&atlas, noise, OVERWORLD);
+	worlds[NETHER] = new World(&atlas, noise, NETHER);
 
-	Player player("Eleonore", width, height, &overworld);
+	Player player("Eleonore", width, height, worlds[NETHER]);
 
 	double timeStart, endTime, fpsInterval, sleepTime;
 	double deltaTime = io.DeltaTime;
@@ -63,7 +65,7 @@ int main(void)
 		const bool hasGui = player.getCamera()->hasGuiOn();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
-			showImGui(io, &player, deltaTime, &fpsGoal);
+			showImGui(io, &player, deltaTime, &fpsGoal, worlds);
 		g_DEBUG_INFO.drawCalls = 0;
 
 		player.getWorld()->generateProcedurally();
@@ -90,7 +92,11 @@ int main(void)
 		deltaTime = glfwGetTime() - timeStart;
 	}
 
-	overworld.shutdown();
+	for (auto it = worlds.begin(); it != worlds.end(); ++it)
+	{
+		it->second->shutdown();
+		delete it->second;
+	}
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	shutdownImGui();

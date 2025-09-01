@@ -31,6 +31,7 @@ void BlockTypeRegistry::init()
 	_types[LAVA]				= { LAVA, "lava", true, false, false, true };
 	_types[NETHERRACK]			= { NETHERRACK, "netherrack", true, true, false, false };
 	_types[GLOWSTONE]			= { GLOWSTONE, "glowstone", true, true, false, false };
+	_types[SOUL_SAND]			= { SOUL_SAND, "soul_sand", true, true, false, false };
 	_types[AIR]					= { AIR, "air",false, false, false, false };
 
 	initTints();

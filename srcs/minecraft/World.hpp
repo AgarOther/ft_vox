@@ -43,6 +43,7 @@ class World
 		void					setProcedural(bool procedural) { _procedural = procedural; }
 
 		void					addPlayer(Player * player);
+		void					removePlayer(Player * player);
 		void					applyGravity(float deltaTime);
 
 		void					generateProcedurally(); // wow!

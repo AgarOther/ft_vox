@@ -58,5 +58,5 @@ class Chunk
 		bool					_isBlockVisible(int x, int y, int z);
 		bool					_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
 		void					_generateStructures();
-		void					_generateSand();
+		void					_generateSand(Environment environment);
 };	

@@ -30,6 +30,7 @@ enum Material
 	LAVA,
 	NETHERRACK,
 	GLOWSTONE,
+	SOUL_SAND,
 	AIR = 255
 };
 
