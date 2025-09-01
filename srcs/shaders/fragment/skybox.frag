@@ -10,6 +10,8 @@ void main()
 	// Normalize to [0, 1]
 	if (environment == 1)
 		color = vec4(30.f / 255.f, 0.0f, 0.0f, 1.0f);
+	else if (environment == 2)
+		color = vec4(30.0f / 255.0f, 0.0f, 40.0f / 255.0f, 1.0f);
 	else
 	{
 		float normalized = normalize(texCoord).y;

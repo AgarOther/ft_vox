@@ -78,4 +78,5 @@ class Camera
 		float		_fogEnd;
 		glm::vec3	_fogColorOverworld;
 		glm::vec3	_fogColorNether;
+		glm::vec3	_fogColorEnd;
 };

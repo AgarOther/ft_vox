@@ -69,7 +69,7 @@ void Chunk::_generateSand(Environment environment)
 					else if (y + 1 < CHUNK_HEIGHT && _blocks[x][y + 1][z] == WATER)
 						_blocks[x][y][z] = GRAVEL;
 				}
-				else
+				else if (environment == NETHER)
 				{
 					if (_blocks[x][y][z] == LAVA)
 					{
@@ -104,8 +104,6 @@ void Chunk::generateBlocks(Environment environment)
 				float worldX = static_cast<float>(_chunkX * CHUNK_WIDTH + x);
 				float worldZ = static_cast<float>(_chunkZ * CHUNK_DEPTH + z);
 
-
-
 				if (environment == OVERWORLD)
 				{
 					const float noiseValue = _world->getNoise().GetNoise(worldX * frequency, worldZ * frequency);
@@ -114,8 +112,6 @@ void Chunk::generateBlocks(Environment environment)
 					if (y == height && y >= SEA_LEVEL)
 						_blocks[x][y][z] = GRASS_BLOCK;
 					else if (y == 0)
-						_blocks[x][y][z] = BEDROCK;
-					else if (y == CHUNK_HEIGHT - 1 && environment == NETHER)
 						_blocks[x][y][z] = BEDROCK;
 					else if (y < height && y > height - stoneOffset)
 						_blocks[x][y][z] = DIRT;
@@ -126,7 +122,7 @@ void Chunk::generateBlocks(Environment environment)
 					else
 						_blocks[x][y][z] = DIRT;
 				}
-				else
+				else if (environment == NETHER)
 				{
 					const float noiseValue = _world->getNoise().GetNoise(worldX * (frequency * 0.5f), worldZ * (frequency * 0.5f));
 					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (amplitude * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
@@ -139,10 +135,20 @@ void Chunk::generateBlocks(Environment environment)
 					else
 						_blocks[x][y][z] = NETHERRACK;
 				}
+				else // END - outer islands only
+				{
+					const float noiseValue = _world->getNoise().GetNoise(worldX * (frequency * 0.5f), worldZ * (frequency * 0.5f));
+					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (amplitude * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
+					if (y > height)
+						_blocks[x][y][z] = AIR;
+					else
+						_blocks[x][y][z] = END_STONE;
+				}
 			}
 		}
 	}
-	_generateSand(environment);
+	if (environment != THE_END)
+		_generateSand(environment);
 	if (environment == OVERWORLD)
 		_generateStructures();
 	setState(GENERATED);

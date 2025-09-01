@@ -48,6 +48,6 @@ void dispatchCommand(char * buffer, Player * player, std::unordered_map<Environm
 		player->teleport(Location(atof(args[1].c_str()), atof(args[2].c_str()), atof(args[3].c_str())));
 	else if (command.rfind("cw") == 0)
 	{
-		player->setWorld(worlds[player->getWorld()->getEnvironment() == NETHER ? OVERWORLD : NETHER]);
+		player->setWorld(worlds[static_cast<Environment>((player->getWorld()->getEnvironment() + 1) % 3)]);
 	}
 }

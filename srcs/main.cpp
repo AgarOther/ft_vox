@@ -50,8 +50,9 @@ int main(void)
 	std::unordered_map<Environment, World * > worlds;
 	worlds[OVERWORLD] = new World(&atlas, noise, OVERWORLD);
 	worlds[NETHER] = new World(&atlas, noise, NETHER);
+	worlds[THE_END] = new World(&atlas, noise, THE_END);
 
-	Player player("Eleonore", width, height, worlds[NETHER]);
+	Player player("Eleonore", width, height, worlds[THE_END]);
 
 	double timeStart, endTime, fpsInterval, sleepTime;
 	double deltaTime = io.DeltaTime;
