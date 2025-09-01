@@ -66,5 +66,6 @@ void ChunkWorker::stop()
 {
 	_active = false;
 	_thread.join();
+	ChunkWorker::_count--;
 	std::cout << YELLOW << "[CHUNK] Stopped ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
 }
