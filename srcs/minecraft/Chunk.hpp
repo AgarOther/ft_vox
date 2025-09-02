@@ -70,3 +70,5 @@ class Chunk
 		void					_generateStructures();
 		void					_generateSand(Environment environment);
 };	
+
+std::ostream &					operator<<(std::ostream & os, Chunk & chunk);

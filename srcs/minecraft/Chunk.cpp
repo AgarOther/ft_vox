@@ -502,3 +502,8 @@ BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
 		[static_cast<int>(std::floor(loc.getZ()))]
 	);
 }
+
+std::ostream & operator<<(std::ostream & os, Chunk & chunk)
+{
+	return os << "(" << chunk.getChunkX() << ", " << chunk.getChunkZ() << ")" << " - State: " << chunk.getState();
+}

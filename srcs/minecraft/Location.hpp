@@ -47,4 +47,4 @@ class Location
 		double		_z;
 };
 
-std::ostream&		operator<<(std::ostream& os, const Location& loc);
+std::ostream & operator<<(std::ostream & os, const Location & loc);
