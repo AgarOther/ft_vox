@@ -11,7 +11,10 @@ void main()
 	if (environment == 1)
 		color = vec4(30.f / 255.f, 0.0f, 0.0f, 1.0f);
 	else if (environment == 2)
-		color = vec4(30.0f / 255.0f, 0.0f, 40.0f / 255.0f, 1.0f);
+	{
+		float star = (texCoord.x + texCoord.y + texCoord.z) * 5;
+		color = vec4((star + 15.0f) / 255.0f, 0.0f, (25.0f + star) / 255.0f, 1.0f);
+	}
 	else
 	{
 		float normalized = normalize(texCoord).y;

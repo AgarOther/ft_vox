@@ -176,6 +176,16 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		if (_world->getBlockAt(test).isSolid && _gamemode != CREATIVE)
 			return;
 		teleport(finalLocation);
+		if (_world->getBlockAt(finalLocation).type == LAVA)
+		{
+			_camera->setFogStart(0.005f);
+			_camera->setFogEnd(0.01f);
+		}
+		else
+		{
+			_camera->setFogStart(FOG_START);
+			_camera->setFogEnd(FOG_END);
+		}
 	}
 }
 

@@ -9,6 +9,11 @@
 #include "types.hpp"
 
 #define PLAYER_SPEED 3.75f
+#define FOG_START 0.5f
+#define FOG_END 1.0f
+#define FOG_COLOR_OVERWORLD 180.0f / 255.0f, 210.0f / 255.0f, 1.0f
+#define FOG_COLOR_NETHER 30.0f / 255.0f, 0.0f, 0.0f
+#define FOG_COLOR_THE_END 15.0f / 255.0f, 0.0f, 25.0f / 255.0f
 
 class Camera
 {
@@ -55,6 +60,8 @@ class Camera
 		void		setLocked(bool lock) { _locked = lock; }
 		void		setFullscreen(bool fullscreen) { _fullScreen = fullscreen; }
 		void		setRenderDistance(uint8_t renderDistance) { _renderDistance = renderDistance; } 
+		void		setFogStart(float fogStart) { _fogStart = fogStart; } 
+		void		setFogEnd(float fogEnd) { _fogEnd = fogEnd; } 
 	private:
 		glm::mat4	_proj;
 		glm::mat4	_view;
@@ -76,7 +83,6 @@ class Camera
 		uint8_t		_renderDistance;
 		float		_fogStart;
 		float		_fogEnd;
-		glm::vec3	_fogColorOverworld;
-		glm::vec3	_fogColorNether;
-		glm::vec3	_fogColorEnd;
+		typedef std::unordered_map<Environment, glm::vec3>	FogColorMap;
+		FogColorMap	_fogColors;
 };
