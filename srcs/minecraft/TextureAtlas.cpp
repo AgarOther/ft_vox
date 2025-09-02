@@ -126,10 +126,12 @@ void TextureAtlas::init()
 	textureMap[GLOWSTONE]			= loadUnique("glowstone.png");
 	textureMap[GRAVEL]				= loadUnique("gravel.png");
 	textureMap[SOUL_SAND]			= loadUnique("soul_sand.png");
+	textureMap[CHERRY_LEAVES]		= loadUnique("cherry_leaves.png");
 
 	// Multi-textured blocks
 	textureMap[OAK_LOG]				= loadSideTop("oak_log.png", "oak_log_top.png");
 	textureMap[ACACIA_LOG]			= loadSideTop("acacia_log.png", "acacia_log_top.png");
+	textureMap[CHERRY_LOG]			= loadSideTop("cherry_log.png", "cherry_log_top.png");
 
 	TextureBuffer cartography;
 	cartography.push_back(std::pair<BlockFace, std::string>((FACE_FRONT), "cartography_table_side1.png"));

@@ -57,7 +57,10 @@ void ChunkWorker::_loop()
 
 void ChunkWorker::start()
 {
+	#ifdef DEBUG
 	std::cout << GREEN << "[CHUNK] Started ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
+	#endif
+
 	_active = true;
 	_thread = std::thread(&ChunkWorker::_loop, this);
 }
@@ -67,5 +70,8 @@ void ChunkWorker::stop()
 	_active = false;
 	_thread.join();
 	ChunkWorker::_count--;
+
+	#ifdef DEBUG
 	std::cout << YELLOW << "[CHUNK] Stopped ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
+	#endif
 }

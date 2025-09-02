@@ -52,7 +52,7 @@ int main(void)
 	worlds[NETHER] = new World(&atlas, noise, NETHER);
 	worlds[THE_END] = new World(&atlas, noise, THE_END);
 
-	Player player("Eleonore", width, height, worlds[THE_END]);
+	Player player("Eleonore", width, height, worlds[OVERWORLD]);
 
 	double timeStart, endTime, fpsInterval, sleepTime;
 	double deltaTime = io.DeltaTime;

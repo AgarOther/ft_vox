@@ -92,7 +92,7 @@ void Chunk::_generateSand(Environment environment)
 
 void Chunk::generateBlocks(Environment environment)
 {
-	const float frequency = 1.0f;
+	const float frequency = 1.2f;
 	const float amplitude = 42.f; // Max terrain height variation
 
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
@@ -107,7 +107,7 @@ void Chunk::generateBlocks(Environment environment)
 				if (environment == OVERWORLD)
 				{
 					const float noiseValue = _world->getNoise().GetNoise(worldX * frequency, worldZ * frequency);
-					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + SEA_LEVEL + 2);
+					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + SEA_LEVEL + 6);
 					const int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 3;
 					if (y == height && y >= SEA_LEVEL)
 						_blocks[x][y][z] = GRASS_BLOCK;

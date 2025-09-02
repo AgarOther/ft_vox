@@ -8,7 +8,10 @@
 
 void ChunkMonitor::start()
 {
+	#ifdef DEBUG
 	std::cout << GREEN << "[CHUNK] Started ChunkMonitor thread!" << RESET << std::endl;
+	#endif
+
 	if (_workers.empty())
 	{
 		const int threadCount = (std::thread::hardware_concurrency() - 2); // minus main & this one
@@ -85,5 +88,7 @@ void ChunkMonitor::stop()
 		delete worker;
 	}
 	_workers.clear();
+	#ifdef DEBUG
 	std::cout << YELLOW << "[CHUNK] Stopped ChunkMonitor thread!" << RESET << std::endl;
+	#endif
 }
