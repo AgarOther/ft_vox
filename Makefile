@@ -17,6 +17,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/Player.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
 						srcs/minecraft/World.cpp \
+						srcs/noise/Noise.cpp \
 						srcs/registry/BlockTypeRegistry.cpp \
 						srcs/registry/ObjectRegistry.cpp \
 						srcs/registry/StructureRegistry.cpp \
@@ -42,6 +43,7 @@ OBJ_FOLDER			=	objs
 INCLUDES			=	-I includes \
 						-I srcs/engine \
 						-I srcs/minecraft \
+						-I srcs/noise \
 						-I srcs/registry \
 						-I srcs/renderer \
 						-I libs/imgui \

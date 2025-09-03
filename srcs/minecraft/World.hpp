@@ -23,7 +23,7 @@ struct PlayerHash
 class World
 {
 	public:
-		World(TextureAtlas * atlas, const FastNoiseLite & noise, Environment environment = OVERWORLD): _monitor(environment), _atlas(atlas),
+		World(TextureAtlas * atlas, const Noise & noise, Environment environment = OVERWORLD): _monitor(environment), _atlas(atlas),
 			_noise(noise), _procedural(true), _environment(environment), _loaded(false) {}
 		~World();
 
@@ -36,7 +36,7 @@ class World
 		const Player *			getPlayer(const std::string & name) const;
 		int						getHighestYAtChunkLocation(int x, int z) const;
 		TextureAtlas *			getAtlas() const { return _atlas; }
-		const FastNoiseLite &	getNoise() const { return _noise; }
+		const Noise &			getNoise() const { return _noise; }
 		bool					isProcedural() const { return _procedural; }
 		Environment				getEnvironment() const { return _environment; }
 		bool					isLoaded() const { return _loaded; }
@@ -60,7 +60,7 @@ class World
 		PlayerList				_players;
 		ChunkMonitor			_monitor;
 		TextureAtlas *			_atlas;
-		FastNoiseLite			_noise;
+		Noise					_noise;
 		bool					_procedural;
 		std::vector<Chunk * >	_oldChunks;
 		Environment				_environment;

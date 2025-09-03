@@ -2,7 +2,7 @@
 
 #include "Shader.hpp"
 #include "TextureAtlas.hpp"
-#include "fastnoiselite/FastNoiseLite.h"
+#include "Noise.hpp"
 #include "Location.hpp"
 #include "types.hpp"
 #include <cstdint>
@@ -12,6 +12,9 @@
 #define CHUNK_WIDTH 16
 #define CHUNK_DEPTH 16
 #define VERTICES_COUNT 8
+#define FREQUENCY 0.00522
+#define AMPLITUDE 0.00261
+#define OCTAVES 5
 
 class World;
 

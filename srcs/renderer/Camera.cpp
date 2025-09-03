@@ -18,8 +18,8 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_guiOn = false;
 	_locked = false;
 	_renderDistance = 2;
-	_fogStart = 0.5f;
-	_fogEnd = 1.0f;
+	_fogStart = 0.7f;
+	_fogEnd = 1.2f;
 	_fogColors[OVERWORLD] = glm::vec3(FOG_COLOR_OVERWORLD);
 	_fogColors[NETHER] = glm::vec3(FOG_COLOR_NETHER);
 	_fogColors[THE_END] = glm::vec3(FOG_COLOR_THE_END);

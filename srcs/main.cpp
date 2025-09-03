@@ -43,16 +43,14 @@ int main(void)
 	Skybox skybox;
 	Crosshair crosshair;
 
-	FastNoiseLite noise;
-	noise.SetNoiseType(FastNoiseLite::NoiseType_Perlin);
-	noise.SetSeed(WORLD_SEED);
+	Noise noise(WORLD_SEED, 0.005, 1.0);
 
 	std::unordered_map<Environment, World * > worlds;
 	worlds[OVERWORLD] = new World(&atlas, noise, OVERWORLD);
 	worlds[NETHER] = new World(&atlas, noise, NETHER);
 	worlds[THE_END] = new World(&atlas, noise, THE_END);
 
-	Player player("Eleonore", width, height, worlds[THE_END]);
+	Player player("Eleonore", width, height, worlds[OVERWORLD]);
 
 	double timeStart, endTime, fpsInterval, sleepTime;
 	double deltaTime = io.DeltaTime;

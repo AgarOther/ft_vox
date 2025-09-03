@@ -92,9 +92,6 @@ void Chunk::_generateSand(Environment environment)
 
 void Chunk::generateBlocks(Environment environment)
 {
-	const float frequency = 1.2f;
-	const float amplitude = 42.f; // Max terrain height variation
-
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
 		for (int y = 0; y < CHUNK_HEIGHT; ++y)
@@ -106,8 +103,9 @@ void Chunk::generateBlocks(Environment environment)
 
 				if (environment == OVERWORLD)
 				{
-					const float noiseValue = _world->getNoise().GetNoise(worldX * frequency, worldZ * frequency);
-					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * amplitude + SEA_LEVEL + 6);
+					// I added arbitrary values to X/Z so that the noise doesn't make a weird symmetry at 0, 0
+					const double noiseValue = (_world->getNoise().getNoise(worldX + 4242.42, worldZ + 2424.24, OCTAVES) + 1.0) * 0.5;
+					const int height = static_cast<int>(noiseValue * SEA_LEVEL * 2);
 					const int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 3;
 					if (y == height && y >= SEA_LEVEL)
 						_blocks[x][y][z] = GRASS_BLOCK;
@@ -124,8 +122,8 @@ void Chunk::generateBlocks(Environment environment)
 				}
 				else if (environment == NETHER)
 				{
-					const float noiseValue = _world->getNoise().GetNoise(worldX * (frequency * 0.5f), worldZ * (frequency * 0.5f));
-					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (amplitude * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
+					const double noiseValue = NOISIFY(_world->getNoise().getNoise(worldX, worldZ, 5));
+					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (AMPLITUDE * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
 					if (y == 0)
 						_blocks[x][y][z] = BEDROCK;
 					else if (y == CHUNK_HEIGHT - 1)
@@ -137,8 +135,8 @@ void Chunk::generateBlocks(Environment environment)
 				}
 				else // END - outer islands only
 				{
-					const float noiseValue = _world->getNoise().GetNoise(worldX * (frequency * 0.5f), worldZ * (frequency * 0.5f));
-					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (amplitude * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
+					const double noiseValue = NOISIFY(_world->getNoise().getNoise(worldX, worldZ, 5));
+					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (AMPLITUDE * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
 					if (y > height)
 						_blocks[x][y][z] = AIR;
 					else
