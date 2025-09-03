@@ -153,7 +153,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 	}
 
 	// Key lock
-	static bool chunkLock = player->getWorld()->isProcedural();
+	static bool chunkLock = !player->getWorld()->isProcedural();
 	static bool chunkLockChanged = chunkLock;
 	ImGui::SameLine();
 	ImGui::Checkbox("Lock Generation", &chunkLock);

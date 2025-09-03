@@ -17,7 +17,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 2;
+	_renderDistance = 8;
 	_fogActive = true;
 	_fogStart = 0.7f;
 	_fogEnd = 1.2f;

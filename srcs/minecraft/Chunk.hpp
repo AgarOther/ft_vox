@@ -8,13 +8,13 @@
 #include <cstdint>
 #include <mutex>
 
-#define CHUNK_HEIGHT 256
-#define CHUNK_WIDTH 16
-#define CHUNK_DEPTH 16
-#define VERTICES_COUNT 8
-#define FREQUENCY 0.00522
-#define AMPLITUDE 0.00261
-#define OCTAVES 5
+#define VERTICES_COUNT	8
+#define CHUNK_HEIGHT	256
+#define CHUNK_WIDTH		16
+#define CHUNK_DEPTH		16
+#define FREQUENCY		0.00522
+#define AMPLITUDE		1.00261
+#define OCTAVES			5
 
 class World;
 

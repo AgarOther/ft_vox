@@ -43,7 +43,7 @@ int main(void)
 	Skybox skybox;
 	Crosshair crosshair;
 
-	Noise noise(WORLD_SEED, 0.005, 1.0);
+	Noise noise(WORLD_SEED, FREQUENCY, AMPLITUDE);
 
 	std::unordered_map<Environment, World * > worlds;
 	worlds[OVERWORLD] = new World(&atlas, noise, OVERWORLD);
