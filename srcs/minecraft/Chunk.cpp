@@ -122,8 +122,8 @@ void Chunk::generateBlocks(Environment environment)
 				}
 				else if (environment == NETHER)
 				{
-					const double noiseValue = NOISIFY(_world->getNoise().getNoise(worldX, worldZ, 5));
-					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (AMPLITUDE * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
+					const double noiseValue = (_world->getNoise().getNoise(worldX + 4242.42, worldZ + 2424.24, OCTAVES) + 1.0) * 0.5;
+					const int height = static_cast<int>(noiseValue * LAVA_LEVEL * 2);
 					if (y == 0)
 						_blocks[x][y][z] = BEDROCK;
 					else if (y == CHUNK_HEIGHT - 1)
@@ -135,8 +135,8 @@ void Chunk::generateBlocks(Environment environment)
 				}
 				else // END - outer islands only
 				{
-					const double noiseValue = NOISIFY(_world->getNoise().getNoise(worldX, worldZ, 5));
-					const int height = static_cast<int>((noiseValue + 0.25f) * 0.5f * (AMPLITUDE * 2.2f) + (SEA_LEVEL - LAVA_LEVEL * 1.3) + 2);
+					const double noiseValue = (_world->getNoise().getNoise(worldX + 4242.42, worldZ + 2424.24, OCTAVES) + 1.0) * 0.5;
+					const int height = static_cast<int>(noiseValue * LAVA_LEVEL * 2);
 					if (y > height)
 						_blocks[x][y][z] = AIR;
 					else

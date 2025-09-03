@@ -1,10 +1,11 @@
 #version 330 core
 
-layout (location = 0) in vec3 aPos;
-out vec3 texCoord;
+layout (location = 0) in vec3	aPos;
 
-uniform mat4 projection;
-uniform mat4 view;
+out vec3		texCoord;
+
+uniform mat4	projection;
+uniform mat4	view;
 
 void main()
 {

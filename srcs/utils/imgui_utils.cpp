@@ -131,7 +131,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 
 	// Gamemode
 	static bool creative = player->getGamemode() == CREATIVE;
-	static bool creativeChanged = false;
+	static bool creativeChanged = creative;
 	ImGui::SameLine();
 	ImGui::Checkbox("Creative", &creative);
 	if (creative != creativeChanged)
@@ -142,8 +142,8 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 	}
 
 	// Key lock
-	static bool wireframe = false;
-	static bool wireframeChanged = false;
+	static bool wireframe = g_DEBUG_INFO.wireframe;
+	static bool wireframeChanged = wireframe;
 	ImGui::SameLine();
 	ImGui::Checkbox("Wireframe", &wireframe);
 	if (wireframe != wireframeChanged)
@@ -153,14 +153,26 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 	}
 
 	// Key lock
-	static bool chunkLock = false;
-	static bool chunkLockChanged = false;
+	static bool chunkLock = player->getWorld()->isProcedural();
+	static bool chunkLockChanged = chunkLock;
 	ImGui::SameLine();
 	ImGui::Checkbox("Lock Generation", &chunkLock);
 	if (chunkLock != chunkLockChanged)
 	{
 		player->getWorld()->setProcedural(!chunkLock);
 		chunkLockChanged = chunkLock;
+	}
+
+	ImGui::NewLine();
+
+	// Fog
+	static bool fog = player->getCamera()->isFogActive();
+	static bool fogChanged = fog;
+	ImGui::Checkbox("Fog", &fog);
+	if (fog != fogChanged)
+	{
+		player->getCamera()->setFogActive(fog);
+		fogChanged = fog;
 	}
 
 	ImGui::NewLine();

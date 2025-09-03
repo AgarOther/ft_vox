@@ -1,8 +1,8 @@
 #version 330 core
 
-layout (location = 0) in vec2 aPos;
+layout (location = 0) in vec2	aPos;
 
-uniform float aspectRatio;
+uniform float	aspectRatio;
 
 void main()
 {

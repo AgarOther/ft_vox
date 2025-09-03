@@ -18,6 +18,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_guiOn = false;
 	_locked = false;
 	_renderDistance = 2;
+	_fogActive = true;
 	_fogStart = 0.7f;
 	_fogEnd = 1.2f;
 	_fogColors[OVERWORLD] = glm::vec3(FOG_COLOR_OVERWORLD);
@@ -41,6 +42,7 @@ void Camera::setupMatrix(const Shader & shader)
 
 void Camera::setupFog(const Shader & shader, Environment environment)
 {
+	shader.setInt("fogActive", _fogActive);
 	shader.setFloat("fogStart", _fogStart * _renderDistance * CHUNK_DEPTH);
 	shader.setFloat("fogEnd", _fogEnd * _renderDistance * CHUNK_DEPTH);
 	shader.setVec3("fogColor", _fogColors[environment]);

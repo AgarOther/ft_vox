@@ -42,6 +42,7 @@ class Camera
 		bool		isLocked() const { return _locked; }
 		bool		isFullscreen() const { return (_fullScreen); }
 		uint8_t		getRenderDistance() const { return _renderDistance; }
+		bool		isFogActive() const { return (_fogActive); }
 
 		// Setters
 		void		setPosition(const glm::vec3 &position) { _position = position; }
@@ -60,6 +61,7 @@ class Camera
 		void		setLocked(bool lock) { _locked = lock; }
 		void		setFullscreen(bool fullscreen) { _fullScreen = fullscreen; }
 		void		setRenderDistance(uint8_t renderDistance) { _renderDistance = renderDistance; } 
+		void		setFogActive(bool fogActive) { _fogActive = fogActive; } 
 		void		setFogStart(float fogStart) { _fogStart = fogStart; } 
 		void		setFogEnd(float fogEnd) { _fogEnd = fogEnd; } 
 	private:
@@ -81,6 +83,7 @@ class Camera
 		bool		_locked;
 		bool		_fullScreen;
 		uint8_t		_renderDistance;
+		bool		_fogActive;
 		float		_fogStart;
 		float		_fogEnd;
 		typedef std::unordered_map<Environment, glm::vec3>	FogColorMap;

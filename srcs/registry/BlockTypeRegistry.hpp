@@ -53,9 +53,7 @@ struct PairHash
 {
 	size_t operator()(const std::pair<int, int> & pair) const
 	{
-		size_t h1 = std::hash<int>{}(pair.first);
-		size_t h2 = std::hash<int>{}(pair.second);
-		return h1 ^ (h2 + 0x9e3779b9 + (h1 << 6) + (h1 >> 2));
+		return std::hash<int>()(pair.first) ^ (std::hash<int>()(pair.second) << 1);
 	}
 };
 
@@ -68,7 +66,7 @@ class BlockTypeRegistry
 		typedef std::unordered_map<uint8_t, BlockType> BlockTypeMap;
 		static const BlockTypeMap &	getBlockTypeMap();
 		static void					initTints();
-		static glm::u8vec3				getTint(Material material, BlockFace blockface);
+		static glm::u8vec3			getTint(Material material, BlockFace blockface);
 	private:
 
 		static BlockTypeMap 		_types;

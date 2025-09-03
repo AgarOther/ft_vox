@@ -1,17 +1,17 @@
 #version 330 core
 
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTex;
-layout (location = 2) in vec3 aNormal;
-layout (location = 3) in vec3 aTint;
+layout (location = 0) in vec3	aPos;
+layout (location = 1) in vec2	aTex;
+layout (location = 2) in vec3	aNormal;
+layout (location = 3) in vec3	aTint;
 
-out vec2 texCoord;
-out vec3 normal;
-out vec3 tint;
-out vec4 worldPos;
+out vec2 		texCoord;
+out vec3 		normal;
+out vec3 		tint;
+out vec4 		worldPos;
 
-uniform mat4 camMatrix;
-uniform mat4 model;
+uniform mat4	camMatrix;
+uniform mat4	model;
 
 void main()
 {
