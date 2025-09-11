@@ -34,6 +34,7 @@ void BlockTypeRegistry::init()
 	_types[SOUL_SAND]			= { SOUL_SAND, "soul_sand", true, true, false, false };
 	_types[CHERRY_LOG]			= { CHERRY_LOG, "cherry_log", true, true, false, false };
 	_types[CHERRY_LEAVES]		= { CHERRY_LEAVES, "cherry_leaves", true, true, true, false };
+	_types[OBSIDIAN]			= { OBSIDIAN, "obsidian", true, true, false, false };
 	_types[AIR]					= { AIR, "air",false, false, false, false };
 
 	initTints();

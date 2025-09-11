@@ -26,6 +26,7 @@ enum Material
 	SOUL_SAND,
 	CHERRY_LEAVES,
 	CHERRY_LOG,
+	OBSIDIAN,
 	AIR = 255
 };
 

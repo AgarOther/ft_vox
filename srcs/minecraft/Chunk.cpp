@@ -133,7 +133,7 @@ void Chunk::generateBlocks(Environment environment)
 					else
 						_blocks[x][y][z] = NETHERRACK;
 				}
-				else // END - outer islands only
+				else
 				{
 					const double noiseValue = (_world->getNoise().getNoise(worldX + 4242.42, worldZ + 2424.24, OCTAVES) + 1.0) * 0.5;
 					const int height = static_cast<int>(noiseValue * LAVA_LEVEL * 2);
@@ -355,7 +355,7 @@ void Chunk::generateMesh()
 							float vz = blockVertices[vi + 2] + z;
 
 							vertices.push_back(vx);
-							if ((block.type == WATER || block.type == LAVA) && face != FACE_BOTTOM && _blocks[x][y + 1][z] == AIR)
+							if ((block.type == WATER || block.type == LAVA) && _blocks[x][y + 1][z] == AIR)
 								vy -= 0.125f;
 							vertices.push_back(vy);
 							vertices.push_back(vz);
@@ -475,6 +475,7 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 		return ;
 	}
 	_blocks[localX][localY][localZ] = newMaterial;
+	setState(DIRTY);
 }
 
 BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
