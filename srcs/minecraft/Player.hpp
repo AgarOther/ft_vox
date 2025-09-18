@@ -46,6 +46,7 @@ class Player
 		World *				getWorld() const { return _world; }
 		Block				getTargetedBlock() const;
 		BlockType			getBlockUnder(int xOffset = 0, int yOffset = 0, int zOffset = 0) const;
+		BlockType			getBlockAtEyeLocation() const;
 
 		void				setName(const std::string & name) { _name = name; }
 		void				setHealth(uint8_t health) { _health = health; }

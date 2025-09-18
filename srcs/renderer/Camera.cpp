@@ -7,7 +7,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_width = width;
 	_height = height;
 	_position = position;
-	_speed = 50.f;
+	_speed = PLAYER_SPEED;
 	_baseSpeed = _speed;
 	_sensitivity = 200.0f;
 	_farPlane = 1000.0f;

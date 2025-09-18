@@ -16,7 +16,7 @@ Player::Player(const std::string & name, int width, int height, World * world)
 	_camera = new Camera(width, height, _spawnLocation.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).getVec3());
 	_location = _spawnLocation.clone();
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
-	_gamemode = CREATIVE;
+	_gamemode = SURVIVAL;
 	_velocity = glm::vec3(0.0f);
 	_spawned = false;
 
@@ -176,10 +176,10 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		if (_world->getBlockAt(test).isSolid && _gamemode != CREATIVE)
 			return;
 		teleport(finalLocation);
-		if (_world->getBlockAt(finalLocation).type == LAVA)
+		if (getBlockAtEyeLocation().type == LAVA)
 		{
 			_camera->setFogStart(0.005f);
-			_camera->setFogEnd(0.01f);
+			_camera->setFogEnd(0.015f);
 		}
 		else
 		{
@@ -211,6 +211,11 @@ Block Player::getTargetedBlock() const
 		reach += 0.1;
 	} while (reach <= 3 + (_gamemode == CREATIVE) && hitBlock.type == AIR);
 	return (Block){ Location(position).blockalize(), hitBlock };
+}
+
+BlockType Player::getBlockAtEyeLocation() const
+{
+	return _world->getBlockAt(Location(_camera->getPosition()));
 }
 
 BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const
