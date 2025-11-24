@@ -5,6 +5,7 @@
 #include "Location.hpp"
 #include "utils.hpp"
 #include "colors.hpp"
+#include <algorithm>
 
 void World::load()
 {
@@ -32,6 +33,22 @@ void World::render(const Shader & shader, const Player & player)
 	{
 		if (!chunkPtr)
 			continue;
+
+		const int chunkX = chunkPtr->getChunkX();
+		const int chunkZ = chunkPtr->getChunkZ();
+		glm::vec3 min = {
+			chunkX * CHUNK_WIDTH,
+			0,
+			chunkZ * CHUNK_DEPTH
+		};
+		glm::vec3 max = {
+			min.x + CHUNK_WIDTH,
+			CHUNK_HEIGHT,
+			min.z + CHUNK_DEPTH
+		};
+		if (!frustum.isChunkVisible(min, max))
+			continue;
+		
 		ChunkState state = chunkPtr->getState();
 		if (state == IDLE)
 			continue;
@@ -53,20 +70,7 @@ void World::render(const Shader & shader, const Player & player)
 			chunkPtr->unloadMesh();
 			chunkPtr->uploadMesh();
 		}
-		const int chunkX = chunkPtr->getChunkX();
-		const int chunkZ = chunkPtr->getChunkZ();
-		glm::vec3 min = {
-			chunkX * CHUNK_WIDTH,
-			0,
-			chunkZ * CHUNK_DEPTH
-		};
-		glm::vec3 max = {
-			min.x + CHUNK_WIDTH,
-			CHUNK_HEIGHT,
-			min.z + CHUNK_DEPTH
-		};
-		if (frustum.isChunkVisible(min, max))
-			chunkPtr->render(shader);
+		chunkPtr->render(shader);
 	}
 	for (auto it = _oldChunks.begin(); it != _oldChunks.end(); ++it)
 	{
@@ -153,7 +157,7 @@ BlockType World::getBlockAt(const Location & loc) const
 {
 	if (loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT)
 		return BlockTypeRegistry::getBlockType(AIR);
-	Chunk * chunk = getChunkAt(static_cast<int>(loc.getX()), static_cast<int>(loc.getZ()));
+	Chunk * chunk = getChunkAt(std::floor(loc.getX()), std::floor(loc.getZ()));
 	if (!chunk || chunk->getState() == IDLE)
 		return BlockTypeRegistry::getBlockType(AIR);
 	return chunk->getBlockAt(loc);
@@ -220,9 +224,10 @@ void World::generateProcedurally()
 			for (int z = centerZ - renderDistance; z < centerZ + renderDistance; z++)
 			{
 				Chunk * tmp = getChunkAtChunkLocation(x, z);
-				if (!tmp || tmp->getState() == GENERATED)
+				if (tmp)
 				{
-					if (tmp)
+					ChunkState state = tmp->getState();
+					if (state == GENERATED)
 					{
 						for (Chunk * chunk : tmp->getNeighborChunks())
 						{
@@ -233,8 +238,8 @@ void World::generateProcedurally()
 							}
 						}
 					}
-					queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
 				}
+				queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
 			}
 		}
 		// Pregenerating chunks that are far from the player when workers aren't active
@@ -254,7 +259,7 @@ void World::generateProcedurally()
 			}
 		}
 		if (!queue.empty())
-			_sendToWorkers(queue);
+			_sendToWorkers(queue); // sort before?
 	}
 }
 

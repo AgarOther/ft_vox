@@ -133,14 +133,95 @@ void Chunk::generateBlocks(Environment environment)
 					else
 						_blocks[x][y][z] = NETHERRACK;
 				}
-				else
+				else if (environment == THE_END)
 				{
-					const double noiseValue = (_world->getNoise().getNoise(worldX + 4242.42, worldZ + 2424.24, OCTAVES) + 1.0) * 0.5;
-					const int height = static_cast<int>(noiseValue * LAVA_LEVEL * 2);
-					if (y > height)
+					const int islandCenterX = 0;
+					const int islandCenterZ = 0;
+
+					const int posX = _chunkX * CHUNK_WIDTH;
+					const int posZ = _chunkZ * CHUNK_DEPTH;
+
+					int worldX = posX + x - islandCenterX;
+					int worldZ = posZ + z - islandCenterZ;
+					int worldY = y - 16;
+					double dist = sqrt(worldX * worldX + worldZ * worldZ + worldY * worldY);
+
+					bool placed = false; // <--- NEW FLAG
+
+					// === Main Chaos Island ===
+					const double size = 80.0;
+					double xd = static_cast<double>(worldX) / size;
+					double yd = static_cast<double>(y) / 32.0;
+					double zd = static_cast<double>(worldZ) / size;
+
+					double centerFalloff = 1.0 / (dist * 0.05);
+					if (centerFalloff < 0.0) centerFalloff = 0.0;
+
+					double plateauFalloff = 0.0;
+					if (yd < 0.4) plateauFalloff = yd * 2.5;
+					else if (yd <= 0.6) plateauFalloff = 1.0;
+					else if (yd < 1.0) plateauFalloff = 1.0 - (yd - 0.6) * 2.5;
+
+					if (plateauFalloff > 0.0 && centerFalloff > 0.0)
+					{
+						double heightMapFalloff = 0.0;
+						for (int octave = 1; octave < 5; ++octave)
+						{
+							double n = _world->getNoise().getNoise(
+								xd * octave + islandCenterX,
+								zd * octave + islandCenterZ,
+								octave
+							);
+							n = (n + 1.0) * 0.5;
+							heightMapFalloff += n * 0.01 * (octave * 10.0 - dist * 0.001);
+						}
+						heightMapFalloff += (0.5 - fabs(yd - 0.5)) * 0.15;
+
+						if (heightMapFalloff > 0.0)
+						{
+							double density = centerFalloff * plateauFalloff * heightMapFalloff;
+							if (density > 0.1)
+							{
+								_blocks[x][y][z] = (dist > 60.0 || rand() % 60 < dist) ? END_STONE : OBSIDIAN;
+								placed = true;
+							}
+						}
+					}
+
+					// === Chaos Rings === (only if nothing placed yet)
+					if (!placed)
+					{
+						const int outerRadius = 280;
+						const int rings = 4;
+						const int width = 20;
+						const int spacing = 8;
+
+						int ringDist = static_cast<int>(sqrt(worldX * worldX + worldZ * worldZ));
+
+						for (int i = 0; i < rings && !placed; i++)
+						{
+							int outer = outerRadius - ((width + spacing) * i);
+							int inner = outer - width;
+
+							if (ringDist < outer && ringDist >= inner)
+							{
+								// Deterministic "wobble" using noise
+								double wobble = sin(worldX * 0.002) + cos(worldZ * 0.002);
+								int ringY = 20 + static_cast<int>(wobble * 5.0);
+
+								// Give thickness of 3 blocks
+								if (std::abs(y - ringY) <= 1)
+								{
+									_blocks[x][y][z] = rand() % 25 ? AIR : END_STONE;
+									placed = true;
+								}
+							}
+						}
+					}
+
+					// Default = air
+					if (!placed)
 						_blocks[x][y][z] = AIR;
-					else
-						_blocks[x][y][z] = END_STONE;
 				}
 			}
 		}
@@ -453,6 +534,12 @@ BlockType Chunk::getBlockAt(const Location & loc)
 			<< loc << " for Chunk(" << _chunkX * CHUNK_WIDTH << ", " << _chunkZ * CHUNK_DEPTH << "), returning air.\n";
 		return BlockTypeRegistry::getBlockType(AIR);
 	}
+	std::cout << Location(localX, localY, localZ) << " | Type: " << BlockTypeRegistry::getBlockType(
+		_blocks
+		[localX]
+		[localY]
+		[localZ]
+	).name << std::endl;
 	return BlockTypeRegistry::getBlockType(
 		_blocks
 		[localX]

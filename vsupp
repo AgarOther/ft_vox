@@ -221,3 +221,63 @@
    fun:start_thread
    fun:clone
 }
+{
+   xcb_wait_for_reply_leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.*
+}
+
+{
+   vulkan_loader_internal_leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libvulkan.so.*
+}
+
+{
+   vulkan_xcb_surface_query_leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:xcb_wait_for_reply
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.*
+}
+
+{
+   vulkan_driver_allocator
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libvulkan.so.*
+}
+
+{
+   nvidia_icd_loader_leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   obj:*/libGLX_nvidia.so*
+}
+
+{
+   mesa_icd_loader_leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   obj:*/libvulkan_intel.so*
+}
+
+{
+   x11_connection_leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:xcb_connect
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.*
+}

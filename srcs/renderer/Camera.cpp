@@ -10,14 +10,14 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_speed = PLAYER_SPEED;
 	_baseSpeed = _speed;
 	_sensitivity = 200.0f;
-	_farPlane = 1000.0f;
+	_farPlane = 1500.0f;
 	_FOV = 80.0f;
 	_pitch = 0.0f;
 	_yaw = 90.0f;
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 8;
+	_renderDistance = 12;
 	_fogActive = true;
 	_fogStart = 0.7f;
 	_fogEnd = 1.2f;

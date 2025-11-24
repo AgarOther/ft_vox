@@ -5,7 +5,6 @@
 #include <cmath>
 #include <cstring>
 #include "stb/stb_image.h"
-#include "stb/stb_image_write.h"
 #include "colors.hpp"
 #include <iostream>
 #include <unordered_map>
@@ -94,10 +93,6 @@ void TextureAtlas::loadTextures(const std::unordered_map<Material, std::vector<s
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	#ifdef DEBUG
-	stbi_write_png("atlas_debug.png", _atlasWidth, _atlasHeight, COLOR_CHANNELS, atlasData.data(), _atlasWidth * COLOR_CHANNELS);
-	#endif
 }
 
 const BlockUV & TextureAtlas::getUVForBlock(Material material, BlockFace face) const

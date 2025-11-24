@@ -73,8 +73,7 @@ ALL_FCLEAN			=	@echo "🧹$(LIGHT_GREEN) Project's objects & Executables cleaned
 
 # Rules
 
-all : glfw glm glew
-	@make -j4 $(NAME)
+all : glfw glm glew $(NAME)
 
 $(NAME): $(IMGUI) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME) $(LDFLAGS)
@@ -104,11 +103,11 @@ re : fclean all
 
 debug : CFLAGS += -DDEBUG
 debug :
-	$(MAKE) CFLAGS="$(CFLAGS)" -j4 $(NAME)
+	$(MAKE) CFLAGS="$(CFLAGS)" -j32 $(NAME)
 
 debugrun : CFLAGS += -DDEBUG
 debugrun :
-	$(MAKE) CFLAGS="$(CFLAGS)" -j4 $(NAME)
+	$(MAKE) CFLAGS="$(CFLAGS)" -j32 $(NAME)
 	./$(NAME)
 
 download_glfw:
