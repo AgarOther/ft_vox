@@ -170,10 +170,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 
 	if (getLocation() != finalLocation)
 	{
-		Location flooredLocation = finalLocation.clone();
-		flooredLocation.setX(std::floor(flooredLocation.getX()));
-		flooredLocation.setZ(std::floor(flooredLocation.getZ()));
-		if (_world->getBlockAt(flooredLocation).isSolid && _gamemode != SPECTATOR)
+		if (_world->getBlockAt(finalLocation).isSolid && _gamemode != SPECTATOR)
 			return;
 		teleport(finalLocation);
 		if (getBlockAtEyeLocation().type == LAVA)
