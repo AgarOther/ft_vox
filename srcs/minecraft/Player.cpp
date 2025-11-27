@@ -12,7 +12,7 @@ Player::Player(const std::string & name, int width, int height, World * world)
 	_name = name;
 	_health = 20;
 	_world = world;
-	_spawnLocation = Location(0.0, 0.0, 0.0);
+	_spawnLocation = Location(0.5, 0.0, 0.5);
 	_camera = new Camera(width, height, _spawnLocation.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).getVec3());
 	_location = _spawnLocation.clone();
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
@@ -170,10 +170,10 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 
 	if (getLocation() != finalLocation)
 	{
-		Location test = finalLocation.clone();
-		test.setX(round(test.getX()));
-		test.setZ(round(test.getZ()));
-		if (_world->getBlockAt(test).isSolid && _gamemode != SPECTATOR)
+		Location flooredLocation = finalLocation.clone();
+		flooredLocation.setX(std::floor(flooredLocation.getX()));
+		flooredLocation.setZ(std::floor(flooredLocation.getZ()));
+		if (_world->getBlockAt(flooredLocation).isSolid && _gamemode != SPECTATOR)
 			return;
 		teleport(finalLocation);
 		if (getBlockAtEyeLocation().type == LAVA)
