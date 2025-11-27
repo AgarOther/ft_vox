@@ -226,7 +226,6 @@ BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const
 	blockLocation.setX(round(blockLocation.getX() - xOffset));
 	blockLocation.setY(ceil(blockLocation.getY() - yOffset - 1));
 	blockLocation.setZ(round(blockLocation.getZ() - zOffset));
-	// std::cout << blockLocation << " | Type: " << _world->getBlockAt(blockLocation).name << std::endl;
 	return _world->getBlockAt(blockLocation);
 }
 

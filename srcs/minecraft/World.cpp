@@ -78,6 +78,7 @@ void World::render(const Shader & shader, const Player & player)
 		if (chunk && player.getLocation().distance(Location(chunk->getChunkX(), static_cast<int>(player.getLocation().getY()), chunk->getChunkZ()))
 				>= player.getCamera()->getRenderDistance() * std::max(CHUNK_WIDTH, CHUNK_DEPTH) * CHUNK_DELETION_DISTANCE)
 		{
+			std::cout << "Deleting chunk" << std::endl;
 			deleteChunk(chunk);
 			it = _oldChunks.erase(it) - 1;
 		}

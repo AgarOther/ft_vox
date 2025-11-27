@@ -431,9 +431,9 @@ void Chunk::generateMesh()
 						for (int i = 0; i < 4; ++i)
 						{
 							uint16_t vi = (face * 4 + i) * 5;
-							float vx = blockVertices[vi + 0] + x;
+							float vx = blockVertices[vi + 0] + x + 0.5f;
 							float vy = blockVertices[vi + 1] + y;
-							float vz = blockVertices[vi + 2] + z;
+							float vz = blockVertices[vi + 2] + z + 0.5f;
 
 							vertices.push_back(vx);
 							if ((block.type == WATER || block.type == LAVA) && _blocks[x][y + 1][z] == AIR)
@@ -534,12 +534,6 @@ BlockType Chunk::getBlockAt(const Location & loc)
 			<< loc << " for Chunk(" << _chunkX * CHUNK_WIDTH << ", " << _chunkZ * CHUNK_DEPTH << "), returning air.\n";
 		return BlockTypeRegistry::getBlockType(AIR);
 	}
-	std::cout << Location(localX, localY, localZ) << " | Type: " << BlockTypeRegistry::getBlockType(
-		_blocks
-		[localX]
-		[localY]
-		[localZ]
-	).name << std::endl;
 	return BlockTypeRegistry::getBlockType(
 		_blocks
 		[localX]
