@@ -125,7 +125,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 			finalLocation += velocity * -forward;
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 			finalLocation += velocity * right;
-		if (_gamemode == CREATIVE)
+		if (_gamemode == SPECTATOR)
 		{
 			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
 				finalLocation += velocity * _camera->getAltitude();
@@ -173,7 +173,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		Location test = finalLocation.clone();
 		test.setX(round(test.getX()));
 		test.setZ(round(test.getZ()));
-		if (_world->getBlockAt(test).isSolid && _gamemode != CREATIVE)
+		if (_world->getBlockAt(test).isSolid && _gamemode != SPECTATOR)
 			return;
 		teleport(finalLocation);
 		if (getBlockAtEyeLocation().type == LAVA)
@@ -209,7 +209,7 @@ Block Player::getTargetedBlock() const
 			return (Block){ Location(position).blockalize(), hitBlock };
 		position += glm::dot(orientation, glm::vec3(0.1));
 		reach += 0.1;
-	} while (reach <= 3 + (_gamemode == CREATIVE) && hitBlock.type == AIR);
+	} while (reach <= 3 + (_gamemode == SPECTATOR) && hitBlock.type == AIR);
 	return (Block){ Location(position).blockalize(), hitBlock };
 }
 

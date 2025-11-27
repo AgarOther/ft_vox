@@ -76,7 +76,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 	
 	ImGui::NewLine();
 	// Position infos
-	ImGui::TextColored(ImVec4(0.0f, 0.6f, 0.8f, 1.0f), "Gamemode: %s", player->getGamemode() == CREATIVE ? "Creative" : "Survival");
+	ImGui::TextColored(ImVec4(0.0f, 0.6f, 0.8f, 1.0f), "Gamemode: %s", player->getGamemode() == SPECTATOR ? "Creative" : "Survival");
 	ImGui::TextColored(ImVec4(0.75f, 1.0f, 0.0f, 1.0f), "Velocity: %.3f / %.3f / %.3f", player->getVelocityX(), player->getVelocityY(), player->getVelocityZ());
 	ImGui::TextColored(ImVec4(1.0f, 0.84f, 0.0f, 1.0f), "XYZ: %.3f / %.3f / %.3f (Block: %d / %d / %d)",
 		position.getX(), position.getY(), position.getZ(),
@@ -130,15 +130,15 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 	}
 
 	// Gamemode
-	static bool creative = player->getGamemode() == CREATIVE;
-	static bool creativeChanged = creative;
+	static bool spectator = player->getGamemode() == SPECTATOR;
+	static bool spectatorChanged = spectator;
 	ImGui::SameLine();
-	ImGui::Checkbox("Creative", &creative);
-	if (creative != creativeChanged)
+	ImGui::Checkbox("Spectator", &spectator);
+	if (spectator != spectatorChanged)
 	{
-		player->setGamemode(creative ? CREATIVE : SURVIVAL);
+		player->setGamemode(spectator ? SPECTATOR : SURVIVAL);
 		player->setVelocity(glm::vec3(0));
-		creativeChanged = creative;
+		spectatorChanged = spectator;
 	}
 
 	// Key lock

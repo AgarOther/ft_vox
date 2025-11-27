@@ -14,7 +14,7 @@
 
 enum Gamemode
 {
-	CREATIVE,
+	SPECTATOR,
 	SURVIVAL
 };
 
