@@ -186,8 +186,8 @@ void World::applyGravity(float deltaTime)
 				player->setVelocityY(0);
 
 				Location tmp = teleportLocation.clone();
-				tmp.setX(std::round(tmp.getX()));
-				tmp.setZ(std::round(tmp.getZ()));
+				tmp.setX(std::floor(tmp.getX()));
+				tmp.setZ(std::floor(tmp.getZ()));
 				while (getBlockAt(tmp.add(0.0, 1.0, 0.0)).isSolid && tmp.getY() < CHUNK_HEIGHT)
 					;
 				teleportLocation.setY(std::floor(tmp.getY()));

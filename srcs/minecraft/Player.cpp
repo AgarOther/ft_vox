@@ -223,9 +223,9 @@ BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const
 	if (getLocation().getY() >= CHUNK_HEIGHT || getLocation().getY() < 0)
 		return BlockTypeRegistry::getBlockType(AIR);
 	Location blockLocation = getLocation().clone();
-	blockLocation.setX(round(blockLocation.getX() - xOffset));
-	blockLocation.setY(ceil(blockLocation.getY() - yOffset - 1));
-	blockLocation.setZ(round(blockLocation.getZ() - zOffset));
+	blockLocation.setX(std::floor(blockLocation.getX() - xOffset));
+	blockLocation.setY(std::ceil(blockLocation.getY() - yOffset - 1));
+	blockLocation.setZ(std::floor(blockLocation.getZ() - zOffset));
 	return _world->getBlockAt(blockLocation);
 }
 
