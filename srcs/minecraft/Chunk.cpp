@@ -239,8 +239,6 @@ Chunk::~Chunk()
 		glDeleteBuffers(1, &_vbo);
 	if (_ibo)
 		glDeleteBuffers(1, &_ibo);
-	if (_tbo)
-		glDeleteBuffers(1, &_tbo);
 	if (_vao)
 		glDeleteVertexArrays(1, &_vao);
 }
@@ -322,8 +320,6 @@ void Chunk::uploadMesh()
 		glGenBuffers(1, &_vbo);
 	if (!_ibo)
 		glGenBuffers(1, &_ibo);
-	if (!_tbo)
-		glGenBuffers(1, &_tbo);
 
 	glBindVertexArray(_vao);
 
@@ -341,12 +337,6 @@ void Chunk::uploadMesh()
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, VERTICES_COUNT * sizeof(float), (void*)(5 * sizeof(float)));
 	glEnableVertexAttribArray(2);
 
-	// Tints
-	glBindBuffer(GL_ARRAY_BUFFER, _tbo);
-	glBufferData(GL_ARRAY_BUFFER, _tints.size() * sizeof(glm::u8vec3), _tints.data(), GL_STATIC_DRAW);
-	glVertexAttribPointer(3, 3, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(glm::u8vec3), nullptr);
-	glEnableVertexAttribArray(3);
-
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ibo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(uint16_t), _indices.data(), GL_STATIC_DRAW);
 
@@ -355,8 +345,6 @@ void Chunk::uploadMesh()
 
 	_indicesSize = _indices.size();
 
-	_tints.clear();
-	_tints.shrink_to_fit();
 	_vertices.clear();
 	_vertices.shrink_to_fit();
 	_indices.clear();
@@ -376,11 +364,6 @@ void Chunk::unloadMesh()
 		glDeleteBuffers(1, &_ibo);
 		_ibo = 0;
 	}
-	if (_tbo)
-	{
-		glDeleteBuffers(1, &_tbo);
-		_tbo = 0;
-	}
 	if (_vao)
 	{
 		glDeleteVertexArrays(1, &_vao);
@@ -395,7 +378,6 @@ void Chunk::generateMesh()
 		return;
 	std::vector<float> vertices;
 	std::vector<uint16_t> indices;
-	std::vector<glm::u8vec3> tints;
 	const Object & object = ObjectRegistry::getObject(BLOCK);
 	int invisibleFaces;
 
@@ -463,7 +445,6 @@ void Chunk::generateMesh()
 							vertices.push_back(normal.x);
 							vertices.push_back(normal.y);
 							vertices.push_back(normal.z);
-							tints.push_back(BlockTypeRegistry::getTint(block.type, static_cast<BlockFace>(face)));
 						}
 					}
 					if (invisibleFaces == 6)
@@ -481,7 +462,6 @@ void Chunk::generateMesh()
 	}
 	_vertices = vertices;
 	_indices = indices;
-	_tints = tints;
 
 	ChunkState state = getState();
 	setState(state == DIRTY ? CLEANED : MESHED);

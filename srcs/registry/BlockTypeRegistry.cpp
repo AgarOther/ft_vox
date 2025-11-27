@@ -2,13 +2,6 @@
 #include "BlockTypeRegistry.hpp"
 
 BlockTypeRegistry::BlockTypeMap BlockTypeRegistry::_types;
-BlockTypeRegistry::TintMap BlockTypeRegistry::_tints;
-
-void BlockTypeRegistry::initTints()
-{
-	if (!_tints.empty())
-		return;
-}
 
 void BlockTypeRegistry::init()
 {
@@ -36,8 +29,6 @@ void BlockTypeRegistry::init()
 	_types[CHERRY_LEAVES]		= { CHERRY_LEAVES, "cherry_leaves", true, true, true, false };
 	_types[OBSIDIAN]			= { OBSIDIAN, "obsidian", true, true, false, false };
 	_types[AIR]					= { AIR, "air",false, false, false, false };
-
-	initTints();
 }
 
 const BlockType & BlockTypeRegistry::getBlockType(uint8_t id)
@@ -58,14 +49,6 @@ const BlockType & BlockTypeRegistry::getBlockType(const std::string & name)
 	}
 	std::cerr << "[BlockTypeRegistry] Warning: Requested unknown block named " << name << ", returning default.\n";
 	return _types[0];
-}
-
-glm::u8vec3 BlockTypeRegistry::getTint(Material material, BlockFace blockface)
-{
-	auto it = _tints.find({material, blockface});
-	if (it != _tints.end())
-		return it->second;
-	return {255, 255, 255}; // normal (uint max)
 }
 
 const BlockTypeRegistry::BlockTypeMap & BlockTypeRegistry::getBlockTypeMap()

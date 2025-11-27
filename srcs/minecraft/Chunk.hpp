@@ -32,7 +32,7 @@ class Chunk
 {
 	public:
 		Chunk(int chunkX, int chunkZ, World * world):
-			_chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0), _tbo(0), _indicesSize(0),
+			_chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0), _indicesSize(0),
 			 _world(world), _state(IDLE) {}
 		~Chunk();
 
@@ -48,7 +48,7 @@ class Chunk
 
 		int							getChunkX() const { return _chunkX; }
 		int							getChunkZ() const { return _chunkZ; }
-		std::pair<int, int>			getChunkLocation() const { return { _chunkX, _chunkZ }; }
+		glm::ivec2					getChunkLocation() const { return { _chunkX, _chunkZ }; }
 		ChunkState					getState() { const std::lock_guard<std::mutex> lg(_stateMutex); return _state; }
 
 		void						setState(ChunkState state) { const std::lock_guard<std::mutex> lg(_stateMutex); _state = state; }
@@ -58,12 +58,10 @@ class Chunk
 		GLuint						_vao;
 		GLuint						_vbo;
 		GLuint						_ibo;
-		GLuint						_tbo;
 		uint8_t						_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
 		unsigned int				_indicesSize;
 		std::vector<float>			_vertices;
 		std::vector<uint16_t>		_indices;
-		std::vector<glm::u8vec3>	_tints;
 		World *						_world;
 		std::mutex					_stateMutex;
 		ChunkState					_state;

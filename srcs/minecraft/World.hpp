@@ -6,7 +6,7 @@
 #include <functional>
 #include <unordered_map>
 
-#define CHUNK_DELETION_DISTANCE 5
+#define CHUNK_DELETION_DISTANCE 2
 #define SEA_LEVEL 64
 #define LAVA_LEVEL 25
 
@@ -17,6 +17,14 @@ struct PlayerHash
 	size_t operator()(const Player & player) const
 	{
 		return static_cast<size_t>(std::ptrdiff_t(&player));
+	}
+};
+
+struct IVec2Hash
+{
+	size_t operator()(const glm::ivec2 & ivec2) const
+	{
+		return std::hash<int>()(ivec2.x) ^ (std::hash<int>()(ivec2.y) << 1);
 	}
 };
 
@@ -54,7 +62,7 @@ class World
 	private:
 		void					_sendToWorkers(std::vector<Chunk * > & chunks);
 
-		typedef std::unordered_map<std::pair<int, int>, Chunk * , PairHash> ChunkMap;
+		typedef std::unordered_map<glm::ivec2, Chunk * , IVec2Hash> ChunkMap;
 		ChunkMap				_chunks;
 		typedef std::unordered_map<std::string, Player * > PlayerList;
 		PlayerList				_players;
@@ -62,7 +70,6 @@ class World
 		TextureAtlas *			_atlas;
 		Noise					_noise;
 		bool					_procedural;
-		std::vector<Chunk * >	_oldChunks;
 		Environment				_environment;
 		bool					_loaded;
 };

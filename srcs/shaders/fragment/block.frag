@@ -1,5 +1,4 @@
 #version 330 core
-
 in vec3				tint;
 in vec2				texCoord;
 in vec3				normal;
@@ -26,7 +25,7 @@ void main()
 	vec3 norm = normalize(normal);
 	vec3 light = normalize(-lightDir);
 	float diff = max(dot(norm, light), 0.2);
-	vec4 lightColor = vec4(texColor.rgb * diff * tint, texColor.a);
+	vec4 lightColor = vec4(texColor.rgb * diff, texColor.a);
 
 	float fogFactor = 1;
 	// Calculate fog
