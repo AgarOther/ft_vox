@@ -68,9 +68,10 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 
 	if (!_spawned)
 	{
-		if (_world->getChunkAt(0, 0)->getState() >= GENERATED)
+		Chunk * spawnChunk = _world->getChunkAt(_spawnLocation.getX(), _spawnLocation.getZ());
+		if (spawnChunk && spawnChunk->getState() >= GENERATED)
 		{
-			_spawnLocation.setY(_world->getHighestYAtChunkLocation(0, 0));
+			_spawnLocation.setY(_world->getHighestYAtChunkLocation(_spawnLocation.getX(), _spawnLocation.getZ())); // make a function to chunkalize coords
 			teleport(_spawnLocation);
 			_spawned = true;
 		}
@@ -110,7 +111,9 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	const glm::vec3 right = glm::normalize(glm::cross(forward, _camera->getAltitude())); // Right direction is based on forward and altitude (up vector)
 	/* End GPT Code */
 
-	if (!_camera->isLocked())
+	bool isWindowFocused = glfwGetWindowAttrib(window, GLFW_FOCUSED);
+
+	if (!_camera->isLocked() && isWindowFocused)
 	{
 		// Key management
 		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
