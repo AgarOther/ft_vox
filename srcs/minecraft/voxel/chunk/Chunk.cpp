@@ -422,9 +422,9 @@ void Chunk::generateMesh()
 								vy -= 0.125f;
 							vertices.push_back(vy);
 							vertices.push_back(vz);
-							glm::vec2 baseUV = _world->getAtlas()->getUVForBlock(block.type, static_cast<BlockFace>(face));
-							float tileSize = 1.0f / _world->getAtlas()->getTilesPerRow();
-							float epsilon = 0.001f / _world->getAtlas()->getWidth();
+							glm::vec2 baseUV = TextureAtlas::getUVForBlock(block.type, static_cast<BlockFace>(face));
+							float tileSize = 1.0f / TextureAtlas::getTilesPerRow();
+							float epsilon = 0.001f / TextureAtlas::getWidth();
 
 							float localU = blockVertices[vi + 3];
 							float localV = blockVertices[vi + 4];
@@ -480,7 +480,7 @@ void Chunk::render(const Shader & shader) const
 	shader.setMat4("model", model);
 	shader.setVec3("lightDir", glm::normalize(glm::vec3(1.0f, -1.5f, 0.8f)));
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, _world->getAtlas()->getTextureID());
+	glBindTexture(GL_TEXTURE_2D, TextureAtlas::getTextureID());
 	shader.setInt("textureAtlas", 0);
 	g_DEBUG_INFO.drawCalls++;
 	if (g_DEBUG_INFO.wireframe)

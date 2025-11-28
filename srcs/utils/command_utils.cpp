@@ -29,7 +29,7 @@ Material getMaterialFromString(std::string & name)
 	return UNKNOWN;
 }
 
-void dispatchCommand(char * buffer, Player * player, std::unordered_map<Environment, World * > & worlds)
+void dispatchCommand(char * buffer, Player * player)
 {
 	std::string command;
 	std::vector<std::string> args;
@@ -46,8 +46,10 @@ void dispatchCommand(char * buffer, Player * player, std::unordered_map<Environm
 	}
 	else if (args.size() == 4 && command.rfind("tp ", 0) == 0)
 		player->teleport(Location(atof(args[1].c_str()), atof(args[2].c_str()), atof(args[3].c_str())));
-	else if (command.rfind("cw") == 0)
+	else if (command.rfind("cw") == 0 && args.size() == 2)
 	{
-		player->setWorld(worlds[static_cast<Environment>((player->getWorld()->getEnvironment() + 1) % 3)]);
+		World * world = WorldManager::getWorld(args[1]);
+		if (world)
+			player->setWorld(world);
 	}
 }

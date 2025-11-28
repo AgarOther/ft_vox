@@ -28,7 +28,7 @@ class Player
 {
 	public:
 		Player() {}
-		Player(const std::string & name, int width, int height, World * world);
+		Player(const std::string & name, Camera * camera, World * world);
 		~Player();
 
 		const std::string &	getName() const { return _name; }

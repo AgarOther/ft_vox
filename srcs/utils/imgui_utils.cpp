@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_glfw.h"
+#include "Scene.hpp"
 
 ImGuiIO & getImGuiIO(GLFWwindow * window)
 {
@@ -60,7 +61,7 @@ static std::string getAxisDirectionAsString(const float yaw)
     return "negative X";
 }
 
-void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGoal, std::unordered_map<Environment, World * > & worlds)
+void showImGui(const ImGuiIO & io, Player * player, float deltaTime, Scene * scene)
 {
 	Camera * camera = player->getCamera();
 	const Location & position = player->getLocation();
@@ -93,7 +94,10 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 	// ImGui::TextColored(ImVec4(0.4f, 0.84f, 1.0f, 1.0f), "Targeted block: %s", player->getTargetedBlock().blockType.name.c_str());
 
 	// FPS
-	ImGui::SliderInt("FPS", fpsGoal, 15.0f, 1000.0f, "%d FPS", ImGuiSliderFlags_AlwaysClamp);
+	int fpsGoal = scene->getFPSGoal();
+	ImGui::SliderInt("FPS", &fpsGoal, 15.0f, 1000.0f, "%d FPS", ImGuiSliderFlags_AlwaysClamp);
+	if (fpsGoal != scene->getFPSGoal())
+		scene->setFPSGoal(fpsGoal);
 
 	// Speed
 	float cameraSpeed = camera->getBaseSpeed();
@@ -181,7 +185,7 @@ void showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGo
 	ImGui::InputText("Command line", buffer, 100);
 	if (ImGui::Button("Enter"))
 	{
-		dispatchCommand(buffer, player, worlds);
+		dispatchCommand(buffer, player);
 		buffer[0] = 0;
 	}
 	ImGui::End();

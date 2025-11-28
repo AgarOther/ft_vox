@@ -9,18 +9,20 @@
 #include <iostream>
 #include <unordered_map>
 
-TextureAtlas::TextureAtlas(): _id(0), _atlasWidth(0), _atlasHeight(0)
-{
-	
-}
+GLuint TextureAtlas::_id;
+int TextureAtlas::_atlasWidth;
+int TextureAtlas::_atlasHeight;
+int TextureAtlas::_tilesPerRow;
+TextureAtlas::UVMap TextureAtlas::_uvMap;
+TextureAtlas::TextureCache TextureAtlas::_textureCache;
 
-TextureAtlas::~TextureAtlas()
+void TextureAtlas::destroy()
 {
 	if (_id)
 		glDeleteTextures(1, &_id);
 }
 
-void TextureAtlas::loadTextures(const std::unordered_map<Material, std::vector<std::pair<BlockFace, std::string>>> & texturePaths)
+void TextureAtlas::_loadTextures(const std::unordered_map<Material, std::vector<std::pair<BlockFace, std::string>>> & texturePaths)
 {
 	static const std::string prefix = "assets/block/";
 	static int texCount = 0;
@@ -95,7 +97,7 @@ void TextureAtlas::loadTextures(const std::unordered_map<Material, std::vector<s
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 }
 
-const BlockUV & TextureAtlas::getUVForBlock(Material material, BlockFace face) const
+const BlockUV & TextureAtlas::getUVForBlock(Material material, BlockFace face)
 {
 	auto it = _uvMap.find(std::pair<Material, BlockFace>(material, face));
 	if (it == _uvMap.end())
@@ -139,5 +141,5 @@ void TextureAtlas::init()
 	textureMap[CARTOGRAPHY_TABLE]	= cartography;
 
 	textureMap[GRASS_BLOCK]			= loadSideTopBottom("grass_block_side.png", "grass_block_top.png", "dirt.png");
-	loadTextures(textureMap);
+	_loadTextures(textureMap);
 }

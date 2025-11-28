@@ -2,6 +2,7 @@
 
 #include "ChunkMonitor.hpp"
 #include "Chunk.hpp"
+#include "WorldManager.hpp"
 #include <cstddef>
 #include <functional>
 #include <unordered_map>
@@ -11,14 +12,6 @@
 #define LAVA_LEVEL 25
 
 class Player;
-
-struct PlayerHash
-{
-	size_t operator()(const Player & player) const
-	{
-		return static_cast<size_t>(std::ptrdiff_t(&player));
-	}
-};
 
 struct IVec2Hash
 {
@@ -31,31 +24,28 @@ struct IVec2Hash
 class World
 {
 	public:
-		World(TextureAtlas * atlas, const Noise & noise, Environment environment = OVERWORLD): _monitor(environment), _atlas(atlas),
-			_noise(noise), _procedural(true), _environment(environment), _loaded(false) {}
+		World(const std::string & name, Seed seed, Environment environment = OVERWORLD);
 		~World();
 
-		void					render(const Shader & shader, const Player & player);
-
-		void					deleteChunk(Chunk * chunk);
 		Chunk *					getChunkAt(int x, int z) const;
 		Chunk *					getChunkAtChunkLocation(int x, int z) const;
 		BlockType				getBlockAt(const Location & loc) const;
-		const Player *			getPlayer(const std::string & name) const;
+		const Player *			getPlayer() const;
 		int						getHighestYAtChunkLocation(int x, int z) const;
-		TextureAtlas *			getAtlas() const { return _atlas; }
 		const Noise &			getNoise() const { return _noise; }
-		bool					isProcedural() const { return _procedural; }
 		Environment				getEnvironment() const { return _environment; }
+		const std::string &		getName() const { return _name; }
+
+		bool					isProcedural() const { return _procedural; }
 		bool					isLoaded() const { return _loaded; }
 
 		void					setProcedural(bool procedural) { _procedural = procedural; }
+		void					setPlayer(Player * player);
 
-		void					addPlayer(Player * player);
-		void					removePlayer(Player * player);
 		void					applyGravity(float deltaTime);
-
+		void					deleteChunk(Chunk * chunk);
 		void					generateProcedurally(); // wow!
+		void					render(const Shader & shader, const Player & player);
 		
 		void					load();
 		void					shutdown();
@@ -64,12 +54,11 @@ class World
 
 		typedef std::unordered_map<glm::ivec2, Chunk * , IVec2Hash> ChunkMap;
 		ChunkMap				_chunks;
-		typedef std::unordered_map<std::string, Player * > PlayerList;
-		PlayerList				_players;
+		std::string				_name;
+		Player *				_player;
 		ChunkMonitor			_monitor;
-		TextureAtlas *			_atlas;
-		Noise					_noise;
-		bool					_procedural;
+		bool					_procedural = true;
 		Environment				_environment;
-		bool					_loaded;
+		Noise					_noise;
+		bool					_loaded = false;
 };

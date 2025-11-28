@@ -1,5 +1,6 @@
 #include "errors.hpp"
 #include "utils.hpp"
+#include "InputManager.hpp"
 
 void toggleFullscreen(GLFWwindow * window, Camera * camera)
 {
@@ -72,6 +73,7 @@ GLFWwindow * initWindow(int * width, int * height, int * fpsGoal)
 	glfwGetFramebufferSize(window, width, height);
 	glViewport(0, 0, *width, *height);
 	glfwSetFramebufferSizeCallback(window, frameBufferCallback);
+	glfwSetKeyCallback(window, InputManager::interceptOneTimeKeys);
 	glfwSwapInterval(0); // unlimited (0) | vsync(1)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);

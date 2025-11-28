@@ -21,3 +21,5 @@ enum Environment
 	NETHER,
 	THE_END
 };
+
+typedef unsigned long Seed;

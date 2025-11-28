@@ -25,25 +25,29 @@ struct UVMapHash
 class TextureAtlas
 {
 	public:
-		TextureAtlas();
-		~TextureAtlas();
+		TextureAtlas() = delete;
+		~TextureAtlas() = delete;
 
-		void			init();
-		typedef std::unordered_map<Material, TextureBuffer> TextureMap;
-		void			loadTextures(const TextureMap & texturePaths);
-		GLuint			getTextureID() const { return _id; }
-		const 			BlockUV & getUVForBlock(Material material, BlockFace face) const;
+		static void				init();
+		static void				destroy();
 
-		int				getTilesPerRow() const { return _tilesPerRow; }
-		int				getWidth() const { return _atlasWidth; }
-		int				getHeight() const { return _atlasHeight; }
+		static GLuint			getTextureID() { return _id; }
+		static const BlockUV &	getUVForBlock(Material material, BlockFace face);
+		static int				getTilesPerRow() { return _tilesPerRow; }
+		static int				getWidth() { return _atlasWidth; }
+		static int				getHeight() { return _atlasHeight; }
+
 	private:
-		GLuint			_id;
-		int				_atlasWidth;
-		int				_atlasHeight;
-		int				_tilesPerRow;
+		typedef std::unordered_map<Material, TextureBuffer> TextureMap;
 		typedef std::unordered_map<std::pair<Material, BlockFace>, BlockUV, UVMapHash> UVMap;
-		UVMap			_uvMap;
 		typedef std::unordered_map<std::string, glm::vec2> TextureCache;
-		TextureCache	_textureCache;
+
+		static void				_loadTextures(const TextureMap & texturePaths);
+
+		static GLuint			_id;
+		static int				_atlasWidth;
+		static int				_atlasHeight;
+		static int				_tilesPerRow;
+		static UVMap			_uvMap;
+		static TextureCache		_textureCache;
 };

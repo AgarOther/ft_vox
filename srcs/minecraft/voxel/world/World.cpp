@@ -7,6 +7,12 @@
 #include "colors.hpp"
 #include <algorithm>
 
+World::World(const std::string & name, Seed seed, Environment environment): _name(name), _monitor(environment), _environment(environment),
+	_noise(Noise(seed, FREQUENCY, AMPLITUDE))
+{
+
+}
+
 void World::load()
 {
 	if (_loaded)
@@ -20,7 +26,7 @@ void World::load()
 
 void World::render(const Shader & shader, const Player & player)
 {
-	if (!_loaded)
+	if (!_loaded || !_player)
 		return;
 	std::vector<glm::ivec2> deletableChunks;
 	shader.bind();
@@ -124,25 +130,14 @@ int World::getHighestYAtChunkLocation(int x, int z) const
 	return 0;
 }
 
-void World::addPlayer(Player * player)
+void World::setPlayer(Player * player)
 {
-	_players[player->getName()] = player;
+	_player = player;
 }
 
-void World::removePlayer(Player * player)
+const Player * World::getPlayer() const
 {
-	auto it = _players.find(player->getName());
-	if (it != _players.end())
-		_players.erase(it);
-	_players[player->getName()] = player;
-}
-
-const Player * World::getPlayer(const std::string & name) const
-{
-	auto it = _players.find(name);
-	if (it != _players.end())
-		return it->second;
-	return nullptr;
+	return _player;
 }
 
 BlockType World::getBlockAt(const Location & loc) const
@@ -157,34 +152,34 @@ BlockType World::getBlockAt(const Location & loc) const
 
 void World::applyGravity(float deltaTime)
 {
+	if (!_player)
+		return;
+
 	static const float gravity = -25.0f;
 	float verticalPosition;
 	Location teleportLocation;
 
-	for (auto & [_, player] : _players)
+	if (_player->getGamemode() == SURVIVAL && (_player->getVelocityY() != 0 || !_player->getBlockUnder().isSolid))
 	{
-		if (player->getGamemode() == SURVIVAL && (player->getVelocityY() != 0 || !player->getBlockUnder().isSolid))
+		verticalPosition = _player->getLocation().getY() + _player->getVelocityY() * deltaTime;
+		_player->setVelocityY(_player->getVelocityY() + gravity * deltaTime);
+		teleportLocation = Location(
+			_player->getLocation().getX(),
+			verticalPosition,
+			_player->getLocation().getZ()
+		);
+		if (getBlockAt(teleportLocation).isSolid && _player->getVelocityY() < 0)
 		{
-			verticalPosition = player->getLocation().getY() + player->getVelocityY() * deltaTime;
-			player->setVelocityY(player->getVelocityY() + gravity * deltaTime);
-			teleportLocation = Location(
-				player->getLocation().getX(),
-				verticalPosition,
-				player->getLocation().getZ()
-			);
-			if (getBlockAt(teleportLocation).isSolid && player->getVelocityY() < 0)
-			{
-				player->setVelocityY(0);
+			_player->setVelocityY(0);
 
-				Location tmp = teleportLocation.clone();
-				tmp.setX(std::floor(tmp.getX()));
-				tmp.setZ(std::floor(tmp.getZ()));
-				while (getBlockAt(tmp.add(0.0, 1.0, 0.0)).isSolid && tmp.getY() < CHUNK_HEIGHT)
-					;
-				teleportLocation.setY(std::floor(tmp.getY()));
-			}
-			player->teleport(teleportLocation);
+			Location tmp = teleportLocation.clone();
+			tmp.setX(std::floor(tmp.getX()));
+			tmp.setZ(std::floor(tmp.getZ()));
+			while (getBlockAt(tmp.add(0.0, 1.0, 0.0)).isSolid && tmp.getY() < CHUNK_HEIGHT)
+				;
+			teleportLocation.setY(std::floor(tmp.getY()));
 		}
+		_player->teleport(teleportLocation);
 	}
 }
 
@@ -198,61 +193,57 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 void World::generateProcedurally()
 {
 	static long cooldown = 0;
-	if (!_procedural || _monitor.areWorkersWorking() || (cooldown && getTimeAsMilliseconds() - cooldown < 100))
+	if (!_procedural || !_player || _monitor.areWorkersWorking() || (cooldown && getTimeAsMilliseconds() - cooldown < 100))
 		return;
 	cooldown = getTimeAsMilliseconds();
 
-	for (auto it = _players.begin(); it != _players.end(); ++it)
-	{
-		Player * player = it->second;
-		const Location & center = player->getLocation();
-		const int centerX = std::floor(center.getX() / CHUNK_WIDTH);
-		const int centerZ = std::floor(center.getZ() / CHUNK_DEPTH);
-		const uint8_t renderDistance = player->getCamera()->getRenderDistance();
-		std::vector<Chunk * > queue;
+	const Location & center = _player->getLocation();
+	const int centerX = std::floor(center.getX() / CHUNK_WIDTH);
+	const int centerZ = std::floor(center.getZ() / CHUNK_DEPTH);
+	const uint8_t renderDistance = _player->getCamera()->getRenderDistance();
+	std::vector<Chunk * > queue;
 
-		for (int x = centerX - renderDistance; x < centerX + renderDistance; x++)
+	for (int x = centerX - renderDistance; x < centerX + renderDistance; x++)
+	{
+		for (int z = centerZ - renderDistance; z < centerZ + renderDistance; z++)
 		{
-			for (int z = centerZ - renderDistance; z < centerZ + renderDistance; z++)
+			Chunk * tmp = getChunkAtChunkLocation(x, z);
+			if (tmp)
 			{
-				Chunk * tmp = getChunkAtChunkLocation(x, z);
-				if (tmp)
+				ChunkState state = tmp->getState();
+				if (state == GENERATED)
 				{
-					ChunkState state = tmp->getState();
-					if (state == GENERATED)
+					for (Chunk * chunk : tmp->getNeighborChunks())
 					{
-						for (Chunk * chunk : tmp->getNeighborChunks())
+						if (chunk && chunk->getState() == UPLOADED)
 						{
-							if (chunk && chunk->getState() == UPLOADED)
-							{
-								chunk->setState(DIRTY);
-								queue.push_back(chunk);
-							}
+							chunk->setState(DIRTY);
+							queue.push_back(chunk);
 						}
 					}
 				}
-				queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
 			}
+			queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
 		}
-		// Pregenerating chunks that are far from the player when workers aren't active
-		if (queue.empty() && !_monitor.areWorkersWorking())
-		{
-			for (int x = centerX - (renderDistance * 1.5); x < centerX + (renderDistance * 1.5); x++)
-			{
-				for (int z = centerZ - (renderDistance * 1.5); z < centerZ + (renderDistance * 1.5); z++)
-				{
-					if (x >= centerX - renderDistance && x < centerX + renderDistance &&
-							z >= centerZ - renderDistance && z < centerZ + renderDistance)
-						continue;
-					Chunk * tmp = getChunkAtChunkLocation(x, z);
-					if (!tmp)
-						queue.push_back(new Chunk(x, z, this));
-				}
-			}
-		}
-		if (!queue.empty())
-			_sendToWorkers(queue); // sort before?
 	}
+	// Pregenerating chunks that are far from the player when workers aren't active
+	if (queue.empty() && !_monitor.areWorkersWorking())
+	{
+		for (int x = centerX - (renderDistance * 1.5); x < centerX + (renderDistance * 1.5); x++)
+		{
+			for (int z = centerZ - (renderDistance * 1.5); z < centerZ + (renderDistance * 1.5); z++)
+			{
+				if (x >= centerX - renderDistance && x < centerX + renderDistance &&
+						z >= centerZ - renderDistance && z < centerZ + renderDistance)
+					continue;
+				Chunk * tmp = getChunkAtChunkLocation(x, z);
+				if (!tmp)
+					queue.push_back(new Chunk(x, z, this));
+			}
+		}
+	}
+	if (!queue.empty())
+		_sendToWorkers(queue); // sort before?
 }
 
 void World::shutdown()

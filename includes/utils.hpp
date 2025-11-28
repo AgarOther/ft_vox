@@ -5,6 +5,7 @@
 #include "Player.hpp"
 #include "imgui/imgui.h"
 #include <iostream>
+#include "Scene.hpp"
 
 #define USLEEP(x) std::this_thread::sleep_for(std::chrono::microseconds(x))
 
@@ -18,15 +19,15 @@ const						std::string getShaderAsString(std::string path);
 GLFWwindow *				initWindow(int * width, int * height, int * fpsGoal);
 void						toggleFullscreen(GLFWwindow * window, Camera * camera);
 std::vector<std::string>	ft_split(const std::string & str, char delimiter);
-void						dispatchCommand(char * buffer, Player * player, std::unordered_map<Environment, World * > & worlds);
+void						dispatchCommand(char * buffer, Player * player);
 void						voxLog(const std::string & message);
 long						getTimeAsMilliseconds();
 Material					getMaterialFromString(std::string & name);
+unsigned long				generateRandomSeed();
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);
-void						showImGui(const ImGuiIO & io, Player * player, float deltaTime, int * fpsGoal,
-								std::unordered_map<Environment, World * > & worlds);
+void						showImGui(const ImGuiIO & io, Player * player, float deltaTime, Scene * scene);
 void						renderImGui();
 void						shutdownImGui();
 

@@ -7,20 +7,20 @@
 #include <cstdlib>
 #include <unordered_map>
 
-Player::Player(const std::string & name, int width, int height, World * world)
+Player::Player(const std::string & name, Camera * camera, World * world)
 {
 	_name = name;
 	_health = 20;
 	_world = world;
+	_camera = camera;
 	_spawnLocation = Location(0.5, 0.0, 0.5);
-	_camera = new Camera(width, height, _spawnLocation.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).getVec3());
 	_location = _spawnLocation.clone();
 	_boundingBox = BoundingBox(Location(0, 0, 0), Location(1, 2, 1));
 	_gamemode = SURVIVAL;
 	_velocity = glm::vec3(0.0f);
 	_spawned = false;
 
-	_world->addPlayer(this);
+	_world->setPlayer(this);
 	_world->load();
 }
 
@@ -46,25 +46,6 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 		return;
 	}
-
-	static bool lastFramePressedF3 = false;
-	const bool keyPressedF3 = glfwGetKey(window, GLFW_KEY_F3);
-	if (keyPressedF3 && !lastFramePressedF3)
-		_camera->setGui(!_camera->hasGuiOn());
-
-	static bool lastFramePressedF11 = false;
-	const bool keyPressedF11 = glfwGetKey(window, GLFW_KEY_F11);
-	if (keyPressedF11 && !lastFramePressedF11)
-		toggleFullscreen(window, _camera);
-
-	static bool lastFrameKeysLocked = false;
-	const bool keyPressedL = glfwGetKey(window, GLFW_KEY_L);
-	if (keyPressedL && !lastFrameKeysLocked)
-		_camera->setLocked(!_camera->isLocked());
-
-	lastFramePressedF3 = keyPressedF3;
-	lastFramePressedF11 = keyPressedF11;
-	lastFrameKeysLocked = keyPressedL;
 
 	if (!_spawned)
 	{
@@ -231,11 +212,11 @@ BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const
 
 void Player::setWorld(World * world)
 {
-	_world->removePlayer(this);
+	_world->setPlayer(nullptr);
 	_world->shutdown();
 
 	world->load();
-	world->addPlayer(this);
+	world->setPlayer(this);
 
 	_world = world;
 }

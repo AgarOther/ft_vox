@@ -9,14 +9,16 @@ NAME				=	player
 # Sources & Includes
 SRCS				= 	srcs/debug.cpp \
 						srcs/main.cpp \
+						srcs/input/InputManager.cpp \
 						srcs/minecraft/BoundingBox.cpp \
-						srcs/minecraft/Chunk.cpp \
-						srcs/minecraft/ChunkMonitor.cpp \
-						srcs/minecraft/ChunkWorker.cpp \
 						srcs/minecraft/Location.cpp \
 						srcs/minecraft/Player.cpp \
 						srcs/minecraft/TextureAtlas.cpp \
-						srcs/minecraft/World.cpp \
+						srcs/minecraft/voxel/WorldManager.cpp \
+						srcs/minecraft/voxel/chunk/Chunk.cpp \
+						srcs/minecraft/voxel/chunk/ChunkMonitor.cpp \
+						srcs/minecraft/voxel/chunk/ChunkWorker.cpp \
+						srcs/minecraft/voxel/world/World.cpp \
 						srcs/noise/Noise.cpp \
 						srcs/registry/BlockTypeRegistry.cpp \
 						srcs/registry/ObjectRegistry.cpp \
@@ -26,6 +28,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/renderer/Frustum.cpp \
 						srcs/renderer/Shader.cpp \
 						srcs/renderer/Skybox.cpp \
+						srcs/scene/Scene.cpp \
 						srcs/utils/command_utils.cpp \
 						srcs/utils/glfw_utils.cpp \
 						srcs/utils/imgui_utils.cpp \
@@ -42,10 +45,15 @@ LIBS_SRC			=	libs/stb/stb_image.cpp \
 OBJ_FOLDER			=	objs
 INCLUDES			=	-I includes \
 						-I srcs/engine \
+						-I srcs/input \
 						-I srcs/minecraft \
+						-I srcs/minecraft/voxel \
+						-I srcs/minecraft/voxel/chunk \
+						-I srcs/minecraft/voxel/world \
 						-I srcs/noise \
 						-I srcs/registry \
 						-I srcs/renderer \
+						-I srcs/scene \
 						-I libs/imgui \
 						-I libs
 
@@ -67,9 +75,9 @@ LIGHT_GREEN			=	\033[1;32m
 RESET				=	\033[0m
 
 # Custom messages
-EXE_DONE			=	@echo "🎉$(PURPLE) $(NAME) compiled! 🎉$(RESET)\n"
-ALL_CLEAN			=	@echo "🧹$(LIGHT_GREEN) Project's objects cleaned! 🧹$(RESET)\n"
-ALL_FCLEAN			=	@echo "🧹$(LIGHT_GREEN) Project's objects & Executables cleaned! 🧹$(RESET)\n"
+EXE_DONE			=	@echo "[PROGRAM] $(PURPLE)$(NAME) compiled!$(RESET)"
+ALL_CLEAN			=	@echo "[SRCS] $(LIGHT_GREEN)Project's objects cleaned!$(RESET)"
+ALL_FCLEAN			=	@echo "[SRCS] $(LIGHT_GREEN)Project's objects & Executables cleaned!$(RESET)"
 
 # Rules
 
@@ -82,10 +90,12 @@ $(NAME): $(IMGUI) $(OBJS)
 $(OBJ_FOLDER)/%.o: srcs/%.cpp
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@echo "[SRCS] $(LIGHT_GREEN)Compiled: $@ $(RESET)"
 
 $(OBJ_FOLDER)/%.o: libs/%.cpp
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+	@echo "[LIBS] $(LIGHT_GREEN)Compiled: $@ $(RESET)"
 
 clean :
 	@rm -rf $(OBJ_FOLDER)
