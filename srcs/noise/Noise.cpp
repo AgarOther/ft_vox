@@ -4,7 +4,7 @@
 #include <cmath>
 #include <random>
 
-Noise::Noise(unsigned long seed, double frequency, double amplitude): _frequency(frequency), _amplitude(amplitude)
+Noise::Noise(unsigned long seed, float frequency, float amplitude): _frequency(frequency), _amplitude(amplitude)
 {
 	_permutationTable.resize(PERMUTATION_TABLE_SIZE);
 	for (int i = 0; i < PERMUTATION_TABLE_SIZE; ++i)
@@ -28,23 +28,23 @@ static glm::vec2 getConstantVector(int permutationValue)
 	}
 }
 
-static double lerp(double t, double a1, double a2)
+static float lerp(float t, float a1, float a2)
 {
 	return a1 + t * (a2 - a1);
 }
 
-static double fade(double t)
+static float fade(float t)
 {
 	return ((6 * t - 15) * t + 10) * t * t * t;
 }
 
-double Noise::_computeNoise(double x, double y) const
+float Noise::_computeNoise(float x, float y) const
 {
 	const int X = static_cast<int>(std::floor(x)) & 255;
 	const int Y = static_cast<int>(std::floor(y)) & 255;
 
-	const double xf = x - std::floor(x);
-	const double yf = y - std::floor(y);
+	const float xf = x - std::floor(x);
+	const float yf = y - std::floor(y);
 
 	const glm::vec2 topRight(xf - 1.0, yf - 1.0);
 	const glm::vec2 topLeft(xf, yf - 1.0);
@@ -56,27 +56,27 @@ double Noise::_computeNoise(double x, double y) const
 	const int valueBottomRight = _permutationTable[_permutationTable[X + 1] + Y];
 	const int valueBottomLeft = _permutationTable[_permutationTable[X] + Y];
 
-	const double dotTopRight = glm::dot(topRight, getConstantVector(valueTopRight));
-	const double dotTopLeft = glm::dot(topLeft, getConstantVector(valueTopLeft));
-	const double dotBottomRight = glm::dot(bottomRight, getConstantVector(valueBottomRight));
-	const double dotBottomLeft = glm::dot(bottomLeft, getConstantVector(valueBottomLeft));
+	const float dotTopRight = glm::dot(topRight, getConstantVector(valueTopRight));
+	const float dotTopLeft = glm::dot(topLeft, getConstantVector(valueTopLeft));
+	const float dotBottomRight = glm::dot(bottomRight, getConstantVector(valueBottomRight));
+	const float dotBottomLeft = glm::dot(bottomLeft, getConstantVector(valueBottomLeft));
 
-	const double u = fade(xf);
-	const double v = fade(yf);
+	const float u = fade(xf);
+	const float v = fade(yf);
 	return (lerp(u, 
 		lerp(v, dotBottomLeft, dotTopLeft), 
 		lerp(v, dotBottomRight, dotTopRight)));
 }
 
-double Noise::getNoise(double x, double y, int octaveCount) const
+float Noise::getNoise(float x, float y, int octaveCount) const
 {
-	double result = 0;
-	double frequency = _frequency;
-	double amplitude = _amplitude;
+	float result = 0;
+	float frequency = _frequency;
+	float amplitude = _amplitude;
 
 	for (int octave = 0; octave < octaveCount; ++octave)
 	{
-		double n = amplitude * _computeNoise(x * frequency, y * frequency);
+		float n = amplitude * _computeNoise(x * frequency, y * frequency);
 		result += n;
 		frequency *= 2.0;
 		amplitude *= 0.5;

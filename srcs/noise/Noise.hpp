@@ -8,13 +8,13 @@
 class Noise
 {
 	public:
-		Noise(unsigned long seed, double frequency, double amplitude);
+		Noise(unsigned long seed, float frequency, float amplitude);
 
-		double				getNoise(double x, double y, int octaveCount) const;
+		float				getNoise(float x, float y, int octaveCount) const;
 	private:
 		std::vector<int>	_permutationTable;
-		double				_frequency;
-		double				_amplitude;
+		float				_frequency;
+		float				_amplitude;
 
-		double				_computeNoise(double x, double z) const;
+		float				_computeNoise(float x, float z) const;
 };

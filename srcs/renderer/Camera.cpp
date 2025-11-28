@@ -17,10 +17,10 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 1;
+	_renderDistance = 12;
 	_fogActive = true;
-	_fogStart = 0.7f;
-	_fogEnd = 1.2f;
+	_fogStart = FOG_START;
+	_fogEnd = FOG_END;
 	_fogColors[OVERWORLD] = glm::vec3(FOG_COLOR_OVERWORLD);
 	_fogColors[NETHER] = glm::vec3(FOG_COLOR_NETHER);
 	_fogColors[THE_END] = glm::vec3(FOG_COLOR_THE_END);

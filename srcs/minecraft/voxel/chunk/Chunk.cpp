@@ -104,9 +104,11 @@ void Chunk::generateBlocks(Environment environment)
 				if (environment == OVERWORLD)
 				{
 					// I added arbitrary values to X/Z so that the noise doesn't make a weird symmetry at 0, 0
-					const double noiseValue = (_world->getNoise().getNoise(worldX + 4242.42, worldZ + 2424.24, OCTAVES) + 1.0) * 0.5;
-					const int height = static_cast<int>(noiseValue * SEA_LEVEL * 2);
-					const int stoneOffset = static_cast<int>(floor(height / noiseValue)) % 3 + 3;
+					const float noiseValue = (_world->getNoise().getNoise(worldX + 4242.42f, worldZ + 2424.24f, OCTAVES) + 1.0f) * 0.5f;
+					// const float erosion = std::clamp(noiseValue * 0.5f, 0.0f, 0.25f) * 4.0f;
+					// const float erosionValue = noiseValue - erosion * (noiseValue * noiseValue - noiseValue);
+					const int height = static_cast<int>(std::floor(noiseValue * SEA_LEVEL * 2));
+					const int stoneOffset = static_cast<int>(std::floor(height / noiseValue)) % 3 + 3;
 					if (y == height && y >= SEA_LEVEL)
 						_blocks[x][y][z] = GRASS_BLOCK;
 					else if (y == 0)
