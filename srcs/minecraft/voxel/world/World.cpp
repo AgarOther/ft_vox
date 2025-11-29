@@ -255,6 +255,7 @@ void World::shutdown()
 
 World::~World()
 {
+	shutdown();
 	for (auto& [_, chunk] : _chunks)
 		delete chunk;
 }

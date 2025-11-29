@@ -4,11 +4,14 @@
 
 WorldManager::WorldMap WorldManager::_worldMap;
 
-void WorldManager::createWorld(const std::string & worldName, Environment environment, std::optional<Seed> seed)
+World * WorldManager::createWorld(const std::string & worldName, Environment environment, std::optional<Seed> seed)
 {
+	World * world = new World(worldName, seed.value(), environment);
 	if (!seed)
 		seed = generateRandomSeed();
-	_worldMap.try_emplace(worldName, std::make_unique<World>(worldName, seed.value(), environment));
+	if (_worldMap.find(worldName) == _worldMap.end())
+		_worldMap.try_emplace(worldName, std::unique_ptr<World>(world));
+	return world;
 }
 
 World * WorldManager::getWorld(const std::string & name)

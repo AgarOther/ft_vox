@@ -12,3 +12,4 @@
 #define FAILURE_THREAD			10,	"Not enough threads to start the program. Go buy a better computer."
 #define FAILURE_STRUCTURE		11, "Structure file empty. Check your structure files."
 #define FAILURE_STRUCTURE_DATA	12, "Invalid structure file format."
+#define FAILURE_WORLD_CREATION	13, "Starter world couldn't be created."

@@ -25,12 +25,14 @@ void Scene::init()
 	StructureRegistry::init();
 	TextureAtlas::init();
 
-	WorldManager::createWorld("overworld", OVERWORLD, WORLD_SEED);
-	WorldManager::createWorld("overworld", NETHER, WORLD_SEED);
-	WorldManager::createWorld("overworld", THE_END, WORLD_SEED);
+	World * startingWorld = WorldManager::createWorld("overworld", OVERWORLD, WORLD_SEED);
+	if (!startingWorld)
+		handleExit(FAILURE_WORLD_CREATION);
+	WorldManager::createWorld("nether", NETHER, WORLD_SEED);
+	WorldManager::createWorld("the_end", THE_END, WORLD_SEED);
 
 	_camera = new Camera(_width, _height, Location(0.0, CAMERA_OFFSET_Y, 0.0).getVec3());
-	_player = new Player("Eleonore", _camera, WorldManager::getWorld("overworld"));
+	_player = new Player("Eleonore", _camera, startingWorld);
 
 	#ifdef DEBUG
 	glEnable(GL_DEBUG_OUTPUT);

@@ -12,7 +12,7 @@ class WorldManager
 	public:
 		WorldManager() = delete;
 
-		static void		createWorld(const std::string & worldName, Environment environment, std::optional<Seed> seed = std::nullopt);
+		static World * 	createWorld(const std::string & worldName, Environment environment, std::optional<Seed> seed = std::nullopt);
 		static World *	getWorld(const std::string & worldName);
 		static void		deleteWorld(const std::string & worldName);
 
