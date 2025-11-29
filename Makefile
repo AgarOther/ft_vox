@@ -55,9 +55,12 @@ INCLUDES			=	-I includes \
 						-I srcs/renderer \
 						-I srcs/scene \
 						-I libs/imgui \
-						-I libs
+						-I libs/GLEW \
+						-I libs/GLFW \
+						-I libs/glm \
+						-I libs/
 
-LIBS				=	libs/GL/libGLEW.a \
+LIBS				=	libs/GLEW/libGLEW.a \
 						libs/GLFW/libglfw3.a
 
 # Objects
@@ -81,7 +84,7 @@ ALL_FCLEAN			=	@echo "[SRCS] $(LIGHT_GREEN)Project's objects & Executables clean
 
 # Rules
 
-all : glfw glm glew $(NAME)
+all : glfw glm glew imgui $(NAME)
 
 $(NAME): $(IMGUI) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME) $(LDFLAGS)
@@ -172,23 +175,54 @@ download_glew:
 	make extensions; \
 	make; \
 	mkdir -p ../GLEW; \
-	cp include/GL/glew.h ../GLEW/.; \
+	cp include/GLEW/glew.h ../GLEW/.; \
 	cp lib/libGLEW.a ../GLEW/.; \
 	cd ..; \
 	rm -rf GLEW_DOWNLOADED
 
 glew:
 	@mkdir -p libs
-	@if ! ls ./libs/GL 2>/dev/null | grep -q "glew.h" ; then \
+	@if ! ls ./libs/GLEW 2>/dev/null | grep -q "glew.h" ; then \
 		make --no-print-directory download_glew; \
 	fi
-	@if ! ls ./libs/GL 2>/dev/null | grep -q "libGLEW.a" ; then \
+	@if ! ls ./libs/GLEW 2>/dev/null | grep -q "libGLEW.a" ; then \
 		make --no-print-directory download_glew; \
+	fi
+
+download_imgui:
+	@cd libs; \
+	rm -rf imgui_downloaded 2>/dev/null; \
+	echo "\033[31;1;4mImGUI Not Found\033[0m"; \
+	echo "\033[31;1mDownloading it from github\033[0m"; \
+	git clone https://github.com/ocornut/imgui.git imgui_downloaded; \
+	mkdir imgui; \
+	mv imgui_downloaded/imgui.h imgui/; \
+	mv imgui_downloaded/imconfig.h imgui/; \
+	mv imgui_downloaded/imgui_internal.h imgui/; \
+	mv imgui_downloaded/imstb_rectpack.h imgui/; \
+	mv imgui_downloaded/imstb_textedit.h imgui/; \
+	mv imgui_downloaded/imstb_truetype.h imgui/; \
+	mv imgui_downloaded/imgui_demo.cpp imgui/; \
+	mv imgui_downloaded/imgui_draw.cpp imgui/; \
+	mv imgui_downloaded/imgui_tables.cpp imgui/; \
+	mv imgui_downloaded/imgui_widgets.cpp imgui/; \
+	mv imgui_downloaded/imgui.cpp imgui/; \
+	mv imgui_downloaded/backends/imgui_impl_glfw.cpp imgui/; \
+	mv imgui_downloaded/backends/imgui_impl_glfw.h imgui/; \
+	mv imgui_downloaded/backends/imgui_impl_opengl3.h imgui/; \
+	mv imgui_downloaded/backends/imgui_impl_opengl3.cpp imgui/; \
+	mv imgui_downloaded/backends/imgui_impl_opengl3_loader.h imgui/; \
+	rm -rf imgui_downloaded 2>/dev/null;
+
+imgui:
+	@mkdir -p libs
+	@if ! ls ./libs/imgui 2>/dev/null | grep -q "imgui.h" ; then \
+		make --no-print-directory download_imgui; \
 	fi
 
 $(IMGUI): %.o: %.cpp
 	@gcc $(INCLUDES) $< -c -o $@
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re glm glfw glew imgui debug debugrun download_glm download_glew download_glfw download_imgui
 
 -include $(DEPS)
