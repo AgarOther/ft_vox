@@ -61,6 +61,9 @@ class Player
 		void				setWorld(World * world);
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
+
+		bool				isWithinRenderDistance(Chunk * chunk) const;
+
 	private:
 		std::string			_name;
 		uint8_t				_health;

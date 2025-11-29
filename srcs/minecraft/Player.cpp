@@ -208,3 +208,11 @@ void Player::setWorld(World * world)
 
 	_world = world;
 }
+
+bool Player::isWithinRenderDistance(Chunk * chunk) const
+{
+	return !(chunk->getChunkX() > static_cast<int>(std::floor(getLocation().getX() / CHUNK_WIDTH)) + _camera->getRenderDistance()
+	|| chunk->getChunkX() < static_cast<int>(std::floor(getLocation().getX() / CHUNK_WIDTH)) - _camera->getRenderDistance()
+	|| chunk->getChunkZ() > static_cast<int>(std::floor(getLocation().getZ() / CHUNK_DEPTH)) + _camera->getRenderDistance()
+	|| chunk->getChunkZ() < static_cast<int>(std::floor(getLocation().getZ() / CHUNK_DEPTH)) - _camera->getRenderDistance());
+}

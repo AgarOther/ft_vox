@@ -76,7 +76,8 @@ void World::render(const Shader & shader, const Player & player)
 			chunkPtr->unloadMesh();
 			chunkPtr->uploadMesh();
 		}
-		chunkPtr->render(shader);
+		if (player.isWithinRenderDistance(chunkPtr))
+			chunkPtr->render(shader);
 	}
 	for (glm::ivec2 chunkPos : deletableChunks)
 		_chunks.erase(chunkPos);
