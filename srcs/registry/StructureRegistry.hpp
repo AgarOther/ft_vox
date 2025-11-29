@@ -24,6 +24,9 @@ struct Structure
 class StructureRegistry
 {
 	public:
+		StructureRegistry() = delete;
+		~StructureRegistry() = delete;
+
 		static void					init();
 		static const Structure &	getStructure(uint8_t id);
 		static const Structure &	getStructure(const std::string & name);

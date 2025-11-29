@@ -5,7 +5,9 @@
 
 Scene::~Scene()
 {
+	_player->getWorld()->shutdown();
 	delete _player;
+	delete _camera;
 	TextureAtlas::destroy();
 	glfwDestroyWindow(_window);
 	glfwTerminate();

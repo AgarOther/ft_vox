@@ -29,7 +29,7 @@ class Player
 	public:
 		Player() {}
 		Player(const std::string & name, Camera * camera, World * world);
-		~Player();
+		~Player() {};
 
 		const std::string &	getName() const { return _name; }
 		uint8_t				getHealth() const { return _health; }

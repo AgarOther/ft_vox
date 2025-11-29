@@ -61,6 +61,9 @@ struct PairHash
 class BlockTypeRegistry
 {
 	public:
+		BlockTypeRegistry() = delete;
+		~BlockTypeRegistry() = delete;
+
 		static void					init();
 		static const BlockType &	getBlockType(uint8_t id);
 		static const BlockType &	getBlockType(const std::string & name);

@@ -41,7 +41,7 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 	}
 }
 
-bool ChunkMonitor::areWorkersWorking()
+bool ChunkMonitor::areWorkersWorking() const
 {
 	for (ChunkWorker * worker : _workers)
 	{
@@ -81,7 +81,8 @@ void ChunkMonitor::_loop()
 void ChunkMonitor::stop()
 {
 	_active = false;
-	_thread.join();
+	if (_thread.joinable())
+		_thread.join();
 	for (ChunkWorker * worker : _workers)
 	{
 		worker->stop();

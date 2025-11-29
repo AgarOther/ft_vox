@@ -109,7 +109,9 @@ fclean :
 run: all
 	./$(NAME)
 
-re : fclean all
+re :
+	$(MAKE) fclean
+	$(MAKE) all
 
 debug : CFLAGS += -DDEBUG
 debug :

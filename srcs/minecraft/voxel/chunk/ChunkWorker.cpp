@@ -6,6 +6,16 @@
 
 uint8_t ChunkWorker::_count = 0;
 
+void ChunkWorker::start()
+{
+	#ifdef DEBUG
+	std::cout << GREEN << "[CHUNK] Started ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
+	#endif
+
+	_active = true;
+	_thread = std::thread(&ChunkWorker::_loop, this);
+}
+
 ChunkWorker::ChunkWorker(Environment environment): _active(false), _working(false), _environment(environment)
 {
 	_id = ChunkWorker::_count++;
@@ -55,20 +65,11 @@ void ChunkWorker::_loop()
 	}
 }
 
-void ChunkWorker::start()
-{
-	#ifdef DEBUG
-	std::cout << GREEN << "[CHUNK] Started ChunkWorker #" << (int)_id << " thread!" << RESET << std::endl;
-	#endif
-
-	_active = true;
-	_thread = std::thread(&ChunkWorker::_loop, this);
-}
-
 void ChunkWorker::stop()
 {
 	_active = false;
-	_thread.join();
+	if (_thread.joinable())
+		_thread.join();
 	ChunkWorker::_count--;
 
 	#ifdef DEBUG

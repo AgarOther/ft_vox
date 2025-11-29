@@ -23,6 +23,8 @@ void InputManager::interceptOneTimeKeys(GLFWwindow * window, int key, int scanco
 			toggleFullscreen(window, camera);
 		if (key == GLFW_KEY_L)
 			camera->setLocked(!camera->isLocked());
+		if (key == GLFW_KEY_ESCAPE)
+			glfwSetWindowShouldClose(window, true);
 	}
 }
 

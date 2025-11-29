@@ -24,12 +24,6 @@ Player::Player(const std::string & name, Camera * camera, World * world)
 	_world->load();
 }
 
-Player::~Player()
-{
-	if (_camera)
-		delete _camera;
-}
-
 static glm::vec3 translateDirection(const float yaw, const float pitch)
 {
 	glm::vec3 direction;
@@ -41,12 +35,6 @@ static glm::vec3 translateDirection(const float yaw, const float pitch)
 
 void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE))
-	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
-		return;
-	}
-
 	if (!_spawned)
 	{
 		Chunk * spawnChunk = _world->getChunkAt(_spawnLocation.getX(), _spawnLocation.getZ());

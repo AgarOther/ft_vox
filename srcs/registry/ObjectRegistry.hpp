@@ -27,6 +27,9 @@ enum ModelType
 class ObjectRegistry
 {
 	public:
+		ObjectRegistry() = delete;
+		~ObjectRegistry() = delete;
+
 		static void				init();
 		static const Object &	getObject(uint8_t id);
 		static Object			getObjectFromFile(const std::string & filepath);

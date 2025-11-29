@@ -248,14 +248,12 @@ void World::generateProcedurally()
 
 void World::shutdown()
 {
-	if (_loaded)
-		_monitor.stop();
+	_monitor.stop();
 	_loaded = false;
 }
 
 World::~World()
 {
-	shutdown();
 	for (auto& [_, chunk] : _chunks)
 		delete chunk;
 }
