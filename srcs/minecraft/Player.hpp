@@ -35,6 +35,7 @@ class Player
 		uint8_t				getHealth() const { return _health; }
 		Camera *			getCamera() const { return _camera; }
 		const Location &	getLocation() const { return _location; }
+		const Location		getEyeLocation() const { return Location(_camera->getPosition()); }
 		const Location &	getSpawnLocation() const { return _spawnLocation; }
 		const BoundingBox &	getBoundingBox() const { return _boundingBox; }
 		Gamemode			getGamemode() const { return _gamemode; }
@@ -61,6 +62,7 @@ class Player
 		void				setWorld(World * world);
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
+		void				checkFogChange();
 
 		bool				isWithinRenderDistance(Chunk * chunk) const;
 

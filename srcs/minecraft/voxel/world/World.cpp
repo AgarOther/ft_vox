@@ -169,6 +169,8 @@ void World::applyGravity(float deltaTime)
 			verticalPosition,
 			_player->getLocation().getZ()
 		);
+		if (getBlockAt(_player->getEyeLocation().clone().add(0.0, 0.5, 0.0)).isSolid && _player->getVelocityY() > 0)
+			_player->setVelocityY(0);
 		if (getBlockAt(teleportLocation).isSolid && _player->getVelocityY() < 0)
 		{
 			_player->setVelocityY(0);
@@ -181,6 +183,7 @@ void World::applyGravity(float deltaTime)
 			teleportLocation.setY(std::floor(tmp.getY()));
 		}
 		_player->teleport(teleportLocation);
+		_player->checkFogChange();
 	}
 }
 

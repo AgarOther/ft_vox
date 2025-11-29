@@ -142,19 +142,11 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 
 	if (getLocation() != finalLocation)
 	{
-		if (_world->getBlockAt(finalLocation).isSolid && _gamemode != SPECTATOR)
+		if ((_world->getBlockAt(finalLocation).isSolid || _world->getBlockAt(finalLocation.clone().add(0.0, 1.0, 0.0)).isSolid)
+				&& _gamemode != SPECTATOR)
 			return;
 		teleport(finalLocation);
-		if (getBlockAtEyeLocation().type == LAVA)
-		{
-			_camera->setFogStart(0.005f);
-			_camera->setFogEnd(0.015f);
-		}
-		else
-		{
-			_camera->setFogStart(FOG_START);
-			_camera->setFogEnd(FOG_END);
-		}
+		checkFogChange();
 	}
 }
 
@@ -207,6 +199,20 @@ void Player::setWorld(World * world)
 	world->setPlayer(this);
 
 	_world = world;
+}
+
+void Player::checkFogChange()
+{
+	if (getBlockAtEyeLocation().type == LAVA)
+	{
+		_camera->setFogStart(0.005f);
+		_camera->setFogEnd(0.015f);
+	}
+	else
+	{
+		_camera->setFogStart(FOG_START);
+		_camera->setFogEnd(FOG_END);
+	}
 }
 
 bool Player::isWithinRenderDistance(Chunk * chunk) const
