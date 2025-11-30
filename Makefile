@@ -23,6 +23,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/registry/BlockTypeRegistry.cpp \
 						srcs/registry/ObjectRegistry.cpp \
 						srcs/registry/StructureRegistry.cpp \
+						srcs/renderer/BlockOverlay.cpp \
 						srcs/renderer/Camera.cpp \
 						srcs/renderer/Crosshair.cpp \
 						srcs/renderer/Frustum.cpp \

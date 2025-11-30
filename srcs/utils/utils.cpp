@@ -45,7 +45,7 @@ const std::string getFileAsString(const char * name)
 	file.open(filename, std::ios::in);
 	if (file.fail())
 	{
-		std::cout << BOLD_RED << "Couldn't find file " << filename << "." << std::endl;
+		std::cout << BOLD_RED << "Couldn't find file " << filename << "." << RESET <<std::endl;
 		exit(6);
 	}
 	while (std::getline(file, buffer))
@@ -53,7 +53,7 @@ const std::string getFileAsString(const char * name)
 	file.close();
 	if (content.empty())
 	{
-		std::cout << BOLD_RED << "File " << filename << " is empty." << std::endl;
+		std::cout << BOLD_RED << "File " << filename << " is empty." <<  RESET <<std::endl;
 		exit(6);
 	}
 	return (content);

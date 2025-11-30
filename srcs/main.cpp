@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <chrono>
+#include "BlockOverlay.hpp"
 #include "imgui/imgui.h"
 #include "Camera.hpp"
 #include "Crosshair.hpp"
@@ -29,6 +30,7 @@ int main(void)
 	Shader shader("block.vert", "block.frag");
 	Skybox skybox;
 	Crosshair crosshair;
+	BlockOverlay blockOverlay(scene.getCamera());
 
 	Player * player = scene.getPlayer();
 
@@ -56,6 +58,7 @@ int main(void)
 		skybox.render(player->getCamera(), player->getWorld()->getEnvironment());
 		player->getWorld()->render(shader);
 		crosshair.draw(static_cast<float>(player->getCamera()->getWidth()) / static_cast<float>(player->getCamera()->getHeight()));
+		blockOverlay.draw(player->getTargetedBlock());
 
 		if (hasGui)
 			renderImGui();

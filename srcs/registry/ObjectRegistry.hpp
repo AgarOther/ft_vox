@@ -21,7 +21,8 @@ enum ModelType
 {
 	BLOCK,
 	SKYBOX,
-	CROSSHAIR
+	CROSSHAIR,
+	BLOCK_OVERLAY
 };
 
 class ObjectRegistry
