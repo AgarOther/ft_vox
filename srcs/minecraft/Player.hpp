@@ -49,7 +49,7 @@ class Player
 		BlockType			getBlockUnder(int xOffset = 0, int yOffset = 0, int zOffset = 0) const;
 		BlockType			getBlockAtEyeLocation() const;
 		Material			getBlockInHand() const { return _blockInHand; }
-		bool				hasSpwaned() const { return _spawned; }
+		bool				hasSpawned() const { return _spawned; }
 
 		void				setName(const std::string & name) { _name = name; }
 		void				setHealth(uint8_t health) { _health = health; }
