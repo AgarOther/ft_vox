@@ -2,9 +2,55 @@
 #include "Scene.hpp"
 #include "utils.hpp"
 
-void InputManager::interceptKeyboard()
+void InputManager::interceptKeyboard(Scene * scene, float deltaTime)
 {
+	Player * player = scene->getPlayer();
+	Camera * camera = scene->getCamera();
+	World * world = player->getWorld();
+	GLFWwindow * window = scene->getWindow();
+	Gamemode gamemode = player->getGamemode();
+	Location finalLocation = player->getLocation();
+	glm::vec3 forward = camera->computeForward();
+	const glm::vec3 right = glm::normalize(glm::cross(forward, camera->getAltitude())); // Right direction is based on forward and altitude (up vector)
 
+	if (!camera->isLocked() && glfwGetWindowAttrib(window, GLFW_FOCUSED))
+	{
+		// Key management
+		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
+
+		// (Base speed * Run speed (if shift pressed) + Velocity acceleration * velocityY (faster if going up, slower if going down)) * deltaTime
+		float velocity = (camera->getBaseSpeed() * (1 + RUN_SPEED * shiftPressed) + VELOCITY_ACCELERATION * player->getVelocityY()) * deltaTime;
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+			finalLocation += velocity * forward;
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+			finalLocation += velocity * -right;
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+			finalLocation += velocity * -forward;
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+			finalLocation += velocity * right;
+		if (gamemode == SPECTATOR)
+		{
+			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+				finalLocation += velocity * camera->getAltitude();
+			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
+				finalLocation += velocity * -camera->getAltitude();
+		}
+		else
+		{
+			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+					&& player->getBlockUnder().isSolid)
+				player->setVelocityY(JUMP_STRENGTH);
+		}
+	}
+
+	if (player->getLocation() != finalLocation)
+	{
+		if ((world->getBlockAt(finalLocation).isSolid || world->getBlockAt(finalLocation.clone().add(0.0, 1.0, 0.0)).isSolid)
+				&& gamemode != SPECTATOR)
+			return;
+		player->teleport(finalLocation);
+		player->checkFogChange();
+	}
 }
 
 void InputManager::interceptOneTimeClicks(GLFWwindow * window, int button, int action, int mods)
@@ -81,7 +127,48 @@ void InputManager::interceptScroll(GLFWwindow * window, double xoffset, double y
 	player->setBlockInHand(static_cast<Material>(newBlock));
 }
 
-void InputManager::interceptMouse()
+static glm::vec3 translateDirection(const float yaw, const float pitch)
 {
+	glm::vec3 direction;
+	direction.x = cosf(glm::radians(yaw)) * cosf(glm::radians(pitch));
+	direction.y = sinf(glm::radians(pitch));
+	direction.z = sinf(glm::radians(yaw)) * cosf(glm::radians(pitch));
+	return (direction);
+}
+
+void InputManager::interceptMouse(Scene * scene)
+{
+	GLFWwindow * window = scene->getWindow();
+	Camera * camera = scene->getCamera();
+
+	if (camera->isLocked() || !glfwGetWindowAttrib(window, GLFW_FOCUSED))
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		return;
+	}
+
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	double mouseX, mouseY;
+
+	glfwGetCursorPos(window, &mouseX, &mouseY);
+
+	const float rotX = camera->getSensitivity() * static_cast<float>(mouseY - (static_cast<float>(camera->getHeight()) / 2)) / static_cast<float>(camera->getHeight());
+	const float rotY = camera->getSensitivity() * static_cast<float>(mouseX - (static_cast<float>(camera->getWidth()) / 2)) / static_cast<float>(camera->getWidth());
+
+	camera->setYaw(camera->getYaw() + rotY);
+	camera->setPitch(camera->getPitch() - rotX);
+
+	if (camera->getPitch() > 89.99f)
+		camera->setPitch(89.99f);
+	else if (camera->getPitch() < -89.99f)
+		camera->setPitch(-89.99f);
 	
+	if (camera->getYaw() < -179.99f)
+		camera->setYaw(180.0f);
+	else if (camera->getYaw() > 179.99f)
+		camera->setYaw(-180.0f);
+
+	camera->setOrientation(translateDirection(camera->getYaw(), camera->getPitch()));
+
+	glfwSetCursorPos(window, (static_cast<float>(camera->getWidth()) / 2), (static_cast<float>(camera->getHeight()) / 2));
 }

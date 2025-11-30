@@ -1,7 +1,6 @@
 #pragma once
 
-#include "GLEW/glew.h"
-#include "GLFW/glfw3.h"
+#include "Scene.hpp"
 
 class InputManager
 {
@@ -9,9 +8,9 @@ class InputManager
 		InputManager() = delete;
 		~InputManager() = delete;
 
-		static void interceptKeyboard();
+		static void interceptKeyboard(Scene * scene, float deltaTime);
 		static void interceptOneTimeKeys(GLFWwindow * window, int key, int scancode, int action, int mods);
 		static void	interceptOneTimeClicks(GLFWwindow * window, int button, int action, int mods);
-		static void interceptMouse();
+		static void interceptMouse(Scene * scene);
 		static void	interceptScroll(GLFWwindow * window, double xoffset, double yoffset);
 };

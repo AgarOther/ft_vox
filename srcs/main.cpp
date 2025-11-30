@@ -13,6 +13,7 @@
 #include "utils.hpp"
 #include "errors.hpp"
 #include "Scene.hpp"
+#include "InputManager.hpp"
 
 DebugInfo g_DEBUG_INFO = {0, 0, 0, false};
 constexpr unsigned long long WORLD_SEED = 42;
@@ -37,6 +38,9 @@ int main(void)
 	// Main loop
 	while (!glfwWindowShouldClose(scene.getWindow()))
 	{
+		glfwPollEvents();
+		InputManager::interceptMouse(&scene);
+		InputManager::interceptKeyboard(&scene, deltaTime);
 		timeStart = glfwGetTime();
 		fpsInterval = 1.0 / scene.getFPSGoal();
 
@@ -46,8 +50,8 @@ int main(void)
 			showImGui(io, player, deltaTime, &scene);
 		g_DEBUG_INFO.drawCalls = 0;
 
+		player->getWorld()->applyGravity(deltaTime);
 		player->getWorld()->generateProcedurally();
-		player->interceptInputs(scene.getWindow(), deltaTime);
 		player->getCamera()->setupMatrix(shader);
 		skybox.render(player->getCamera(), player->getWorld()->getEnvironment());
 		player->getWorld()->render(shader);
@@ -56,8 +60,6 @@ int main(void)
 		if (hasGui)
 			renderImGui();
 		glfwSwapBuffers(scene.getWindow());
-		glfwPollEvents();
-		player->getWorld()->applyGravity(deltaTime);
 
 		endTime = glfwGetTime();
 		deltaTime = endTime - timeStart;

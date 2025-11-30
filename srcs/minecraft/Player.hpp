@@ -63,7 +63,6 @@ class Player
 		void				setWorld(World * world);
 		void				setBlockInHand(Material blockInHand) { _blockInHand = blockInHand; }
 
-		void				interceptInputs(GLFWwindow * window, float deltaTime);
 		void				checkFogChange();
 		void				checkIfSpawned();
 
