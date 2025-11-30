@@ -44,7 +44,8 @@ class Camera
 		bool		isFullscreen() const { return (_fullScreen); }
 		uint8_t		getRenderDistance() const { return _renderDistance; }
 		bool		isFogActive() const { return (_fogActive); }
-		glm::vec3 &	getFogColor(Environment environment);
+		glm::vec3 &	getFogColor();
+		glm::vec3 &	getFogColorByEnvironment(Environment environment);
 
 		// Setters
 		void		setPosition(const glm::vec3 &position) { _position = position; }

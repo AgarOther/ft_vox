@@ -20,6 +20,7 @@ Player::Player(const std::string & name, Camera * camera, World * world)
 	_velocity = glm::vec3(0.0f);
 	_spawned = false;
 	_blockInHand = GRASS_BLOCK;
+	_camera->setFogColor(_camera->getFogColorByEnvironment(_world->getEnvironment()));
 
 	_world->setPlayer(this);
 	_world->load();
@@ -196,7 +197,7 @@ void Player::checkFogChange()
 	{
 		_camera->setFogStart(FOG_START);
 		_camera->setFogEnd(FOG_END);
-		_camera->setFogColor(_camera->getFogColor(_world->getEnvironment()));
+		_camera->setFogColor(_camera->getFogColorByEnvironment(_world->getEnvironment()));
 	}
 }
 
