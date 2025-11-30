@@ -27,6 +27,9 @@ enum Material
 	CHERRY_LEAVES,
 	CHERRY_LOG,
 	OBSIDIAN,
+	MYCELIUM,
+	MUSHROOM_BLOCK_RED,
+	MUSHROOM_BLOCK_STEM,
 	AIR
 };
 
@@ -48,14 +51,6 @@ enum BlockFace
 	FACE_RIGHT,
 	FACE_TOP,
 	FACE_BOTTOM
-};
-
-struct PairHash
-{
-	size_t operator()(const std::pair<int, int> & pair) const
-	{
-		return std::hash<int>()(pair.first) ^ (std::hash<int>()(pair.second) << 1);
-	}
 };
 
 class BlockTypeRegistry

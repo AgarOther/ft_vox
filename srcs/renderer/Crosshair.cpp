@@ -7,8 +7,8 @@ Crosshair::Crosshair(): _shader("crosshair.vert", "crosshair.frag")
 
 	glGenVertexArrays(1, &_vao);
 	glBindVertexArray(_vao);
-	glGenBuffers(1, &_id);
-	glBindBuffer(GL_ARRAY_BUFFER, _id);
+	glGenBuffers(1, &_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glBufferData(GL_ARRAY_BUFFER, crosshair.vertices.size() * sizeof(float), crosshair.vertices.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), nullptr);
 
@@ -19,8 +19,10 @@ Crosshair::Crosshair(): _shader("crosshair.vert", "crosshair.frag")
 
 Crosshair::~Crosshair()
 {
-	glDeleteVertexArrays(1, &_vao);
-	glDeleteBuffers(1, &_id);
+	if (_vbo)
+		glDeleteBuffers(1, &_vbo);
+	if (_vao)
+		glDeleteVertexArrays(1, &_vao);
 }
 
 void Crosshair::draw(float aspectRatio) const
@@ -33,7 +35,7 @@ void Crosshair::draw(float aspectRatio) const
 
 	_shader.setFloat("aspectRatio", aspectRatio);
 	glBindVertexArray(_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, _id);
+	glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 	glLineWidth(2.0f);
 	glDrawArrays(GL_LINES, 0, 4);
 	glDepthMask(GL_TRUE);

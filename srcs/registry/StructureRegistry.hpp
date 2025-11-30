@@ -9,7 +9,8 @@
 
 enum StructureType
 {
-	TREE
+	TREE,
+	MUSHROOM_RED
 };
 
 typedef std::vector<std::pair<glm::vec3, Material>> StructureData;

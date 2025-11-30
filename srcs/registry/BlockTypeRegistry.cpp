@@ -28,6 +28,9 @@ void BlockTypeRegistry::init()
 	_types[CHERRY_LOG]			= { CHERRY_LOG, "cherry_log", true, true, false, false };
 	_types[CHERRY_LEAVES]		= { CHERRY_LEAVES, "cherry_leaves", true, true, true, false };
 	_types[OBSIDIAN]			= { OBSIDIAN, "obsidian", true, true, false, false };
+	_types[MYCELIUM]			= { MYCELIUM, "mycelium", true, true, false, false };
+	_types[MUSHROOM_BLOCK_RED]	= { MUSHROOM_BLOCK_RED, "mushroom_block_red", true, true, false, false };
+	_types[MUSHROOM_BLOCK_STEM]	= { MUSHROOM_BLOCK_STEM, "mushroom_block_stem", true, true, false, false };
 	_types[AIR]					= { AIR, "air",false, false, false, false };
 }
 

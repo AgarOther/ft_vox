@@ -125,6 +125,8 @@ void TextureAtlas::init()
 	textureMap[SOUL_SAND]			= loadUnique("soul_sand.png");
 	textureMap[CHERRY_LEAVES]		= loadUnique("cherry_leaves.png");
 	textureMap[OBSIDIAN]			= loadUnique("obsidian.png");
+	textureMap[MUSHROOM_BLOCK_RED]	= loadUnique("mushroom_block_skin_red.png");
+	textureMap[MUSHROOM_BLOCK_STEM]	= loadUnique("mushroom_block_skin_stem.png");
 
 	// Multi-textured blocks
 	textureMap[OAK_LOG]				= loadSideTop("oak_log.png", "oak_log_top.png");
@@ -141,5 +143,6 @@ void TextureAtlas::init()
 	textureMap[CARTOGRAPHY_TABLE]	= cartography;
 
 	textureMap[GRASS_BLOCK]			= loadSideTopBottom("grass_block_side.png", "grass_block_top.png", "dirt.png");
+	textureMap[MYCELIUM]			= loadSideTopBottom("mycelium_side.png", "mycelium_top.png", "dirt.png");
 	_loadTextures(textureMap);
 }

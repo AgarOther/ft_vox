@@ -39,7 +39,8 @@ static StructureData getDataFromFile(const std::string & filename)
 
 void StructureRegistry::init()
 {
-	_structures[TREE] = { "tree", getDataFromFile("tree.struct"), glm::vec3(0) };
+	_structures[TREE]			= { "tree", getDataFromFile("tree.struct"), glm::vec3(0) };
+	_structures[MUSHROOM_RED]	= { "mushroom_red", getDataFromFile("mushroom_red.struct"), glm::vec3(0) };
 
 	for (auto it = _structures.begin(); it != _structures.end(); ++it)
 	{

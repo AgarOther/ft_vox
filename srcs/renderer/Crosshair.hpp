@@ -11,6 +11,6 @@ class Crosshair
         void	draw(float aspectRatio) const;
     private:
         GLuint	_vao;
-        GLuint	_id;
+        GLuint	_vbo;
 		Shader	_shader;
 };
