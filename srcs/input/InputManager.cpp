@@ -14,7 +14,7 @@ void InputManager::interceptOneTimeClicks(GLFWwindow * window, int button, int a
 	Player * player = scene->getPlayer();
 	World * world = player->getWorld();
 
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS && !player->getCamera()->isLocked())
 	{
 		if (button == GLFW_MOUSE_BUTTON_LEFT)
 		{
@@ -64,7 +64,6 @@ void InputManager::interceptOneTimeKeys(GLFWwindow * window, int key, int scanco
 			camera->setLocked(!camera->isLocked());
 		if (key == GLFW_KEY_ESCAPE)
 			glfwSetWindowShouldClose(window, true);
-		
 	}
 }
 
@@ -74,6 +73,7 @@ void InputManager::interceptScroll(GLFWwindow * window, double xoffset, double y
 	Scene * scene = reinterpret_cast<Scene *>(glfwGetWindowUserPointer(window));
 	Player * player = scene->getPlayer();
 	int newBlock = player->getBlockInHand() + (yoffset > 0 ? 1 : -1);
+
 	if (newBlock >= AIR)
 		newBlock = UNKNOWN;
 	else if (newBlock < UNKNOWN)

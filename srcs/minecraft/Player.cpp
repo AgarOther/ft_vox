@@ -190,11 +190,13 @@ void Player::checkFogChange()
 	{
 		_camera->setFogStart(0.005f);
 		_camera->setFogEnd(0.015f);
+		_camera->setFogColor(glm::vec3(FOG_COLOR_NETHER));
 	}
 	else
 	{
 		_camera->setFogStart(FOG_START);
 		_camera->setFogEnd(FOG_END);
+		_camera->setFogColor(_camera->getFogColor(_world->getEnvironment()));
 	}
 }
 

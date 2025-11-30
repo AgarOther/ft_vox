@@ -40,12 +40,17 @@ void Camera::setupMatrix(const Shader & shader)
 	shader.setMat4("camMatrix", _proj * _view);
 }
 
-void Camera::setupFog(const Shader & shader, Environment environment)
+glm::vec3 & Camera::getFogColor(Environment environment)
+{
+	return _fogColors[environment];
+}
+
+void Camera::setupFog(const Shader & shader)
 {
 	shader.setInt("fogActive", _fogActive);
 	shader.setFloat("fogStart", _fogStart * _renderDistance * CHUNK_DEPTH);
 	shader.setFloat("fogEnd", _fogEnd * _renderDistance * CHUNK_DEPTH);
-	shader.setVec3("fogColor", _fogColors[environment]);
+	shader.setVec3("fogColor", _fogColor);
 	shader.setVec3("cameraPos", _position);
 }
 

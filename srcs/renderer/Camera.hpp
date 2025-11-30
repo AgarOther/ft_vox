@@ -21,7 +21,8 @@ class Camera
 		Camera(int width, int height, glm::vec3 position);
 
 		void		setupMatrix(const Shader & shader);
-		void		setupFog(const Shader & shader, Environment environment);
+		void		setupFog(const Shader & shader);
+		glm::vec3	computeForward();
 
 		// Getters
 		glm::mat4	getViewMatrix() const { return _view; }
@@ -43,6 +44,7 @@ class Camera
 		bool		isFullscreen() const { return (_fullScreen); }
 		uint8_t		getRenderDistance() const { return _renderDistance; }
 		bool		isFogActive() const { return (_fogActive); }
+		glm::vec3 &	getFogColor(Environment environment);
 
 		// Setters
 		void		setPosition(const glm::vec3 &position) { _position = position; }
@@ -64,8 +66,7 @@ class Camera
 		void		setFogActive(bool fogActive) { _fogActive = fogActive; } 
 		void		setFogStart(float fogStart) { _fogStart = fogStart; } 
 		void		setFogEnd(float fogEnd) { _fogEnd = fogEnd; }
-
-		glm::vec3	computeForward();
+		void		setFogColor(glm::vec3 fogColor) { _fogColor = fogColor; }
 		
 	private:
 		glm::mat4	_proj;
@@ -89,6 +90,7 @@ class Camera
 		bool		_fogActive;
 		float		_fogStart;
 		float		_fogEnd;
+		glm::vec3	_fogColor;
 		typedef std::unordered_map<Environment, glm::vec3>	FogColorMap;
 		FogColorMap	_fogColors;
 };

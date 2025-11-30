@@ -36,7 +36,7 @@ void World::render(const Shader & shader)
 	Frustum frustum(viewProj);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	_player->getCamera()->setupFog(shader, _environment);
+	_player->getCamera()->setupFog(shader);
 	for (auto & [chunkPos, chunkPtr] : _chunks)
 	{
 		if (!chunkPtr)
