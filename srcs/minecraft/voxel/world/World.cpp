@@ -160,7 +160,7 @@ void World::applyGravity(float deltaTime)
 	static const float gravity = -25.0f;
 	float verticalPosition;
 	Location teleportLocation;
-	Material playerStandingBlock = _player->getBlockUnder().material;
+	Material playerStandingBlock = _player->getBlockUnder(0, -1, 0).material;
 	const float liquidModifier = playerStandingBlock == WATER ? 0.5f : playerStandingBlock == LAVA ? 3.0f : 1.0f;
 
 	if (_player->getGamemode() == SURVIVAL && (_player->getVelocityY() != 0 || !_player->getBlockUnder().isSolid))
