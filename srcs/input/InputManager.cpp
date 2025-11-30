@@ -12,14 +12,18 @@ void InputManager::interceptKeyboard(Scene * scene, float deltaTime)
 	Location finalLocation = player->getLocation();
 	glm::vec3 forward = camera->computeForward();
 	const glm::vec3 right = glm::normalize(glm::cross(forward, camera->getAltitude())); // Right direction is based on forward and altitude (up vector)
+	Material playerStandingBlock = player->getBlockUnder(0, -1, 0).material;
+	const float liquidModifier = player->getGamemode() == SURVIVAL ? (playerStandingBlock == WATER ? 0.4f : playerStandingBlock == LAVA ? 0.1f : 1.0f) : 1.0f;
 
-	if (!camera->isLocked() && glfwGetWindowAttrib(window, GLFW_FOCUSED) && player->hasSpwaned())
+	if (!camera->isLocked() && glfwGetWindowAttrib(window, GLFW_FOCUSED) && player->hasSpawned())
 	{
 		// Key management
 		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
 
-		// (Base speed * Run speed (if shift pressed) + Velocity acceleration * velocityY (faster if going up, slower if going down)) * deltaTime
-		float velocity = (camera->getBaseSpeed() * (1 + RUN_SPEED * shiftPressed) + VELOCITY_ACCELERATION * player->getVelocityY()) * deltaTime;
+		// (Base speed * Run speed (if shift pressed) + Velocity acceleration * velocityY (faster if going up, slower if going down))
+		// * liquidModifier (is in water? lava?) * deltaTime
+		float velocity = (camera->getBaseSpeed() * (1 + RUN_SPEED * shiftPressed) + VELOCITY_ACCELERATION * player->getVelocityY())
+							* liquidModifier * deltaTime;
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
 			finalLocation += velocity * forward;
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
@@ -60,7 +64,7 @@ void InputManager::interceptOneTimeClicks(GLFWwindow * window, int button, int a
 	Player * player = scene->getPlayer();
 	World * world = player->getWorld();
 
-	if (action == GLFW_PRESS && !player->getCamera()->isLocked() && player->hasSpwaned())
+	if (action == GLFW_PRESS && !player->getCamera()->isLocked() && player->hasSpawned())
 	{
 		if (button == GLFW_MOUSE_BUTTON_LEFT)
 		{
