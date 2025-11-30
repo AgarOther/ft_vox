@@ -8,7 +8,7 @@
 #define FAILURE_ATLAS_UV		6,	"Unknown material in texture atlas."
 #define FAILURE_SKYBOX			7,	"Failure to load skybox. Please check if your images are in the right size and format."
 #define FAILURE_ATLAS_LOAD		8,	"Failure to load atlas. Either the dev's code is garbage or your block assets are invalid."
-#define FAILURE_WORLD			9,	"MDRRRRRRR"
+#define FAILURE_WORLD			9,	"Chunk requested to render on invalid world."
 #define FAILURE_THREAD			10,	"Not enough threads to start the program. Go buy a better computer."
 #define FAILURE_STRUCTURE		11, "Structure file empty. Check your structure files."
 #define FAILURE_STRUCTURE_DATA	12, "Invalid structure file format."

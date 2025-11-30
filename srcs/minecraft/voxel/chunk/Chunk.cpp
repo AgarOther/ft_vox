@@ -253,6 +253,8 @@ static bool isFaceRenderable(uint8_t b1, uint8_t b2)
 
 	if (blockToCheck.isLiquid && blockToCompare.isLiquid)
 		return false;
+	if (blockToCheck.isLiquid && blockToCompare.isSolid)
+		return true;
 	if (blockToCompare.isVisible && !blockToCompare.isTransparent && !blockToCompare.isLiquid)
 		return false;
 	return true;
@@ -375,6 +377,7 @@ void Chunk::unloadMesh()
 		glDeleteVertexArrays(1, &_vao);
 		_vao = 0;
 	}
+	_indicesSize = 0;
 	setState(MESHED);
 }
 
@@ -427,7 +430,7 @@ void Chunk::generateMesh()
 							float vz = blockVertices[vi + 2] + z + 0.5f;
 
 							vertices.push_back(vx);
-							if ((block.material == WATER || block.material == LAVA) && _blocks[x][y + 1][z] == AIR)
+							if ((block.material == WATER || block.material == LAVA) && !BlockTypeRegistry::getBlockType(_blocks[x][y + 1][z]).isLiquid)
 								vy -= 0.125f;
 							vertices.push_back(vy);
 							vertices.push_back(vz);
