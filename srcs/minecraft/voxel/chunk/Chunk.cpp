@@ -383,12 +383,15 @@ void Chunk::unloadMesh()
 
 void Chunk::generateMesh()
 {
+	std::lock_guard<std::mutex> lock(_meshMutex);
 	ChunkState state = getState();
 
 	if (state != GENERATED && state != DIRTY)
 		return;
-	std::vector<float> vertices;
-	std::vector<uint16_t> indices;
+	std::vector<float> opaqueVertices;
+	std::vector<float> transparentVertices;
+	std::vector<uint16_t> opaqueIndices;
+	std::vector<uint16_t> transparentIndices;
 	const Object & object = ObjectRegistry::getObject(BLOCK);
 	int invisibleFaces;
 
@@ -399,81 +402,106 @@ void Chunk::generateMesh()
 	Chunk * left = _world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ);
 	Chunk * right = _world->getChunkAtChunkLocation(_chunkX + 1, _chunkZ);
 
+	_vertices.clear();
+	_indices.clear();
+	opaqueVertices.reserve(CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH * 4 * 6 * VERTICES_COUNT);
+	transparentVertices.reserve(CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH * 4 * 6 * VERTICES_COUNT);
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
 		for (int y = 0; y < CHUNK_HEIGHT; ++y)
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
-				invisibleFaces = 0;
 				const BlockType & block = BlockTypeRegistry::getBlockType(_blocks[x][y][z]);
-				if ((block.isTransparent && block.isVisible) || (block.isVisible && _isBlockVisible(x, y, z)))
+				if (!block.isVisible)
+					continue;
+
+				bool isTransparent = block.isLiquid || block.isTransparent;
+				std::vector<float> & verticesBuffer = isTransparent ? transparentVertices : opaqueVertices;
+				std::vector<uint16_t> & indicesBuffer = isTransparent ? transparentIndices : opaqueIndices;
+
+				std::vector<float> blockVertices = object.vertices;
+				std::vector<uint16_t> blockIndices = object.indices;
+				size_t vertexOffset = verticesBuffer.size() / VERTICES_COUNT;
+
+				invisibleFaces = 0;
+				for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
 				{
-					// Mostly GPT-Generated
-					std::vector<float> blockVertices = object.vertices;
-					std::vector<uint16_t> blockIndices = object.indices;
-					size_t vertexOffset = vertices.size() / VERTICES_COUNT; // number of vertices added so far
-					// Add vertices, offsetting positions by chunk coordinates
-					for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)
+					bool faceVisible = block.isTransparent || _isFaceVisible(static_cast<BlockFace>(face), x, y, z, front, back, left, right);
+					if (!faceVisible)
 					{
-						bool faceVisible = block.isTransparent || _isFaceVisible(static_cast<BlockFace>(face), x, y, z, front, back, left, right);
-						if (!faceVisible)
-						{
-							invisibleFaces++;
-							continue;
-						}
-						for (int i = 0; i < 4; ++i)
-						{
-							uint16_t vi = (face * 4 + i) * 5;
-							float vx = blockVertices[vi + 0] + x + 0.5f;
-							float vy = blockVertices[vi + 1] + y;
-							float vz = blockVertices[vi + 2] + z + 0.5f;
-
-							vertices.push_back(vx);
-							if ((block.material == WATER || block.material == LAVA) && !BlockTypeRegistry::getBlockType(_blocks[x][y + 1][z]).isLiquid)
-								vy -= 0.125f;
-							vertices.push_back(vy);
-							vertices.push_back(vz);
-							glm::vec2 baseUV = TextureAtlas::getUVForBlock(block.material, static_cast<BlockFace>(face));
-							float tileSize = 1.0f / TextureAtlas::getTilesPerRow();
-							float epsilon = 0.001f / TextureAtlas::getWidth();
-
-							float localU = blockVertices[vi + 3];
-							float localV = blockVertices[vi + 4];
-							float finalU = baseUV.x + epsilon + localU * (tileSize - 2 * epsilon);
-							float finalV = baseUV.y + epsilon + localV * (tileSize - 2 * epsilon);
-							vertices.push_back(finalU);
-							vertices.push_back(finalV);
-
-							glm::vec3 normal;
-							switch (face) {
-								case FACE_FRONT:  normal = {0, 0, 1}; break;
-								case FACE_BACK:   normal = {0, 0, -1}; break;
-								case FACE_LEFT:   normal = {-1, 0, 0}; break;
-								case FACE_RIGHT:  normal = {1, 0, 0}; break;
-								case FACE_TOP:    normal = {0, 1, 0}; break;
-								case FACE_BOTTOM: normal = {0, -1, 0}; break;
-							}
-							vertices.push_back(normal.x);
-							vertices.push_back(normal.y);
-							vertices.push_back(normal.z);
-						}
-					}
-					if (invisibleFaces == 6)
+						invisibleFaces++;
 						continue;
-					// Add indices with offset
-					for (size_t i = 0; i < blockIndices.size(); i += 3)
-					{
-						indices.push_back(blockIndices[i] + vertexOffset);
-						indices.push_back(blockIndices[i + 1] + vertexOffset);
-						indices.push_back(blockIndices[i + 2] + vertexOffset);
 					}
+
+					for (int i = 0; i < 4; ++i)
+					{
+						uint16_t vi = (face * 4 + i) * 5;
+						float vx = blockVertices[vi + 0] + x + 0.5f;
+						float vy = blockVertices[vi + 1] + y;
+						float vz = blockVertices[vi + 2] + z + 0.5f;
+
+						if ((block.material == WATER || block.material == LAVA)
+							&& !BlockTypeRegistry::getBlockType(_blocks[x][y + 1][z]).isLiquid)
+							vy -= 0.125f;
+
+						verticesBuffer.push_back(vx);
+						verticesBuffer.push_back(vy);
+						verticesBuffer.push_back(vz);
+
+						const glm::vec2 baseUV = TextureAtlas::getUVForBlock(block.material, static_cast<BlockFace>(face));
+						float tileSize = 1.0f / TextureAtlas::getTilesPerRow();
+						float epsilon = 0.001f / TextureAtlas::getWidth();
+
+						float localU = blockVertices[vi + 3];
+						float localV = blockVertices[vi + 4];
+						float finalU = baseUV.x + epsilon + localU * (tileSize - 2 * epsilon);
+						float finalV = baseUV.y + epsilon + localV * (tileSize - 2 * epsilon);
+
+						verticesBuffer.push_back(finalU);
+						verticesBuffer.push_back(finalV);
+
+						glm::vec3 normal;
+						switch (face)
+						{
+							case FACE_FRONT:  normal = {0, 0, 1}; break;
+							case FACE_BACK:   normal = {0, 0, -1}; break;
+							case FACE_LEFT:   normal = {-1, 0, 0}; break;
+							case FACE_RIGHT:  normal = {1, 0, 0}; break;
+							case FACE_TOP:    normal = {0, 1, 0}; break;
+							case FACE_BOTTOM: normal = {0, -1, 0}; break;
+						}
+						verticesBuffer.push_back(normal.x);
+						verticesBuffer.push_back(normal.y);
+						verticesBuffer.push_back(normal.z);
+					}
+				}
+
+				if (invisibleFaces == 6)
+					continue;
+
+				for (size_t i = 0; i < blockIndices.size(); i += 3)
+				{
+					indicesBuffer.push_back(blockIndices[i] + vertexOffset);
+					indicesBuffer.push_back(blockIndices[i + 1] + vertexOffset);
+					indicesBuffer.push_back(blockIndices[i + 2] + vertexOffset);
 				}
 			}
 		}
 	}
-	_vertices = vertices;
-	_indices = indices;
+
+	const size_t opaqueVertexCount = opaqueVertices.size() / VERTICES_COUNT;
+	_vertices.reserve(opaqueVertices.size() + transparentVertices.size());
+	_indices.reserve(opaqueIndices.size() + transparentIndices.size());
+	_vertices.insert(_vertices.end(), opaqueVertices.begin(), opaqueVertices.end());
+	if (!transparentVertices.empty())
+		_vertices.insert(_vertices.end(), transparentVertices.begin(), transparentVertices.end());
+	_indices.insert(_indices.end(), opaqueIndices.begin(), opaqueIndices.end());
+	if (!transparentIndices.empty())
+	{
+		for (uint16_t indice : transparentIndices)
+			_indices.push_back(indice + opaqueVertexCount);
+	}
 
 	setState(state == DIRTY ? CLEANED : MESHED);
 }
@@ -490,10 +518,12 @@ void Chunk::render(const Shader & shader) const
 	));;
 	shader.setMat4("model", model);
 	shader.setVec3("lightDir", glm::normalize(glm::vec3(1.0f, -1.5f, 0.8f)));
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, TextureAtlas::getTextureID());
 	shader.setInt("textureAtlas", 0);
 	g_DEBUG_INFO.drawCalls++;
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, TextureAtlas::getTextureID());
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	if (g_DEBUG_INFO.wireframe)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

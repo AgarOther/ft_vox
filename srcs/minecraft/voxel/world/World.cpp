@@ -28,14 +28,14 @@ void World::render(const Shader & shader)
 {
 	if (!_loaded || !_player)
 		return;
+	std::vector<ChunkSquaredDistance> renderChunks;
+
 	_player->checkIfSpawned();
 	std::vector<glm::ivec2> deletableChunks;
 	shader.bind();
 	const uint8_t renderDistance = _player->getCamera()->getRenderDistance() + 1;
 	glm::mat4 viewProj = _player->getCamera()->getProjectionMatrix() * _player->getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	_player->getCamera()->setupFog(shader);
 	for (auto & [chunkPos, chunkPtr] : _chunks)
 	{
@@ -78,8 +78,24 @@ void World::render(const Shader & shader)
 			chunkPtr->uploadMesh();
 		}
 		if (_player->isWithinRenderDistance(chunkPtr))
-			chunkPtr->render(shader);
+		{
+			// big thanks to GPT for this
+			glm::vec3 chunkCenter = (min + max) * 0.5f;
+			glm::vec3 diff = chunkCenter - _player->getCamera()->getPosition();
+			float sqDist = diff.x * diff.x + diff.y * diff.y + diff.z * diff.z;
+
+			renderChunks.push_back({ sqDist, chunkPtr });
+		}
 	}
+
+	std::sort(renderChunks.begin(), renderChunks.end(), [](const ChunkSquaredDistance & a, const ChunkSquaredDistance & b)
+	{
+		return a.first > b.first;
+	});
+
+	for (const ChunkSquaredDistance & chunkInfo : renderChunks)
+		chunkInfo.second->render(shader);
+
 	for (glm::ivec2 chunkPos : deletableChunks)
 		_chunks.erase(chunkPos);
 }

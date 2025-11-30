@@ -64,6 +64,7 @@ class Chunk
 		std::vector<uint16_t>		_indices;
 		World *						_world;
 		std::mutex					_stateMutex;
+		std::mutex					_meshMutex;
 		ChunkState					_state;
 
 		bool					_isBlockVisible(int x, int y, int z);
