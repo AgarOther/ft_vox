@@ -376,7 +376,9 @@ void Chunk::unloadMesh()
 
 void Chunk::generateMesh()
 {
-	if (getState() == IDLE)
+	ChunkState state = getState();
+
+	if (state != GENERATED && state != DIRTY)
 		return;
 	std::vector<float> vertices;
 	std::vector<uint16_t> indices;
@@ -466,7 +468,6 @@ void Chunk::generateMesh()
 	_vertices = vertices;
 	_indices = indices;
 
-	ChunkState state = getState();
 	setState(state == DIRTY ? CLEANED : MESHED);
 }
 
