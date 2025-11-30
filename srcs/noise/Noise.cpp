@@ -8,7 +8,7 @@ Noise::Noise(unsigned long seed, float frequency, float amplitude): _frequency(f
 {
 	_permutationTable.resize(PERMUTATION_TABLE_SIZE);
 	for (int i = 0; i < PERMUTATION_TABLE_SIZE; ++i)
-		_permutationTable.push_back(i);
+		_permutationTable[i] = i;
 	std::shuffle(_permutationTable.begin(), _permutationTable.end(), std::default_random_engine(seed));
 	_permutationTable.insert(_permutationTable.end(), _permutationTable.begin(), _permutationTable.end());
 }
@@ -40,8 +40,8 @@ static float fade(float t)
 
 float Noise::_computeNoise(float x, float y) const
 {
-	const int X = static_cast<int>(std::floor(x)) & 255;
-	const int Y = static_cast<int>(std::floor(y)) & 255;
+	const uint32_t X = static_cast<uint32_t>(std::floor(x)) & 255;
+	const uint32_t Y = static_cast<uint32_t>(std::floor(y)) & 255;
 
 	const float xf = x - std::floor(x);
 	const float yf = y - std::floor(y);

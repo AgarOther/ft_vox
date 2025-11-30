@@ -50,8 +50,8 @@ class World
 		void					load();
 		void					shutdown();
 	private:
-		typedef std::unordered_map<glm::ivec2, Chunk * , IVec2Hash> ChunkMap;
-		typedef std::pair<float, Chunk *> ChunkSquaredDistance;
+		typedef std::unordered_map<glm::ivec2, Chunk * , IVec2Hash>	ChunkMap;
+		typedef std::pair<float, Chunk *>							ChunkSquaredDistance;
 
 		void					_sendToWorkers(std::vector<Chunk * > & chunks);
 

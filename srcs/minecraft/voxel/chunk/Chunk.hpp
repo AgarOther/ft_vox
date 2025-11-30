@@ -64,6 +64,7 @@ class Chunk
 		std::vector<uint16_t>		_indices;
 		World *						_world;
 		std::mutex					_stateMutex;
+		std::mutex					_generateMutex;
 		std::mutex					_meshMutex;
 		ChunkState					_state;
 
