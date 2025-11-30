@@ -122,7 +122,7 @@ int World::getHighestYAtChunkLocation(int x, int z) const
 		for (int y = CHUNK_HEIGHT - 2; y >= 0; --y)
 		{
 			BlockType block = chunk->getBlockAtChunkLocation(Location(chunkX, y, chunkZ));
-			if (block.isSolid && block.type != BEDROCK &&
+			if (block.isSolid && block.material != BEDROCK &&
 					(y + 1 < CHUNK_HEIGHT && !chunk->getBlockAtChunkLocation(Location(chunkX, y + 1, chunkZ)).isSolid)
 				 	&& (y + 2 < CHUNK_HEIGHT && !chunk->getBlockAtChunkLocation(Location(chunkX, y + 2, chunkZ)).isSolid))
 				return y + 2;
@@ -227,6 +227,8 @@ void World::generateProcedurally()
 						}
 					}
 				}
+				else if (state == DIRTY)
+					queue.push_back(tmp);
 			}
 			queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
 		}

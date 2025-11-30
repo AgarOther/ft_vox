@@ -420,11 +420,11 @@ void Chunk::generateMesh()
 							float vz = blockVertices[vi + 2] + z + 0.5f;
 
 							vertices.push_back(vx);
-							if ((block.type == WATER || block.type == LAVA) && _blocks[x][y + 1][z] == AIR)
+							if ((block.material == WATER || block.material == LAVA) && _blocks[x][y + 1][z] == AIR)
 								vy -= 0.125f;
 							vertices.push_back(vy);
 							vertices.push_back(vz);
-							glm::vec2 baseUV = TextureAtlas::getUVForBlock(block.type, static_cast<BlockFace>(face));
+							glm::vec2 baseUV = TextureAtlas::getUVForBlock(block.material, static_cast<BlockFace>(face));
 							float tileSize = 1.0f / TextureAtlas::getTilesPerRow();
 							float epsilon = 0.001f / TextureAtlas::getWidth();
 
@@ -538,6 +538,14 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 		return ;
 	}
 	_blocks[localX][localY][localZ] = newMaterial;
+	if (localX == 0)
+		_world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ)->setState(DIRTY);
+	if (localX == CHUNK_WIDTH - 1)
+		_world->getChunkAtChunkLocation(_chunkX + 1, _chunkZ)->setState(DIRTY);
+	if (localZ == 0)
+		_world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1)->setState(DIRTY);
+	if (localZ == CHUNK_DEPTH - 1)
+		_world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1)->setState(DIRTY);
 	setState(DIRTY);
 }
 

@@ -24,7 +24,7 @@ Material getMaterialFromString(std::string & name)
 	for (auto it = blockTypeMap.begin(); it != blockTypeMap.end(); ++it)
 	{
 		if (name == it->second.name)
-			return (it->second.type);
+			return (it->second.material);
 	}
 	return UNKNOWN;
 }

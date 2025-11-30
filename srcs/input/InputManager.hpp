@@ -11,5 +11,7 @@ class InputManager
 
 		static void interceptKeyboard();
 		static void interceptOneTimeKeys(GLFWwindow * window, int key, int scancode, int action, int mods);
+		static void	interceptOneTimeClicks(GLFWwindow * window, int button, int action, int mods);
 		static void interceptMouse();
+		static void	interceptScroll(GLFWwindow * window, double xoffset, double yoffset);
 };

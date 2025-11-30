@@ -19,6 +19,7 @@ Player::Player(const std::string & name, Camera * camera, World * world)
 	_gamemode = SURVIVAL;
 	_velocity = glm::vec3(0.0f);
 	_spawned = false;
+	_blockInHand = GRASS_BLOCK;
 
 	_world->setPlayer(this);
 	_world->load();
@@ -51,21 +52,6 @@ void Player::checkIfSpawned()
 
 void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 {
-	static bool lastFrameMouseClicked = false;
-	const bool mouseClickedL = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
-	if (mouseClickedL && !lastFrameMouseClicked)
-	{
-		Block block = getTargetedBlock();
-		if (block.blockType.type != AIR)
-		{
-			const Location position = getTargetedBlock().position;
-			Chunk * chunk = _world->getChunkAt(position.getX(), position.getZ());
-			if (chunk)
-				chunk->changeBlockAt(getTargetedBlock().position, AIR);
-		}
-	}
-	lastFrameMouseClicked = mouseClickedL;
-	
 	Location finalLocation = getLocation();
 
 	/* GPT Code */
@@ -200,7 +186,7 @@ void Player::setWorld(World * world)
 
 void Player::checkFogChange()
 {
-	if (getBlockAtEyeLocation().type == LAVA)
+	if (getBlockAtEyeLocation().material == LAVA)
 	{
 		_camera->setFogStart(0.005f);
 		_camera->setFogEnd(0.015f);

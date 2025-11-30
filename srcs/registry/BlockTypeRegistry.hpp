@@ -27,12 +27,12 @@ enum Material
 	CHERRY_LEAVES,
 	CHERRY_LOG,
 	OBSIDIAN,
-	AIR = 255
+	AIR
 };
 
 struct BlockType
 {
-	Material	type;
+	Material	material;
 	std::string	name;
 	bool		isVisible;
 	bool		isSolid;

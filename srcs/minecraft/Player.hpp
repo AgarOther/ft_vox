@@ -48,6 +48,7 @@ class Player
 		Block				getTargetedBlock() const;
 		BlockType			getBlockUnder(int xOffset = 0, int yOffset = 0, int zOffset = 0) const;
 		BlockType			getBlockAtEyeLocation() const;
+		Material			getBlockInHand() const { return _blockInHand; }
 
 		void				setName(const std::string & name) { _name = name; }
 		void				setHealth(uint8_t health) { _health = health; }
@@ -60,6 +61,7 @@ class Player
 		void				setVelocityY(float velocityY) { _velocity.y = velocityY; }
 		void				setVelocityZ(float velocityZ) { _velocity.z = velocityZ; }
 		void				setWorld(World * world);
+		void				setBlockInHand(Material blockInHand) { _blockInHand = blockInHand; }
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
 		void				checkFogChange();
@@ -78,4 +80,5 @@ class Player
 		Gamemode			_gamemode;
 		glm::vec3			_velocity;
 		bool				_spawned;
+		Material			_blockInHand;
 };

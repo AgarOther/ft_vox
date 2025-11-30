@@ -74,6 +74,8 @@ GLFWwindow * initWindow(int * width, int * height, int * fpsGoal)
 	glViewport(0, 0, *width, *height);
 	glfwSetFramebufferSizeCallback(window, frameBufferCallback);
 	glfwSetKeyCallback(window, InputManager::interceptOneTimeKeys);
+	glfwSetMouseButtonCallback(window, InputManager::interceptOneTimeClicks);
+	glfwSetScrollCallback(window, InputManager::interceptScroll);
 	glfwSwapInterval(0); // unlimited (0) | vsync(1)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
