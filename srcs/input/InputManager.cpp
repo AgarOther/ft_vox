@@ -13,7 +13,7 @@ void InputManager::interceptKeyboard(Scene * scene, float deltaTime)
 	glm::vec3 forward = camera->computeForward();
 	const glm::vec3 right = glm::normalize(glm::cross(forward, camera->getAltitude())); // Right direction is based on forward and altitude (up vector)
 
-	if (!camera->isLocked() && glfwGetWindowAttrib(window, GLFW_FOCUSED))
+	if (!camera->isLocked() && glfwGetWindowAttrib(window, GLFW_FOCUSED) && player->hasSpwaned())
 	{
 		// Key management
 		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
@@ -60,7 +60,7 @@ void InputManager::interceptOneTimeClicks(GLFWwindow * window, int button, int a
 	Player * player = scene->getPlayer();
 	World * world = player->getWorld();
 
-	if (action == GLFW_PRESS && !player->getCamera()->isLocked())
+	if (action == GLFW_PRESS && !player->getCamera()->isLocked() && player->hasSpwaned())
 	{
 		if (button == GLFW_MOUSE_BUTTON_LEFT)
 		{

@@ -40,18 +40,38 @@ BlockOverlay::~BlockOverlay()
 		glDeleteVertexArrays(1, &_vao);
 }
 
-void BlockOverlay::draw(const Block & targetedBlock)
+void BlockOverlay::draw(const Block & targetedBlock, float deltaTime)
 {
+	const float minOpacity = 0.05f;
+	const float maxOpacity = 0.2f;
+	const float speed = 0.4f;
+	static float direction = 1.0f;
+	static float opacity = 0.2f;
+
 	if (!targetedBlock.blockType.isSolid)
 		return;
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), targetedBlock.position.clone().add(0.5, 0.0, 0.5).getVec3());
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), targetedBlock.position.clone().add(0.5, -0.002, 0.5).getVec3());
 	model = glm::scale(model, glm::vec3(1.005f));
 	_camera->setupMatrix(_shader);
 	_shader.setMat4("model", model);
+	_shader.setFloat("opacity", opacity);
 	glBindVertexArray(_vao);
 	glDrawElements(GL_TRIANGLES, _indicesSize, GL_UNSIGNED_SHORT, 0);
 	glDisable(GL_BLEND);
 	_shader.unbind();
+
+	opacity += direction * speed * deltaTime;
+
+	if (opacity >= maxOpacity)
+	{
+		opacity = maxOpacity;
+		direction = -direction;
+	}
+	else if (opacity <= minOpacity)
+	{
+		opacity = minOpacity;
+		direction = -direction;
+	}
 }

@@ -58,7 +58,7 @@ int main(void)
 		skybox.render(player->getCamera(), player->getWorld()->getEnvironment());
 		player->getWorld()->render(shader);
 		crosshair.draw(static_cast<float>(player->getCamera()->getWidth()) / static_cast<float>(player->getCamera()->getHeight()));
-		blockOverlay.draw(player->getTargetedBlock());
+		blockOverlay.draw(player->getTargetedBlock(), deltaTime);
 
 		if (hasGui)
 			renderImGui();

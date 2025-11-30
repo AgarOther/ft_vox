@@ -10,7 +10,7 @@ class BlockOverlay
 		BlockOverlay(Camera * camera);
 		~BlockOverlay();
 
-		void			draw(const Block & targetedBlock);
+		void			draw(const Block & targetedBlock, float deltaTime);
 	private:
 		Camera *		_camera;
 		GLuint			_vao;

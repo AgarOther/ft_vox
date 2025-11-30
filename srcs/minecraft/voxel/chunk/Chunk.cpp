@@ -400,6 +400,7 @@ void Chunk::generateMesh()
 				const BlockType & block = BlockTypeRegistry::getBlockType(_blocks[x][y][z]);
 				if ((block.isTransparent && block.isVisible) || (block.isVisible && _isBlockVisible(x, y, z)))
 				{
+					// Mostly GPT-Generated
 					std::vector<float> blockVertices = object.vertices;
 					std::vector<uint16_t> blockIndices = object.indices;
 					size_t vertexOffset = vertices.size() / VERTICES_COUNT; // number of vertices added so far
