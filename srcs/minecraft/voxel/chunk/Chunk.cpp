@@ -195,7 +195,7 @@ void Chunk::generateBlocks(Environment environment)
 					if (!placed)
 					{
 						const int outerRadius = 280;
-						const int rings = 20;
+						const int rings = 4;
 						const int width = 20;
 						const int spacing = 8;
 
