@@ -26,6 +26,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/renderer/BlockOverlay.cpp \
 						srcs/renderer/Camera.cpp \
 						srcs/renderer/Crosshair.cpp \
+						srcs/renderer/Filter.cpp \
 						srcs/renderer/Frustum.cpp \
 						srcs/renderer/Shader.cpp \
 						srcs/renderer/Skybox.cpp \

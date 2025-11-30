@@ -14,6 +14,7 @@
 #define FOG_COLOR_OVERWORLD 180.0f / 255.0f, 210.0f / 255.0f, 1.0f
 #define FOG_COLOR_NETHER 30.0f / 255.0f, 0.0f, 0.0f
 #define FOG_COLOR_THE_END 15.0f / 255.0f, 0.0f, 25.0f / 255.0f
+#define FOG_COLOR_WATER 0.0f, 0.0f, 255.0f / 255.0f
 
 class Camera
 {

@@ -72,6 +72,12 @@ void Shader::setVec3(const char * uniform, const glm::vec3 & model) const
 	glUniform3fv(id, 1, glm::value_ptr(model));
 }
 
+void Shader::setVec4(const char * uniform, const glm::vec4 & model) const
+{
+	const GLint id = glGetUniformLocation(this->_id, uniform);
+	glUniform4fv(id, 1, glm::value_ptr(model));
+}
+
 Shader::~Shader()
 {
 	glDeleteProgram(_id);

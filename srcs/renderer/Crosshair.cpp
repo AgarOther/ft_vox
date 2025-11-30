@@ -34,7 +34,7 @@ void Crosshair::draw(float aspectRatio) const
 	_shader.setFloat("aspectRatio", aspectRatio);
 	glBindVertexArray(_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, _id);
-	glLineWidth(2.f);
+	glLineWidth(2.0f);
 	glDrawArrays(GL_LINES, 0, 4);
 	glDepthMask(GL_TRUE);
 	glDepthFunc(GL_LESS);

@@ -150,6 +150,12 @@ void Player::checkFogChange()
 		_camera->setFogEnd(0.015f);
 		_camera->setFogColor(glm::vec3(FOG_COLOR_NETHER));
 	}
+	else if (getBlockAtEyeLocation().material == WATER)
+	{
+		_camera->setFogStart(0.08f);
+		_camera->setFogEnd(0.5f);
+		_camera->setFogColor(glm::vec3(FOG_COLOR_WATER));
+	}
 	else
 	{
 		_camera->setFogStart(FOG_START);

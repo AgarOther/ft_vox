@@ -45,6 +45,7 @@ void ObjectRegistry::init()
 	_objects[SKYBOX] = getObjectFromFile("assets/model/skybox.obj");
 	_objects[CROSSHAIR] = getObjectFromFile("assets/model/crosshair.obj");
 	_objects[BLOCK_OVERLAY] = getObjectFromFile("assets/model/block_overlay.obj");
+	_objects[FILTER] = getObjectFromFile("assets/model/filter.obj");
 }
 
 const Object & ObjectRegistry::getObject(uint8_t id)

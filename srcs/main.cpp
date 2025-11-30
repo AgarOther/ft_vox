@@ -31,6 +31,7 @@ int main(void)
 	Skybox skybox;
 	Crosshair crosshair;
 	BlockOverlay blockOverlay(scene.getCamera());
+	Filter filter;
 
 	Player * player = scene.getPlayer();
 
@@ -59,6 +60,8 @@ int main(void)
 		player->getWorld()->render(shader);
 		crosshair.draw(static_cast<float>(player->getCamera()->getWidth()) / static_cast<float>(player->getCamera()->getHeight()));
 		blockOverlay.draw(player->getTargetedBlock(), deltaTime);
+		if (player->getWorld()->getBlockAt(player->getEyeLocation()).material == WATER)
+			filter.draw(glm::vec4(0.1f, 0.0f, 0.95f, 0.2f));
 
 		if (hasGui)
 			renderImGui();
