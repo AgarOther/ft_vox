@@ -109,7 +109,9 @@ void Chunk::generateBlocks(Environment environment)
 					// const float erosionValue = noiseValue - erosion * (noiseValue * noiseValue - noiseValue);
 					const int height = static_cast<int>(std::floor(noiseValue * SEA_LEVEL * 2));
 					const int stoneOffset = static_cast<int>(std::floor(height / noiseValue)) % 3 + 3;
-					if (y == height && y >= SEA_LEVEL)
+					if (y > height)
+						_blocks[x][y][z] = y <= SEA_LEVEL ? WATER : AIR;
+					else if (y == height && y >= SEA_LEVEL)
 						_blocks[x][y][z] = GRASS_BLOCK;
 					else if (y == 0)
 						_blocks[x][y][z] = BEDROCK;
@@ -117,8 +119,6 @@ void Chunk::generateBlocks(Environment environment)
 						_blocks[x][y][z] = DIRT;
 					else if (y <= height - stoneOffset)
 						_blocks[x][y][z] = STONE;
-					else if (y > height)
-						_blocks[x][y][z] = y <= SEA_LEVEL ? WATER : AIR;
 					else
 						_blocks[x][y][z] = DIRT;
 				}
@@ -137,6 +137,7 @@ void Chunk::generateBlocks(Environment environment)
 				}
 				else if (environment == THE_END)
 				{
+					// GPT Generated (only here for demo, won't last forever)
 					const int islandCenterX = 0;
 					const int islandCenterZ = 0;
 
@@ -194,7 +195,7 @@ void Chunk::generateBlocks(Environment environment)
 					if (!placed)
 					{
 						const int outerRadius = 280;
-						const int rings = 4;
+						const int rings = 20;
 						const int width = 20;
 						const int spacing = 8;
 
