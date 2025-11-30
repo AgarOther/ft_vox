@@ -191,7 +191,12 @@ void World::applyGravity(float deltaTime)
 void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 {
 	for (Chunk * chunk : chunks)
+	{
+		ChunkState state = chunk->getState();
+		if (state == UPLOADED || state == CLEANED)
+			continue;
 		_chunks[glm::ivec2(chunk->getChunkX(), chunk->getChunkZ())] = chunk;
+	}
 	_monitor.queue(chunks);
 }
 
@@ -220,7 +225,7 @@ void World::generateProcedurally()
 				{
 					for (Chunk * chunk : tmp->getNeighborChunks())
 					{
-						if (chunk && chunk->getState() == UPLOADED)
+						if (chunk && chunk->getState() >= MESHED)
 						{
 							chunk->setState(DIRTY);
 							queue.push_back(chunk);

@@ -316,6 +316,9 @@ bool Chunk::_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, C
 
 void Chunk::uploadMesh()
 {
+	if (getState() != MESHED)
+		return;
+
 	if (!_vao)
 		glGenVertexArrays(1, &_vao);
 	if (!_vbo)
@@ -371,7 +374,7 @@ void Chunk::unloadMesh()
 		glDeleteVertexArrays(1, &_vao);
 		_vao = 0;
 	}
-	setState(GENERATED);
+	setState(MESHED);
 }
 
 void Chunk::generateMesh()
