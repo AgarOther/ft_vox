@@ -18,12 +18,6 @@ enum Gamemode
 	SURVIVAL
 };
 
-struct Block
-{
-	Location	position;
-	BlockType	blockType;
-};
-
 class Player
 {
 	public:

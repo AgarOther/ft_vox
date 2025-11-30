@@ -28,6 +28,12 @@ enum ChunkState
 	UPLOADED
 };
 
+struct Block
+{
+	Location	position;
+	BlockType	blockType;
+};
+
 class Chunk
 {
 	public:

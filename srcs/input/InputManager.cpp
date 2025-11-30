@@ -17,31 +17,34 @@ void InputManager::interceptKeyboard(Scene * scene, float deltaTime)
 
 	if (!camera->isLocked() && glfwGetWindowAttrib(window, GLFW_FOCUSED) && player->hasSpawned())
 	{
-		// Key management
-		bool shiftPressed = (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
+		bool shiftPressed = (KEY_PRESSED(window, GLFW_KEY_LEFT_SHIFT) || KEY_PRESSED(window, GLFW_KEY_RIGHT_SHIFT))
+			&& !(KEY_PRESSED(window, GLFW_KEY_S) || KEY_PRESSED(window, GLFW_KEY_DOWN));
+		bool diagonalMovement = (KEY_PRESSED(window, GLFW_KEY_W) || KEY_PRESSED(window, GLFW_KEY_UP))
+			&& ((KEY_PRESSED(window, GLFW_KEY_A) || KEY_PRESSED(window, GLFW_KEY_LEFT))
+				|| KEY_PRESSED(window, GLFW_KEY_D) || KEY_PRESSED(window, GLFW_KEY_RIGHT));
 
 		// (Base speed * Run speed (if shift pressed) + Velocity acceleration * velocityY (faster if going up, slower if going down))
 		// * liquidModifier (is in water? lava?) * deltaTime
 		float velocity = (camera->getBaseSpeed() * (1 + RUN_SPEED * shiftPressed) + VELOCITY_ACCELERATION * player->getVelocityY())
-							* liquidModifier * deltaTime;
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+							* liquidModifier * (diagonalMovement ? 0.7f : 1.0f) * deltaTime;
+		if (KEY_PRESSED(window, GLFW_KEY_W) || KEY_PRESSED(window, GLFW_KEY_UP))
 			finalLocation += velocity * forward;
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		if (KEY_PRESSED(window, GLFW_KEY_A) || KEY_PRESSED(window, GLFW_KEY_LEFT))
 			finalLocation += velocity * -right;
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		if (KEY_PRESSED(window, GLFW_KEY_S) || KEY_PRESSED(window, GLFW_KEY_DOWN))
 			finalLocation += velocity * -forward;
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		if (KEY_PRESSED(window, GLFW_KEY_D) || KEY_PRESSED(window, GLFW_KEY_RIGHT))
 			finalLocation += velocity * right;
 		if (gamemode == SPECTATOR)
 		{
-			if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+			if (KEY_PRESSED(window, GLFW_KEY_SPACE) || KEY_PRESSED(window, GLFW_KEY_RIGHT_CONTROL))
 				finalLocation += velocity * camera->getAltitude();
-			if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_MENU) == GLFW_PRESS)
+			if (KEY_PRESSED(window, GLFW_KEY_LEFT_CONTROL) || KEY_PRESSED(window, GLFW_KEY_MENU))
 				finalLocation += velocity * -camera->getAltitude();
 		}
 		else
 		{
-			if ((glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS)
+			if ((KEY_PRESSED(window, GLFW_KEY_SPACE) || KEY_PRESSED(window, GLFW_KEY_RIGHT_CONTROL))
 					&& player->getBlockUnder().isSolid)
 				player->setVelocityY(JUMP_STRENGTH);
 		}

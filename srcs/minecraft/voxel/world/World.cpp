@@ -170,7 +170,7 @@ BlockType World::getBlockAt(const Location & loc) const
 
 void World::applyGravity(float deltaTime)
 {
-	if (!_player)
+	if (!_loaded || !_player)
 		return;
 
 	static const float gravity = -25.0f;
@@ -221,7 +221,7 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 void World::generateProcedurally()
 {
 	static long cooldown = 0;
-	if (!_procedural || !_player || _monitor.areWorkersWorking() || (cooldown && getTimeAsMilliseconds() - cooldown < 100))
+	if (!_loaded || !_procedural || !_player || _monitor.areWorkersWorking() || (cooldown && getTimeAsMilliseconds() - cooldown < 100))
 		return;
 	cooldown = getTimeAsMilliseconds();
 

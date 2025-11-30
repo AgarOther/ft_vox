@@ -2,6 +2,8 @@
 
 #include "Scene.hpp"
 
+#define KEY_PRESSED(x, y) glfwGetKey(x, y) == GLFW_PRESS
+
 class InputManager
 {
 	public:
