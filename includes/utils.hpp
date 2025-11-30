@@ -27,7 +27,7 @@ unsigned long				generateRandomSeed();
 
 // ImGui
 ImGuiIO & 					getImGuiIO(GLFWwindow * window);
-void						showImGui(const ImGuiIO & io, Player * player, float deltaTime, Scene * scene);
+void						showImGui(const ImGuiIO & io, float deltaTime, Scene * scene);
 void						renderImGui();
 void						shutdownImGui();
 

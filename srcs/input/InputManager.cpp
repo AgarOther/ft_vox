@@ -114,6 +114,8 @@ void InputManager::interceptOneTimeKeys(GLFWwindow * window, int key, int scanco
 			camera->setLocked(!camera->isLocked());
 		if (key == GLFW_KEY_ESCAPE)
 			glfwSetWindowShouldClose(window, true);
+		if (key == GLFW_KEY_F1)
+			scene->togglePureViewMode();
 	}
 }
 

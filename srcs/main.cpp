@@ -51,7 +51,7 @@ int main(void)
 		const bool hasGui = player->getCamera()->hasGuiOn();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (hasGui)
-			showImGui(io, player, deltaTime, &scene);
+			showImGui(io, deltaTime, &scene);
 		g_DEBUG_INFO.drawCalls = 0;
 
 		player->getWorld()->applyGravity(deltaTime);
@@ -59,8 +59,11 @@ int main(void)
 		player->getCamera()->setupMatrix(shader);
 		skybox.render(player->getCamera(), player->getWorld()->getEnvironment());
 		player->getWorld()->render(shader);
-		crosshair.draw(static_cast<float>(player->getCamera()->getWidth()) / static_cast<float>(player->getCamera()->getHeight()));
-		blockOverlay.draw(player->getTargetedBlock(), deltaTime);
+		if (!scene.isPureViewModeEnabled())
+		{
+			crosshair.draw(static_cast<float>(player->getCamera()->getWidth()) / static_cast<float>(player->getCamera()->getHeight()));
+			blockOverlay.draw(player->getTargetedBlock(), deltaTime);
+		}
 		if (player->getWorld()->getBlockAt(player->getEyeLocation()).material == WATER)
 			filter.draw(glm::vec4(0.1f, 0.0f, 0.95f, 0.2f));
 

@@ -21,8 +21,10 @@ class Scene
 		int					getWidth() const { return _width; }
 		int					getHeight() const { return _height; }
 		int					getFPSGoal() const { return _fpsGoal; }
+		bool				isPureViewModeEnabled() const { return _pureViewMode; }
 
 		void				setFPSGoal(int fpsGoal) { _fpsGoal = fpsGoal; }
+		void				togglePureViewMode() { _pureViewMode = !_pureViewMode; }
 
 	private:
 		GLFWwindow *		_window;
@@ -32,4 +34,5 @@ class Scene
 		int					_width;
 		int					_height;
 		int					_fpsGoal;
+		bool				_pureViewMode = false;
 };

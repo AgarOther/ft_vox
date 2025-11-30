@@ -61,8 +61,9 @@ static std::string getAxisDirectionAsString(const float yaw)
     return "negative X";
 }
 
-void showImGui(const ImGuiIO & io, Player * player, float deltaTime, Scene * scene)
+void showImGui(const ImGuiIO & io, float deltaTime, Scene * scene)
 {
+	Player * player = scene->getPlayer();
 	Camera * camera = player->getCamera();
 	const Location & position = player->getLocation();
 	ImGui_ImplOpenGL3_NewFrame();
