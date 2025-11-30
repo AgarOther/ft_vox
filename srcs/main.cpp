@@ -13,6 +13,7 @@
 #include "World.hpp"
 #include "utils.hpp"
 #include "errors.hpp"
+#include "Filter.hpp"
 #include "Scene.hpp"
 #include "InputManager.hpp"
 
