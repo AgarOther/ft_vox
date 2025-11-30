@@ -17,7 +17,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	_fullScreen = false;
 	_guiOn = false;
 	_locked = false;
-	_renderDistance = 1;
+	_renderDistance = 12;
 	_fogActive = true;
 	_fogStart = FOG_START;
 	_fogEnd = FOG_END;
@@ -47,4 +47,16 @@ void Camera::setupFog(const Shader & shader, Environment environment)
 	shader.setFloat("fogEnd", _fogEnd * _renderDistance * CHUNK_DEPTH);
 	shader.setVec3("fogColor", _fogColors[environment]);
 	shader.setVec3("cameraPos", _position);
+}
+
+glm::vec3 Camera::computeForward()
+{
+	glm::vec3 forward;
+	forward.x = cosf(glm::radians(_pitch)) * cosf(glm::radians(_yaw)); // X component based on pitch
+	forward.z = cosf(glm::radians(_pitch)) * sinf(glm::radians(_yaw)); // Z component based on pitch
+	forward.y = 0.0f; // No vertical movement based on pitch, set Y to 0
+
+	// Normalize the forward vector to maintain consistent speed
+	forward = glm::normalize(forward);
+	return forward;
 }

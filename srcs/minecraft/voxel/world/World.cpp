@@ -24,18 +24,19 @@ void World::load()
 	_loaded = true;
 }
 
-void World::render(const Shader & shader, const Player & player)
+void World::render(const Shader & shader)
 {
 	if (!_loaded || !_player)
 		return;
+	_player->checkIfSpawned();
 	std::vector<glm::ivec2> deletableChunks;
 	shader.bind();
-	const uint8_t renderDistance = player.getCamera()->getRenderDistance() + 1;
-	glm::mat4 viewProj = player.getCamera()->getProjectionMatrix() * player.getCamera()->getViewMatrix();
+	const uint8_t renderDistance = _player->getCamera()->getRenderDistance() + 1;
+	glm::mat4 viewProj = _player->getCamera()->getProjectionMatrix() * _player->getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	player.getCamera()->setupFog(shader, _environment);
+	_player->getCamera()->setupFog(shader, _environment);
 	for (auto & [chunkPos, chunkPtr] : _chunks)
 	{
 		if (!chunkPtr)
@@ -58,10 +59,10 @@ void World::render(const Shader & shader, const Player & player)
 		if (state == IDLE)
 			continue;
 		if (_procedural && state == UPLOADED &&
-			(chunkPtr->getChunkX() > static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) + renderDistance * CHUNK_DELETION_DISTANCE
-			|| chunkPtr->getChunkX() < static_cast<int>(std::floor(player.getLocation().getX() / CHUNK_WIDTH)) - renderDistance * CHUNK_DELETION_DISTANCE
-			|| chunkPtr->getChunkZ() > static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) + renderDistance * CHUNK_DELETION_DISTANCE
-			|| chunkPtr->getChunkZ() < static_cast<int>(std::floor(player.getLocation().getZ() / CHUNK_DEPTH)) - renderDistance * CHUNK_DELETION_DISTANCE))
+			(chunkPtr->getChunkX() > static_cast<int>(std::floor(_player->getLocation().getX() / CHUNK_WIDTH)) + renderDistance * CHUNK_DELETION_DISTANCE
+			|| chunkPtr->getChunkX() < static_cast<int>(std::floor(_player->getLocation().getX() / CHUNK_WIDTH)) - renderDistance * CHUNK_DELETION_DISTANCE
+			|| chunkPtr->getChunkZ() > static_cast<int>(std::floor(_player->getLocation().getZ() / CHUNK_DEPTH)) + renderDistance * CHUNK_DELETION_DISTANCE
+			|| chunkPtr->getChunkZ() < static_cast<int>(std::floor(_player->getLocation().getZ() / CHUNK_DEPTH)) - renderDistance * CHUNK_DELETION_DISTANCE))
 		{
 			delete chunkPtr;
 			deletableChunks.push_back(chunkPos);
@@ -76,7 +77,7 @@ void World::render(const Shader & shader, const Player & player)
 			chunkPtr->unloadMesh();
 			chunkPtr->uploadMesh();
 		}
-		if (player.isWithinRenderDistance(chunkPtr))
+		if (_player->isWithinRenderDistance(chunkPtr))
 			chunkPtr->render(shader);
 	}
 	for (glm::ivec2 chunkPos : deletableChunks)
@@ -98,8 +99,8 @@ Chunk * World::getChunkAt(int x, int z) const
 	int chunkX;
 	int chunkZ;
 
-	chunkX = std::floor(static_cast<double>(x) / CHUNK_WIDTH);
-	chunkZ = std::floor(static_cast<double>(z) / CHUNK_DEPTH);
+	chunkX = static_cast<int>(std::floor(static_cast<double>(x) / CHUNK_WIDTH));
+	chunkZ = static_cast<int>(std::floor(static_cast<double>(z) / CHUNK_DEPTH));
 	return getChunkAtChunkLocation(chunkX, chunkZ);
 }
 
@@ -145,7 +146,7 @@ BlockType World::getBlockAt(const Location & loc) const
 {
 	if (loc.getY() < 0 || loc.getY() >= CHUNK_HEIGHT)
 		return BlockTypeRegistry::getBlockType(AIR);
-	Chunk * chunk = getChunkAt(std::floor(loc.getX()), std::floor(loc.getZ()));
+	Chunk * chunk = getChunkAt(static_cast<int>(std::floor(loc.getX())), static_cast<int>(std::floor(loc.getZ())));
 	if (!chunk || chunk->getState() == IDLE)
 		return BlockTypeRegistry::getBlockType(AIR);
 	return chunk->getBlockAt(loc);

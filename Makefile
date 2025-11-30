@@ -175,6 +175,7 @@ download_glew:
 	make extensions; \
 	make; \
 	mkdir -p ../GLEW; \
+	make -C auto; \
 	cp include/GLEW/glew.h ../GLEW/.; \
 	cp lib/libGLEW.a ../GLEW/.; \
 	cd ..; \

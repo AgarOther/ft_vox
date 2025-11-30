@@ -45,7 +45,7 @@ class World
 		void					applyGravity(float deltaTime);
 		void					deleteChunk(Chunk * chunk);
 		void					generateProcedurally(); // wow!
-		void					render(const Shader & shader, const Player & player);
+		void					render(const Shader & shader);
 		
 		void					load();
 		void					shutdown();

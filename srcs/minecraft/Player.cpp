@@ -33,7 +33,7 @@ static glm::vec3 translateDirection(const float yaw, const float pitch)
 	return (direction);
 }
 
-void Player::interceptInputs(GLFWwindow * window, float deltaTime)
+void Player::checkIfSpawned()
 {
 	if (!_spawned)
 	{
@@ -47,7 +47,10 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 		else
 			return;
 	}
+}
 
+void Player::interceptInputs(GLFWwindow * window, float deltaTime)
+{
 	static bool lastFrameMouseClicked = false;
 	const bool mouseClickedL = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if (mouseClickedL && !lastFrameMouseClicked)
@@ -68,13 +71,7 @@ void Player::interceptInputs(GLFWwindow * window, float deltaTime)
 	/* GPT Code */
 	// GPT my friend who helps me with the weirdest maths
 	// Calculate forward vector for movement based on pitch (only in X-Z plane)
-	glm::vec3 forward;
-	forward.x = cosf(glm::radians(_camera->getPitch())) * cosf(glm::radians(_camera->getYaw())); // X component based on pitch
-	forward.z = cosf(glm::radians(_camera->getPitch())) * sinf(glm::radians(_camera->getYaw())); // Z component based on pitch
-	forward.y = 0.0f; // No vertical movement based on pitch, set Y to 0
-
-	// Normalize the forward vector to maintain consistent speed
-	forward = glm::normalize(forward);
+	glm::vec3 forward = _camera->computeForward();
 
 	// Calculate the right vector (strafe) using yaw, no pitch influence
 	const glm::vec3 right = glm::normalize(glm::cross(forward, _camera->getAltitude())); // Right direction is based on forward and altitude (up vector)
@@ -158,20 +155,20 @@ void Player::teleport(const Location & location)
 
 Block Player::getTargetedBlock() const
 {
-	float reach = 0;
+	const float maxReach = 4.0f;
+	const float step = 0.1f;
 	glm::vec3 orientation = _camera->getOrientation();
 	glm::vec3 position = _camera->getPosition();
 	BlockType hitBlock;
 
-	do
+	for (float dist = 0.0f; dist <= maxReach; dist += step)
 	{
 		hitBlock = _world->getBlockAt(position);
-		if (hitBlock.isSolid)
-			return (Block){ Location(position).blockalize(), hitBlock };
-		position += glm::dot(orientation, glm::vec3(0.1));
-		reach += 0.1;
-	} while (reach <= 3 + (_gamemode == SPECTATOR) && hitBlock.type == AIR);
-	return (Block){ Location(position).blockalize(), hitBlock };
+		if (hitBlock.isSolid && !hitBlock.isLiquid)
+			return Block { Location(position).blockalize(), hitBlock };
+		position += orientation * step;
+	}
+	return Block { Location(position), hitBlock };
 }
 
 BlockType Player::getBlockAtEyeLocation() const

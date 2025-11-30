@@ -63,6 +63,7 @@ class Player
 
 		void				interceptInputs(GLFWwindow * window, float deltaTime);
 		void				checkFogChange();
+		void				checkIfSpawned();
 
 		bool				isWithinRenderDistance(Chunk * chunk) const;
 

@@ -50,7 +50,7 @@ int main(void)
 		player->interceptInputs(scene.getWindow(), deltaTime);
 		player->getCamera()->setupMatrix(shader);
 		skybox.render(player->getCamera(), player->getWorld()->getEnvironment());
-		player->getWorld()->render(shader, *player);
+		player->getWorld()->render(shader);
 		crosshair.draw(static_cast<float>(player->getCamera()->getWidth()) / static_cast<float>(player->getCamera()->getHeight()));
 
 		if (hasGui)

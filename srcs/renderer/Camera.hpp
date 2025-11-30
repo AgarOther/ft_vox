@@ -63,7 +63,10 @@ class Camera
 		void		setRenderDistance(uint8_t renderDistance) { _renderDistance = renderDistance; } 
 		void		setFogActive(bool fogActive) { _fogActive = fogActive; } 
 		void		setFogStart(float fogStart) { _fogStart = fogStart; } 
-		void		setFogEnd(float fogEnd) { _fogEnd = fogEnd; } 
+		void		setFogEnd(float fogEnd) { _fogEnd = fogEnd; }
+
+		glm::vec3	computeForward();
+		
 	private:
 		glm::mat4	_proj;
 		glm::mat4	_view;

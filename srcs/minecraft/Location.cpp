@@ -57,7 +57,7 @@ double Location::distance(const Location & loc) const
 Location & Location::blockalize()
 {
 	_x = static_cast<int>(std::floor(_x));
-	_y = static_cast<int>(std::ceil(_y));
+	_y = static_cast<int>(std::floor(_y));
 	_z = static_cast<int>(std::floor(_z));
 	return (*this);
 }
