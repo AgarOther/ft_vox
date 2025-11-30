@@ -163,10 +163,12 @@ void InputManager::interceptMouse(Scene * scene)
 	else if (camera->getPitch() < -89.99f)
 		camera->setPitch(-89.99f);
 	
-	if (camera->getYaw() < -179.99f)
-		camera->setYaw(180.0f);
-	else if (camera->getYaw() > 179.99f)
-		camera->setYaw(-180.0f);
+	float yaw = camera->getYaw();
+	if (yaw > 180.0f)
+		yaw -= 360.0f;
+	else if (yaw < -180.0f)
+		yaw += 360.0f;
+	camera->setYaw(yaw);
 
 	camera->setOrientation(translateDirection(camera->getYaw(), camera->getPitch()));
 
