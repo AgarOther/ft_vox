@@ -26,12 +26,12 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/objects/Crosshair.cpp \
 						srcs/objects/Filter.cpp \
 						srcs/objects/Frustum.cpp \
-						srcs/objects/Shader.cpp \
 						srcs/objects/Skybox.cpp \
 						srcs/registry/BlockTypeRegistry.cpp \
 						srcs/registry/ObjectRegistry.cpp \
 						srcs/registry/StructureRegistry.cpp \
 						srcs/scene/Scene.cpp \
+						srcs/shaders/Shader.cpp \
 						srcs/utils/command_utils.cpp \
 						srcs/utils/glfw_utils.cpp \
 						srcs/utils/imgui_utils.cpp \
@@ -57,6 +57,7 @@ INCLUDES			=	-I includes \
 						-I srcs/objects \
 						-I srcs/registry \
 						-I srcs/scene \
+						-I srcs/shaders \
 						-I libs/imgui \
 						-I libs/GLFW \
 						-I libs/glm \
