@@ -18,7 +18,7 @@
 #include "InputManager.hpp"
 
 DebugInfo g_DEBUG_INFO = {0, 0, 0, false};
-constexpr unsigned long long WORLD_SEED = 42;
+constexpr Seed WORLD_SEED = 42;
 
 int main(void)
 {

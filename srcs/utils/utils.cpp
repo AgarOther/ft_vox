@@ -66,7 +66,7 @@ long getTimeAsMilliseconds()
 	return std::chrono::duration_cast<std::chrono::milliseconds>(ms.time_since_epoch()).count();
 }
 
-unsigned long generateRandomSeed()
+Seed generateRandomSeed()
 {
 	static std::random_device rd;
     static std::mt19937_64 gen(rd());
