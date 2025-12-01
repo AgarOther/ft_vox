@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include "GLEW/glew.h"
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "BlockTypeRegistry.hpp"
 

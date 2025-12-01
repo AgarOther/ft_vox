@@ -2,7 +2,7 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/type_ptr.hpp"
-#include "GLEW/glew.h"
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
 

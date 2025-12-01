@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GLEW/glew.h"
+#include <GL/glew.h>
 #include <GL/gl.h>
 #include "Player.hpp"
 

@@ -108,8 +108,8 @@ void Chunk::generateBlocks(Environment environment)
 				if (environment == OVERWORLD)
 				{
 					// I added magic numbers to X/Z so that the noise doesn't make a weird symmetry at 0, 0
-					const float noiseValue = (_world->getNoise().getNoise(worldX + 1234567.0f, 
-												worldZ + 1234567.0f, OCTAVES) + 1.0f) * 0.5f;
+					const float noiseValue = (_world->getNoise().getNoise(worldX + 424242.0f, 
+												worldZ + 424242.0f, OCTAVES) + 1.0f) * 0.5f;
 					// const float erosion = std::clamp(noiseValue * 0.5f, 0.0f, 0.25f) * 4.0f;
 					// const float erosionValue = noiseValue - erosion * (noiseValue * noiseValue - noiseValue);
 					const int height = static_cast<int>(std::floor(noiseValue * SEA_LEVEL * 2));

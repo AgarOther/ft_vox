@@ -1,7 +1,7 @@
 # Compilation
 CC					=	c++
 CFLAGS				=	-Wall -Wextra -Werror -std=c++20 -g -MP -MMD
-LDFLAGS				=	-lglfw -lGL -lm
+LDFLAGS				=	-lglfw -lGL -lm -lGLEW
 
 # Names
 NAME				=	player
@@ -9,6 +9,7 @@ NAME				=	player
 # Sources & Includes
 SRCS				= 	srcs/debug.cpp \
 						srcs/main.cpp \
+						srcs/stb_impl.cpp \
 						srcs/input/InputManager.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Location.cpp \
@@ -36,8 +37,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/utils/imgui_utils.cpp \
 						srcs/utils/utils.cpp \
 						srcs/utils/textureatlas_utils.cpp
-LIBS_SRC			=	libs/stb/stb_image.cpp \
-						libs/imgui/imgui_demo.cpp \
+LIBS_SRC			=	libs/imgui/imgui_demo.cpp \
 						libs/imgui/imgui_draw.cpp \
 						libs/imgui/imgui_tables.cpp \
 						libs/imgui/imgui_impl_glfw.cpp \
@@ -57,13 +57,12 @@ INCLUDES			=	-I includes \
 						-I srcs/renderer \
 						-I srcs/scene \
 						-I libs/imgui \
-						-I libs/GLEW \
 						-I libs/GLFW \
 						-I libs/glm \
+						-I libs/stb \
 						-I libs/
 
-LIBS				=	libs/GLEW/libGLEW.a \
-						libs/GLFW/libglfw3.a
+LIBS				=	libs/GLFW/libglfw3.a
 
 # Objects
 OBJS				=	$(patsubst srcs/%, $(OBJ_FOLDER)/%, $(SRCS:.cpp=.o)) \
@@ -86,7 +85,12 @@ ALL_FCLEAN			=	@echo "[SRCS] $(LIGHT_GREEN)Project's objects & Executables clean
 
 # Rules
 
-all : glfw glm glew imgui $(NAME)
+all : # -j friendly
+	$(MAKE) glfw
+	$(MAKE) glm
+	$(MAKE) imgui
+	$(MAKE) stb
+	$(MAKE) $(NAME)
 
 $(NAME): $(IMGUI) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME) $(LDFLAGS)
@@ -120,11 +124,11 @@ re :
 
 debug : CFLAGS += -DDEBUG
 debug :
-	$(MAKE) CFLAGS="$(CFLAGS)" -j32 $(NAME)
+	$(MAKE) CFLAGS="$(CFLAGS)" $(NAME)
 
 debugrun : CFLAGS += -DDEBUG
 debugrun :
-	$(MAKE) CFLAGS="$(CFLAGS)" -j32 $(NAME)
+	$(MAKE) CFLAGS="$(CFLAGS)" $(NAME)
 	./$(NAME)
 
 download_glfw:
@@ -166,32 +170,6 @@ glm:
 		make --no-print-directory download_glm; \
 	fi
 
-download_glew:
-	@cd libs; \
-	rm -rf GLEW_DOWNLOADED 2>/dev/null; \
-	echo "\033[31;1;4mGLEW Not Found\033[0m"; \
-	echo "\033[31;1mDownloading it from github\033[0m"; \
-	git clone https://github.com/nigels-com/glew.git GLEW_DOWNLOADED; \
-	echo "\033[31;1mCompiling it\033[0m"; \
-	cd GLEW_DOWNLOADED; \
-	make extensions; \
-	make; \
-	mkdir -p ../GLEW; \
-	make -C auto; \
-	cp include/GLEW/glew.h ../GLEW/.; \
-	cp lib/libGLEW.a ../GLEW/.; \
-	cd ..; \
-	rm -rf GLEW_DOWNLOADED
-
-glew:
-	@mkdir -p libs
-	@if ! ls ./libs/GLEW 2>/dev/null | grep -q "glew.h" ; then \
-		make --no-print-directory download_glew; \
-	fi
-	@if ! ls ./libs/GLEW 2>/dev/null | grep -q "libGLEW.a" ; then \
-		make --no-print-directory download_glew; \
-	fi
-
 download_imgui:
 	@cd libs; \
 	rm -rf imgui_downloaded 2>/dev/null; \
@@ -223,9 +201,22 @@ imgui:
 		make --no-print-directory download_imgui; \
 	fi
 
+download_stb:
+	@cd libs; \
+	rm -rf stb 2>/dev/null; \
+	echo "\033[31;1;4mSTB Not Found\033[0m"; \
+	echo "\033[31;1mDownloading it from github\033[0m"; \
+	git clone https://github.com/nothings/stb.git stb; \
+
+stb:
+	@mkdir -p libs
+	@if ! ls ./libs/stb 2>/dev/null | grep -q "stb_image.h" ; then \
+		make --no-print-directory download_stb; \
+	fi
+
 $(IMGUI): %.o: %.cpp
 	@gcc $(INCLUDES) $< -c -o $@
 
-.PHONY: all clean fclean re glm glfw glew imgui debug debugrun download_glm download_glew download_glfw download_imgui
+.PHONY: all clean fclean re glm glfw imgui stb debug debugrun download_glm download_glfw download_imgui download_stb
 
 -include $(DEPS)
