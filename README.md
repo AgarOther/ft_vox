@@ -1,3 +1,5 @@
+<img width="1920" height="1080" alt="New Project" src="https://github.com/user-attachments/assets/ad5a4fef-d37f-4a9a-8baf-9c98dc3035f6" />
+
 # This is a Work-In-Progress solo "ft_vox".
 Despite its name, it doesn't follow 42's subject as I'm doing this solo, has ImGUI in it and player mechanics. <br>
 See this more like a personal Minecraft clone in OpenGL than anything else. *It also has the Nether and The End dimensions!* <br>
@@ -39,3 +41,7 @@ In the F3 ImGUI menu, you'll see a command line. Here you can try these commands
 - ImGUI
 - GLEW
 - GLFW
+# Credits
+- mbatty & mbirou for their OpenGL help 🤓☝️
+- [Draconic Evolution](https://github.com/Draconic-Inc/Draconic-Evolution) for its End Chaos Island I reproduced using its Java code!
+- You, because no one ever reads a readme until the end.
