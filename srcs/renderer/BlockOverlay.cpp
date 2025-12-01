@@ -1,7 +1,7 @@
 #include "BlockOverlay.hpp"
 #include "ObjectRegistry.hpp"
 
-BlockOverlay::BlockOverlay(Camera * camera): _camera(camera), _shader(Shader("blockoverlay.vert", "blockoverlay.frag"))
+BlockOverlay::BlockOverlay(): _shader(Shader("blockoverlay.vert", "blockoverlay.frag"))
 {
 	glGenVertexArrays(1, &_vao);
 	glGenBuffers(1, &_vbo);
@@ -40,13 +40,15 @@ BlockOverlay::~BlockOverlay()
 		glDeleteVertexArrays(1, &_vao);
 }
 
-void BlockOverlay::draw(const Block & targetedBlock, float deltaTime)
+void BlockOverlay::draw(Player * player, float deltaTime)
 {
 	const float minOpacity = 0.05f;
 	const float maxOpacity = 0.2f;
 	const float speed = 0.4f;
 	static float direction = 1.0f;
 	static float opacity = 0.2f;
+	Block targetedBlock = player->getTargetedBlock();
+	Camera * camera = player->getCamera();
 
 	if (!targetedBlock.blockType.isSolid)
 		return;
@@ -54,7 +56,7 @@ void BlockOverlay::draw(const Block & targetedBlock, float deltaTime)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), targetedBlock.position.clone().add(0.5, -0.002, 0.5).getVec3());
 	model = glm::scale(model, glm::vec3(1.005f));
-	_camera->setupMatrix(_shader);
+	camera->setupMatrix(_shader);
 	_shader.setMat4("model", model);
 	_shader.setFloat("opacity", opacity);
 	glBindVertexArray(_vao);

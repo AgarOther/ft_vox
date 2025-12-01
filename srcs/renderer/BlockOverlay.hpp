@@ -7,12 +7,11 @@
 class BlockOverlay
 {
 	public:
-		BlockOverlay(Camera * camera);
+		BlockOverlay();
 		~BlockOverlay();
 
-		void			draw(const Block & targetedBlock, float deltaTime);
+		void			draw(Player * player, float deltaTime);
 	private:
-		Camera *		_camera;
 		GLuint			_vao;
 		GLuint			_vbo;
 		GLuint			_ibo;
