@@ -10,6 +10,7 @@ NAME				=	player
 SRCS				= 	srcs/debug.cpp \
 						srcs/main.cpp \
 						srcs/stb_impl.cpp \
+						srcs/camera/Camera.cpp \
 						srcs/input/InputManager.cpp \
 						srcs/minecraft/BoundingBox.cpp \
 						srcs/minecraft/Location.cpp \
@@ -21,16 +22,15 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/voxel/chunk/ChunkWorker.cpp \
 						srcs/minecraft/voxel/world/World.cpp \
 						srcs/noise/Noise.cpp \
+						srcs/objects/BlockOverlay.cpp \
+						srcs/objects/Crosshair.cpp \
+						srcs/objects/Filter.cpp \
+						srcs/objects/Frustum.cpp \
+						srcs/objects/Shader.cpp \
+						srcs/objects/Skybox.cpp \
 						srcs/registry/BlockTypeRegistry.cpp \
 						srcs/registry/ObjectRegistry.cpp \
 						srcs/registry/StructureRegistry.cpp \
-						srcs/renderer/BlockOverlay.cpp \
-						srcs/renderer/Camera.cpp \
-						srcs/renderer/Crosshair.cpp \
-						srcs/renderer/Filter.cpp \
-						srcs/renderer/Frustum.cpp \
-						srcs/renderer/Shader.cpp \
-						srcs/renderer/Skybox.cpp \
 						srcs/scene/Scene.cpp \
 						srcs/utils/command_utils.cpp \
 						srcs/utils/glfw_utils.cpp \
@@ -46,6 +46,7 @@ LIBS_SRC			=	libs/imgui/imgui_demo.cpp \
 						libs/imgui/imgui.cpp
 OBJ_FOLDER			=	objs
 INCLUDES			=	-I includes \
+						-I srcs/camera \
 						-I srcs/engine \
 						-I srcs/input \
 						-I srcs/minecraft \
@@ -53,8 +54,8 @@ INCLUDES			=	-I includes \
 						-I srcs/minecraft/voxel/chunk \
 						-I srcs/minecraft/voxel/world \
 						-I srcs/noise \
+						-I srcs/objects \
 						-I srcs/registry \
-						-I srcs/renderer \
 						-I srcs/scene \
 						-I libs/imgui \
 						-I libs/GLFW \
@@ -85,14 +86,9 @@ ALL_FCLEAN			=	@echo "[SRCS] $(LIGHT_GREEN)Project's objects & Executables clean
 
 # Rules
 
-all : # -j friendly
-	$(MAKE) glfw
-	$(MAKE) glm
-	$(MAKE) imgui
-	$(MAKE) stb
-	$(MAKE) $(NAME)
+all : $(NAME)
 
-$(NAME): $(IMGUI) $(OBJS)
+$(NAME): glfw glm imgui stb $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME) $(LDFLAGS)
 	$(EXE_DONE)
 
@@ -213,9 +209,6 @@ stb:
 	@if ! ls ./libs/stb 2>/dev/null | grep -q "stb_image.h" ; then \
 		make --no-print-directory download_stb; \
 	fi
-
-$(IMGUI): %.o: %.cpp
-	@gcc $(INCLUDES) $< -c -o $@
 
 .PHONY: all clean fclean re glm glfw imgui stb debug debugrun download_glm download_glfw download_imgui download_stb
 
