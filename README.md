@@ -6,6 +6,7 @@ If you have any questions, need help with anything or just want to suggest thing
 # Libraries used
 - OpenGL
 - STB
+- GLM
 - ImGUI
 - GLEW
 - GLFW
