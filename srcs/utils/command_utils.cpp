@@ -50,6 +50,9 @@ void dispatchCommand(char * buffer, Player * player)
 	{
 		World * world = WorldManager::getWorld(args[1]);
 		if (world)
+		{
 			player->setWorld(world);
+			player->checkFogChange();
+		}
 	}
 }
