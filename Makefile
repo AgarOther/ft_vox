@@ -87,9 +87,14 @@ ALL_FCLEAN			=	@echo "[SRCS] $(LIGHT_GREEN)Project's objects & Executables clean
 
 # Rules
 
-all : $(NAME)
+all : # -j friendly
+	$(MAKE) glfw
+	$(MAKE) glm
+	$(MAKE) imgui
+	$(MAKE) stb
+	$(MAKE) $(NAME)
 
-$(NAME): glfw glm imgui stb $(OBJS)
+$(NAME): $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) $(LIBS) -o $(NAME) $(LDFLAGS)
 	$(EXE_DONE)
 
