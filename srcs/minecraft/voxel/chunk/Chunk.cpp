@@ -40,6 +40,8 @@ void Chunk::_generateStructures()
 		if (dx >= CHUNK_WIDTH || dy >= CHUNK_HEIGHT || dz >= CHUNK_DEPTH)
 			continue;
 		_blocks[dx][dy][dz] = data.second;
+		if (dy > _highestY)
+			_highestY = dy;
 	}
 }
 
@@ -47,7 +49,7 @@ void Chunk::_generateSand(Environment environment)
 {
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
-		for (int y = 0; y < CHUNK_HEIGHT; ++y)
+		for (int y = 0; y <= _highestY; ++y)
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
@@ -96,9 +98,11 @@ void Chunk::generateBlocks(Environment environment)
 
 	if (getState() != IDLE)
 		return;
+
+	int maxY = _highestY == 0 ? CHUNK_HEIGHT : _highestY + 1;
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
-		for (int y = 0; y < CHUNK_HEIGHT; ++y)
+		for (int y = 0; y < maxY; ++y)
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
@@ -230,7 +234,10 @@ void Chunk::generateBlocks(Environment environment)
 					// Default = air
 					if (!placed)
 						_blocks[x][y][z] = AIR;
+					
 				}
+				if (_blocks[x][y][z] != AIR && y > _highestY)
+						_highestY = y;
 			}
 		}
 	}
@@ -409,16 +416,16 @@ void Chunk::generateMesh()
 
 	_vertices.clear();
 	_indices.clear();
-	opaqueVertices.reserve(CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH * 4 * 6 * VERTICES_COUNT);
-	transparentVertices.reserve(CHUNK_WIDTH * CHUNK_HEIGHT * CHUNK_DEPTH * 4 * 6 * VERTICES_COUNT);
+	opaqueVertices.reserve(CHUNK_WIDTH * _highestY * CHUNK_DEPTH * 4 * 6 * VERTICES_COUNT);
+	transparentVertices.reserve(CHUNK_WIDTH * _highestY * CHUNK_DEPTH * 4 * 6 * VERTICES_COUNT);
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
-		for (int y = 0; y < CHUNK_HEIGHT; ++y)
+		for (int y = 0; y <= _highestY; ++y)
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
 				const BlockType & block = BlockTypeRegistry::getBlockType(_blocks[x][y][z]);
-				if (!block.isVisible)
+				if (!block.isVisible || !_isBlockVisible(x, y, z))
 					continue;
 
 				bool isTransparent = block.isLiquid || block.isTransparent;
@@ -590,6 +597,8 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 		_world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1)->setState(DIRTY);
 	if (localZ == CHUNK_DEPTH - 1)
 		_world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1)->setState(DIRTY);
+	if (localY > _highestY)
+		_highestY = localY;
 	setState(DIRTY);
 }
 

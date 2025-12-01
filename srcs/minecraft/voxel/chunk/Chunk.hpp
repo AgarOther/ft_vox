@@ -38,8 +38,7 @@ class Chunk
 {
 	public:
 		Chunk(int chunkX, int chunkZ, World * world):
-			_chunkX(chunkX), _chunkZ(chunkZ), _vao(0), _vbo(0), _ibo(0), _indicesSize(0),
-			 _world(world), _state(IDLE) {}
+			_chunkX(chunkX), _chunkZ(chunkZ), _world(world), _state(IDLE) {}
 		~Chunk();
 
 		void						generateBlocks(Environment environment);
@@ -61,11 +60,11 @@ class Chunk
 	private:
 		const int					_chunkX;
 		const int					_chunkZ;
-		GLuint						_vao;
-		GLuint						_vbo;
-		GLuint						_ibo;
+		GLuint						_vao = 0;
+		GLuint						_vbo = 0;
+		GLuint						_ibo = 0;
 		uint8_t						_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
-		unsigned int				_indicesSize;
+		unsigned int				_indicesSize = 0;
 		std::vector<float>			_vertices;
 		std::vector<uint16_t>		_indices;
 		World *						_world;
@@ -73,11 +72,12 @@ class Chunk
 		std::mutex					_generateMutex;
 		std::mutex					_meshMutex;
 		ChunkState					_state;
+		int							_highestY = 0;
 
-		bool					_isBlockVisible(int x, int y, int z);
-		bool					_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
-		void					_generateStructures();
-		void					_generateSand(Environment environment);
+		bool						_isBlockVisible(int x, int y, int z);
+		bool						_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);
+		void						_generateStructures();
+		void						_generateSand(Environment environment);
 };	
 
 std::ostream &					operator<<(std::ostream & os, Chunk & chunk);

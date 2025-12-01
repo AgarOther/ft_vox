@@ -45,6 +45,7 @@ In the F3 ImGUI menu, you'll see a command line. Here you can try these commands
 - GLEW
 - GLFW
 # Credits
+- Libany, without her I wouldn't even have been to 42 School and who knows what my life would be right now!
 - mbatty & mbirou for their OpenGL help 🤓☝️
 - [Draconic Evolution](https://github.com/Draconic-Inc/Draconic-Evolution) for its End Chaos Island I reproduced using its Java code!
 - You, because no one ever reads a readme until the end.
