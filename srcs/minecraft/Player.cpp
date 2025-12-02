@@ -51,7 +51,7 @@ void Player::teleport(const Location & location)
 Block Player::getTargetedBlock() const
 {
 	// GPT-Generated
-    const float maxDist = 4.0f;
+    const float maxDist = 4.5f;
     const glm::vec3 rayOrigin = _camera->getPosition();
     const glm::vec3 rayDir = glm::normalize(_camera->getOrientation());
     glm::ivec3 voxel = glm::floor(rayOrigin);

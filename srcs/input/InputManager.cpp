@@ -69,34 +69,25 @@ void InputManager::interceptOneTimeClicks(GLFWwindow * window, int button, int a
 
 	if (action == GLFW_PRESS && !player->getCamera()->isLocked() && player->hasSpawned())
 	{
+		Block block = player->getTargetedBlock();
+		if (!block.blockType.isSolid)
+				return;
 		if (button == GLFW_MOUSE_BUTTON_LEFT)
 		{
-			Block block = player->getTargetedBlock();
-			if (block.blockType.material != AIR)
-			{
-				const Location position = player->getTargetedBlock().position;
-				Chunk * chunk = world->getChunkAt(position.getX(), position.getZ());
-				if (chunk)
-					chunk->changeBlockAt(player->getTargetedBlock().position, AIR);
-			}
+			const Location position = player->getTargetedBlock().position;
+			Chunk * chunk = world->getChunkAt(position.getX(), position.getZ());
+			if (chunk)
+				chunk->changeBlockAt(player->getTargetedBlock().position, AIR);
 		}
 		if (button == GLFW_MOUSE_BUTTON_RIGHT)
 		{
-			Block block = player->getTargetedBlock();
-			if (!block.blockType.isSolid)
-				return;
 			Location newBlockLocation = block.position.clone().add(0.0, 1.0, 0.0);
 			Chunk * chunk = world->getChunkAt(block.position.getX(), block.position.getZ());
 			if (!world->getBlockAt(newBlockLocation).isSolid)
 				chunk->changeBlockAt(newBlockLocation, player->getBlockInHand());
 		}
 		if (button == GLFW_MOUSE_BUTTON_MIDDLE)
-		{
-			Block block = player->getTargetedBlock();
-			if (!block.blockType.isSolid)
-				return;
 			player->setBlockInHand(block.blockType.material);
-		}
 	}
 }
 void InputManager::interceptOneTimeKeys(GLFWwindow * window, int key, int scancode, int action, int mods)

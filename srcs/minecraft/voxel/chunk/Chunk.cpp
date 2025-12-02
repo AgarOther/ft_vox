@@ -116,7 +116,7 @@ void Chunk::generateBlocks(Environment environment)
 				if (it == noiseCache.end())
 				{
 					// I added magic numbers to X/Z so that the noise doesn't make a weird symmetry at 0, 0
-					noiseValue = (_world->getNoise().getNoise(worldX + 424242.0f, worldZ + 424242.0f, OCTAVES) + 1.0f) * 0.5f;
+					noiseValue = (_world->getNoise().getNoise(worldX, worldZ, OCTAVES) + 1.0f) * 0.5f;
 					noiseCache.emplace(glm::vec2(x, z), noiseValue);
 				}
 				else
