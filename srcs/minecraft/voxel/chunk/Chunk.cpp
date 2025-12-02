@@ -1,5 +1,6 @@
 #include <cstdlib>
 #include <mutex>
+#include <unordered_map>
 #include <vector>
 #include <iostream>
 #include "Chunk.hpp"
@@ -10,6 +11,7 @@
 #include "World.hpp"
 #include "errors.hpp"
 #include "utils.hpp"
+#include "glm/gtx/hash.hpp"
 
 // If chunk does weird stuff, revert indices back to uint32_t
 
@@ -99,6 +101,7 @@ void Chunk::generateBlocks(Environment environment)
 	if (getState() != IDLE)
 		return;
 
+	NoiseCache noiseCache;
 	int maxY = _highestY == 0 ? CHUNK_HEIGHT : _highestY + 1;
 	for (int x = 0; x < CHUNK_WIDTH; ++x)
 	{
@@ -106,14 +109,20 @@ void Chunk::generateBlocks(Environment environment)
 		{
 			for (int z = 0; z < CHUNK_DEPTH; ++z)
 			{
+				float noiseValue;
 				float worldX = static_cast<float>(_chunkX * CHUNK_WIDTH + x);
 				float worldZ = static_cast<float>(_chunkZ * CHUNK_DEPTH + z);
-
-				if (environment == OVERWORLD)
+				NoiseCache::iterator it = noiseCache.find(glm::vec2(x, z));
+				if (it == noiseCache.end())
 				{
 					// I added magic numbers to X/Z so that the noise doesn't make a weird symmetry at 0, 0
-					const float noiseValue = (_world->getNoise().getNoise(worldX + 424242.0f, 
-												worldZ + 424242.0f, OCTAVES) + 1.0f) * 0.5f;
+					noiseValue = (_world->getNoise().getNoise(worldX + 424242.0f, worldZ + 424242.0f, OCTAVES) + 1.0f) * 0.5f;
+					noiseCache.emplace(glm::vec2(x, z), noiseValue);
+				}
+				else
+					noiseValue = it->second;
+				if (environment == OVERWORLD)
+				{
 					// const float erosion = std::clamp(noiseValue * 0.5f, 0.0f, 0.25f) * 4.0f;
 					// const float erosionValue = noiseValue - erosion * (noiseValue * noiseValue - noiseValue);
 					const int height = static_cast<int>(std::floor(noiseValue * SEA_LEVEL * 2));
@@ -133,7 +142,6 @@ void Chunk::generateBlocks(Environment environment)
 				}
 				else if (environment == NETHER)
 				{
-					const double noiseValue = (_world->getNoise().getNoise(worldX + 4242.42, worldZ + 2424.24, OCTAVES) + 1.0) * 0.5;
 					const int height = static_cast<int>(noiseValue * LAVA_LEVEL * 2);
 					if (y == 0)
 						_blocks[x][y][z] = BEDROCK;
@@ -405,6 +413,8 @@ void Chunk::generateMesh()
 	std::vector<uint16_t> opaqueIndices;
 	std::vector<uint16_t> transparentIndices;
 	const Object & object = ObjectRegistry::getObject(BLOCK);
+	const float tileSize = 1.0f / TextureAtlas::getTilesPerRow();
+	const float epsilon = 0.001f / TextureAtlas::getWidth();
 	int invisibleFaces;
 
 	if (!_world)
@@ -462,8 +472,6 @@ void Chunk::generateMesh()
 						verticesBuffer.push_back(vz);
 
 						const glm::vec2 baseUV = TextureAtlas::getUVForBlock(block.material, static_cast<BlockFace>(face));
-						float tileSize = 1.0f / TextureAtlas::getTilesPerRow();
-						float epsilon = 0.001f / TextureAtlas::getWidth();
 
 						float localU = blockVertices[vi + 3];
 						float localV = blockVertices[vi + 4];

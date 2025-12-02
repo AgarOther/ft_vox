@@ -58,6 +58,7 @@ class Chunk
 
 		void						setState(ChunkState state) { const std::lock_guard<std::mutex> lg(_stateMutex); _state = state; }
 	private:
+		typedef std::unordered_map<glm::ivec2, float> NoiseCache;
 		const int					_chunkX;
 		const int					_chunkZ;
 		GLuint						_vao = 0;
