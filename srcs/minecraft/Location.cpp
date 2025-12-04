@@ -54,6 +54,15 @@ double Location::distance(const Location & loc) const
 	return (sqrt(pow(loc.getX() - _x, 2) + pow(loc.getY() - _y, 2) + pow(loc.getZ() - _z, 2)));
 }
 
+double Location::distanceSquared(const Location & loc) const
+{
+	double dx = loc.getX() - _x;
+    double dy = loc.getY() - _y;
+    double dz = loc.getZ() - _z;
+
+    return dx*dx + dy*dy + dz*dz;
+}
+
 Location & Location::blockalize()
 {
 	_x = static_cast<int>(std::floor(_x));

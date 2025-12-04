@@ -273,7 +273,15 @@ void World::generateProcedurally()
 		}
 	}
 	if (!queue.empty())
-		_sendToWorkers(queue); // sort before?
+	{
+		Location pLoc = _player->getLocation();
+		std::sort(queue.begin(), queue.end(), [pLoc](Chunk * c1, Chunk * c2) {
+			Location c1loc = Location(c1->getChunkX(), static_cast<int>(std::floor(pLoc.getY())), c1->getChunkZ());
+			Location c2loc = Location(c2->getChunkX(), static_cast<int>(std::floor(pLoc.getY())), c2->getChunkZ());
+			return pLoc.distanceSquared(c1loc) < pLoc.distanceSquared(c2loc);
+		});
+		_sendToWorkers(queue);
+	}
 }
 
 void World::shutdown()

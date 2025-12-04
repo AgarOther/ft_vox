@@ -36,6 +36,7 @@ class Location
 		Location &	sub(int x, int y, int z);
 
 		double		distance(const Location & loc) const;
+		double		distanceSquared(const Location & loc) const;
 		Location &	blockalize();
 
 		Location	clone() const;
