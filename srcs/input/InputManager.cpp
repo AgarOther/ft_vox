@@ -14,6 +14,8 @@ void InputManager::interceptKeyboard(Scene * scene, float deltaTime)
 	const glm::vec3 right = glm::normalize(glm::cross(forward, camera->getAltitude())); // Right direction is based on forward and altitude (up vector)
 	Material playerStandingBlock = player->getBlockUnder(0, -1, 0).material;
 	const float liquidModifier = player->getGamemode() == SURVIVAL ? (playerStandingBlock == WATER ? 0.4f : playerStandingBlock == LAVA ? 0.1f : 1.0f) : 1.0f;
+	
+	static Chunk * lastVisitedChunk = player->getChunk();
 
 	if (!camera->isLocked() && glfwGetWindowAttrib(window, GLFW_FOCUSED) && player->hasSpawned())
 	{
@@ -57,6 +59,9 @@ void InputManager::interceptKeyboard(Scene * scene, float deltaTime)
 			return;
 		player->teleport(finalLocation);
 		player->checkFogChange();
+		if (lastVisitedChunk != player->getChunk())
+			world->generateProcedurally();
+		lastVisitedChunk = player->getChunk();
 	}
 }
 

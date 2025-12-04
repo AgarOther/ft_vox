@@ -55,7 +55,6 @@ int main(void)
 		g_DEBUG_INFO.drawCalls = 0;
 
 		player->getWorld()->applyGravity(deltaTime);
-		player->getWorld()->generateProcedurally();
 		player->getCamera()->setupMatrix(shader);
 		skybox.render(player->getCamera(), player->getWorld()->getEnvironment());
 		player->getWorld()->render(shader);

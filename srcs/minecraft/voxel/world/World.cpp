@@ -22,6 +22,7 @@ void World::load()
 	}
 	_monitor.start();
 	_loaded = true;
+	generateProcedurally(true);
 }
 
 void World::render(const Shader & shader)
@@ -218,12 +219,10 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 	_monitor.queue(chunks);
 }
 
-void World::generateProcedurally()
+void World::generateProcedurally(bool firstLoad)
 {
-	static long cooldown = 0;
-	if (!_loaded || !_procedural || !_player || _monitor.areWorkersWorking() || (cooldown && getTimeAsMilliseconds() - cooldown < 100))
+	if (!_loaded || !_procedural || !_player)
 		return;
-	cooldown = getTimeAsMilliseconds();
 
 	const Location & center = _player->getLocation();
 	const int centerX = std::floor(center.getX() / CHUNK_WIDTH);
@@ -282,6 +281,8 @@ void World::generateProcedurally()
 		});
 		_sendToWorkers(queue);
 	}
+	if (firstLoad)
+		generateProcedurally();
 }
 
 void World::shutdown()

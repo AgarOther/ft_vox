@@ -123,7 +123,10 @@ void showImGui(const ImGuiIO & io, float deltaTime, Scene * scene)
 	int renderDistance = camera->getRenderDistance();
 	ImGui::SliderInt("Render Distance", &renderDistance, 2, 64, "%d Chunks", ImGuiSliderFlags_AlwaysClamp);
 	if (renderDistance != camera->getRenderDistance())
+	{
 		camera->setRenderDistance(static_cast<float>(renderDistance));
+		scene->getPlayer()->getWorld()->generateProcedurally(true);
+	}
 
 	// VSync
 	static bool vsync = false;

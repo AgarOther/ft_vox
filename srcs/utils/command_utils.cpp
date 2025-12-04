@@ -52,6 +52,7 @@ void dispatchCommand(char * buffer, Player * player)
 		if (world)
 		{
 			player->setWorld(world);
+			world->generateProcedurally(true);
 			player->checkFogChange();
 		}
 	}

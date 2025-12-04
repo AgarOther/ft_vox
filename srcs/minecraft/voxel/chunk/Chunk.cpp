@@ -404,10 +404,11 @@ void Chunk::unloadMesh()
 void Chunk::generateMesh()
 {
 	std::lock_guard<std::mutex> lock(_meshMutex);
-	ChunkState state = getState();
 
+	ChunkState state = getState();
 	if (state != GENERATED && state != DIRTY)
 		return;
+
 	std::vector<float> opaqueVertices;
 	std::vector<float> transparentVertices;
 	std::vector<uint16_t> opaqueIndices;

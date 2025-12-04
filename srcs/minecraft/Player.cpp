@@ -171,3 +171,8 @@ bool Player::isWithinRenderDistance(Chunk * chunk) const
 	|| chunk->getChunkZ() > static_cast<int>(std::floor(getLocation().getZ() / CHUNK_DEPTH)) + _camera->getRenderDistance()
 	|| chunk->getChunkZ() < static_cast<int>(std::floor(getLocation().getZ() / CHUNK_DEPTH)) - _camera->getRenderDistance());
 }
+
+Chunk * Player::getChunk() const
+{
+	return _world->getChunkAt(_location.getX(), _location.getZ());
+}

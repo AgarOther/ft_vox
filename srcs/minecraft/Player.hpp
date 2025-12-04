@@ -43,6 +43,7 @@ class Player
 		BlockType			getBlockUnder(int xOffset = 0, int yOffset = 0, int zOffset = 0) const;
 		BlockType			getBlockAtEyeLocation() const;
 		Material			getBlockInHand() const { return _blockInHand; }
+		Chunk *				getChunk() const;
 		bool				hasSpawned() const { return _spawned; }
 
 		void				setName(const std::string & name) { _name = name; }
