@@ -45,7 +45,11 @@ void dispatchCommand(char * buffer, Player * player)
 			atoi(args[3].c_str())), getMaterialFromString(args[4]));
 	}
 	else if (args.size() == 4 && command.rfind("tp ", 0) == 0)
+	{
 		player->teleport(Location(atof(args[1].c_str()), atof(args[2].c_str()), atof(args[3].c_str())));
+		player->getWorld()->generateProcedurally(true);
+		player->checkFogChange();
+	}
 	else if (command.rfind("cw") == 0 && args.size() == 2)
 	{
 		World * world = WorldManager::getWorld(args[1]);

@@ -58,9 +58,9 @@ void InputManager::interceptKeyboard(Scene * scene, float deltaTime)
 				&& gamemode != SPECTATOR)
 			return;
 		player->teleport(finalLocation);
-		player->checkFogChange();
 		if (lastVisitedChunk != player->getChunk())
-			world->generateProcedurally();
+			world->generateProcedurally(false);
+		player->checkFogChange();
 		lastVisitedChunk = player->getChunk();
 	}
 }

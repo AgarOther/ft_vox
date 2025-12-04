@@ -35,6 +35,7 @@ void Player::checkIfSpawned()
 		{
 			_spawnLocation.setY(_world->getHighestYAtChunkLocation(_spawnLocation.getX(), _spawnLocation.getZ())); // make a function to chunkalize coords
 			teleport(_spawnLocation);
+			checkFogChange();
 			_spawned = true;
 		}
 		else
@@ -44,8 +45,8 @@ void Player::checkIfSpawned()
 
 void Player::teleport(const Location & location)
 {
-	 _location = location;
-	 _camera->setPosition(location.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).clone().getVec3());
+	_location = location;
+	_camera->setPosition(location.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).clone().getVec3());
 }
 
 Block Player::getTargetedBlock() const

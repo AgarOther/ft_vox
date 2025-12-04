@@ -445,7 +445,7 @@ void Chunk::generateMesh()
 
 				std::vector<float> blockVertices = object.vertices;
 				std::vector<uint16_t> blockIndices = object.indices;
-				size_t vertexOffset = verticesBuffer.size() / VERTICES_COUNT;
+				uint16_t vertexOffset = verticesBuffer.size() / VERTICES_COUNT;
 
 				invisibleFaces = 0;
 				for (int face = FACE_FRONT; face <= FACE_BOTTOM; ++face)

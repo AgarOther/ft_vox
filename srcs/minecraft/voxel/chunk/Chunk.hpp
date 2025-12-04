@@ -12,8 +12,8 @@
 #define CHUNK_HEIGHT	256
 #define CHUNK_WIDTH		16
 #define CHUNK_DEPTH		16
-#define FREQUENCY		0.00522
-#define AMPLITUDE		1.00261
+#define FREQUENCY		0.00522f
+#define AMPLITUDE		1.00261f
 #define OCTAVES			5
 
 class World;
@@ -65,7 +65,7 @@ class Chunk
 		GLuint						_vbo = 0;
 		GLuint						_ibo = 0;
 		uint8_t						_blocks[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_DEPTH];
-		unsigned int				_indicesSize = 0;
+		size_t						_indicesSize = 0;
 		std::vector<float>			_vertices;
 		std::vector<uint16_t>		_indices;
 		World *						_world;
