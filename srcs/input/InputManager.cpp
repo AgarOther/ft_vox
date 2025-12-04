@@ -83,7 +83,8 @@ void InputManager::interceptOneTimeClicks(GLFWwindow * window, int button, int a
 		{
 			Location newBlockLocation = block.position.clone().add(0.0, 1.0, 0.0);
 			Chunk * chunk = world->getChunkAt(block.position.getX(), block.position.getZ());
-			if (!world->getBlockAt(newBlockLocation).isSolid)
+			if (!world->getBlockAt(newBlockLocation).isSolid && !player->getBlockAtEyeLocation().isSolid
+					&& player->getLocation().clone().blockalize() != newBlockLocation)
 				chunk->changeBlockAt(newBlockLocation, player->getBlockInHand());
 		}
 		if (button == GLFW_MOUSE_BUTTON_MIDDLE)

@@ -23,9 +23,9 @@ class Location
 		double		getY() const { return _y; }
 		double		getZ() const { return _z; }
 
-		void		setX(double x) { _x = x; }
-		void		setY(double y) { _y = y; }
-		void		setZ(double z) { _z = z; }
+		Location &	setX(double x) { _x = x; return *this; }
+		Location &	setY(double y) { _y = y; return *this; }
+		Location &	setZ(double z) { _z = z; return *this; }
 
 		Location &	add(const Location & loc);
 		Location &	add(double x, double y, double z);

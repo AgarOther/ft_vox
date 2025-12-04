@@ -463,8 +463,7 @@ void Chunk::generateMesh()
 						float vy = blockVertices[vi + 1] + y;
 						float vz = blockVertices[vi + 2] + z + 0.5f;
 
-						if ((block.material == WATER || block.material == LAVA)
-							&& !BlockTypeRegistry::getBlockType(_blocks[x][y + 1][z]).isLiquid)
+						if (block.isLiquid && !BlockTypeRegistry::getBlockType(_blocks[x][y + 1][z]).isLiquid)
 							vy -= 0.125f;
 
 						verticesBuffer.push_back(vx);
