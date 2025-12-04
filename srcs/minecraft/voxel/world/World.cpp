@@ -29,12 +29,9 @@ void World::render(const Shader & shader)
 {
 	if (!_loaded || !_player)
 		return;
-	std::vector<ChunkSquaredDistance> renderChunks;
 
-	_player->checkIfSpawned();
-	std::vector<glm::ivec2> deletableChunks;
+	std::vector<ChunkSquaredDistance> renderChunks;
 	shader.bind();
-	const uint8_t renderDistance = _player->getCamera()->getRenderDistance() + 1;
 	glm::mat4 viewProj = _player->getCamera()->getProjectionMatrix() * _player->getCamera()->getViewMatrix();
 	Frustum frustum(viewProj);
 	_player->getCamera()->setupFog(shader);
@@ -59,16 +56,6 @@ void World::render(const Shader & shader)
 		ChunkState state = chunkPtr->getState();
 		if (state == IDLE)
 			continue;
-		if (_procedural && state == UPLOADED &&
-			(chunkPtr->getChunkX() > static_cast<int>(std::floor(_player->getLocation().getX() / CHUNK_WIDTH)) + renderDistance * CHUNK_DELETION_DISTANCE
-			|| chunkPtr->getChunkX() < static_cast<int>(std::floor(_player->getLocation().getX() / CHUNK_WIDTH)) - renderDistance * CHUNK_DELETION_DISTANCE
-			|| chunkPtr->getChunkZ() > static_cast<int>(std::floor(_player->getLocation().getZ() / CHUNK_DEPTH)) + renderDistance * CHUNK_DELETION_DISTANCE
-			|| chunkPtr->getChunkZ() < static_cast<int>(std::floor(_player->getLocation().getZ() / CHUNK_DEPTH)) - renderDistance * CHUNK_DELETION_DISTANCE))
-		{
-			delete chunkPtr;
-			deletableChunks.push_back(chunkPos);
-			continue;
-		}
 		if (!frustum.isChunkVisible(min, max))
 			continue;
 		if (state == MESHED)
@@ -96,9 +83,6 @@ void World::render(const Shader & shader)
 
 	for (const ChunkSquaredDistance & chunkInfo : renderChunks)
 		chunkInfo.second->render(shader);
-
-	for (glm::ivec2 chunkPos : deletableChunks)
-		_chunks.erase(chunkPos);
 }
 
 void World::deleteChunk(Chunk * chunk)
@@ -109,6 +93,30 @@ void World::deleteChunk(Chunk * chunk)
 		_chunks.erase(it);
 		delete chunk;
 	}
+}
+
+void World::_checkForChunkDeletion()
+{
+	const uint8_t renderDistance = _player->getCamera()->getRenderDistance() + 1;
+	std::vector<glm::ivec2> deletableChunks;
+
+	for (std::pair<glm::ivec2, Chunk *> chunkData : _chunks)
+	{
+		Chunk * chunk = chunkData.second;
+		ChunkState state = chunk->getState();
+		if (_procedural && state == UPLOADED &&
+			(chunk->getChunkX() > static_cast<int>(std::floor(_player->getLocation().getX() / CHUNK_WIDTH)) + renderDistance * CHUNK_DELETION_DISTANCE
+			|| chunk->getChunkX() < static_cast<int>(std::floor(_player->getLocation().getX() / CHUNK_WIDTH)) - renderDistance * CHUNK_DELETION_DISTANCE
+			|| chunk->getChunkZ() > static_cast<int>(std::floor(_player->getLocation().getZ() / CHUNK_DEPTH)) + renderDistance * CHUNK_DELETION_DISTANCE
+			|| chunk->getChunkZ() < static_cast<int>(std::floor(_player->getLocation().getZ() / CHUNK_DEPTH)) - renderDistance * CHUNK_DELETION_DISTANCE))
+		{
+			delete chunk;
+			deletableChunks.push_back(chunkData.first);
+			continue;
+		}
+	}
+	for (glm::ivec2 chunkPos : deletableChunks)
+		_chunks.erase(chunkPos);
 }
 
 Chunk * World::getChunkAt(int x, int z) const
@@ -173,6 +181,12 @@ void World::applyGravity(float deltaTime)
 {
 	if (!_loaded || !_player)
 		return;
+
+	if (!_player->hasSpawned())
+	{
+		_player->checkIfSpawned();
+		return;
+	}
 
 	static const float gravity = -25.0f;
 	float verticalPosition;
@@ -283,6 +297,7 @@ void World::generateProcedurally(bool firstLoad)
 	}
 	if (firstLoad)
 		generateProcedurally();
+	_checkForChunkDeletion();
 }
 
 void World::shutdown()

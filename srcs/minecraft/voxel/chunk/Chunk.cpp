@@ -608,6 +608,7 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 	if (localY > _highestY)
 		_highestY = localY;
 	setState(DIRTY);
+	_world->generateProcedurally();
 }
 
 BlockType Chunk::getBlockAtChunkLocation(const Location & loc)

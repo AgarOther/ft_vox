@@ -54,6 +54,7 @@ class World
 		typedef std::pair<float, Chunk *>							ChunkSquaredDistance;
 
 		void					_sendToWorkers(std::vector<Chunk * > & chunks);
+		void					_checkForChunkDeletion();
 
 		ChunkMap				_chunks;
 		std::string				_name;
