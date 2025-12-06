@@ -134,11 +134,10 @@ BlockType Player::getBlockUnder(int xOffset, int yOffset, int zOffset) const
 
 void Player::setWorld(World * world)
 {
-	_world->setPlayer(nullptr);
 	_world->shutdown();
 
-	world->load();
 	world->setPlayer(this);
+	world->load();
 
 	_world = world;
 }
