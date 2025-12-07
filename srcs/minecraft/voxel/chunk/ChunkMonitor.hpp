@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 #include "Chunk.hpp"
-#include "ChunkWorker.hpp"
+#include "PriorityWorker.hpp"
 
 #define CHUNKS_PER_THREAD 2
 
@@ -15,6 +15,7 @@ class ChunkMonitor
 		ChunkMonitor(Environment environment): _environment(environment), _active(false) {}
 		
 		void						queue(std::vector<Chunk * > & chunkQueue);
+		void						queuePriority(std::vector<Chunk * > & chunkQueue);
 		void						start();
 		void						stop();
 		bool						areWorkersWorking() const;
@@ -28,4 +29,5 @@ class ChunkMonitor
 		std::mutex					_queueMutex;
 		std::vector<Chunk * >		_chunkQueue;
 		std::vector<ChunkWorker * >	_workers;
+		PriorityWorker *			_priorityWorker;
 };

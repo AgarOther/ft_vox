@@ -5,6 +5,7 @@
 #include "Noise.hpp"
 #include "Location.hpp"
 #include "types.hpp"
+#include <atomic>
 #include <cstdint>
 #include <mutex>
 
@@ -55,8 +56,12 @@ class Chunk
 		int							getChunkZ() const { return _chunkZ; }
 		glm::ivec2					getChunkLocation() const { return { _chunkX, _chunkZ }; }
 		ChunkState					getState() { const std::lock_guard<std::mutex> lg(_stateMutex); return _state; }
+		bool						hasPriority() const { return _hasWorkerPriority; }
 
 		void						setState(ChunkState state) { const std::lock_guard<std::mutex> lg(_stateMutex); _state = state; }
+		void						setPriority(bool priority) { _hasWorkerPriority = priority; }
+	
+		void						addToPriorityMeshing();
 	private:
 		typedef std::unordered_map<glm::ivec2, float> NoiseCache;
 		const int					_chunkX;
@@ -74,6 +79,7 @@ class Chunk
 		std::mutex					_meshMutex;
 		ChunkState					_state;
 		int							_highestY = 0;
+		std::atomic_bool			_hasWorkerPriority = false;
 
 		bool						_isBlockVisible(int x, int y, int z);
 		bool						_isFaceVisible(BlockFace face, int x, int y, int z, Chunk * front, Chunk * back, Chunk * left, Chunk * right);

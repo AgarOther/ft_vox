@@ -20,6 +20,7 @@ SRCS				= 	srcs/debug.cpp \
 						srcs/minecraft/voxel/chunk/Chunk.cpp \
 						srcs/minecraft/voxel/chunk/ChunkMonitor.cpp \
 						srcs/minecraft/voxel/chunk/ChunkWorker.cpp \
+						srcs/minecraft/voxel/chunk/PriorityWorker.cpp \
 						srcs/minecraft/voxel/world/World.cpp \
 						srcs/noise/Noise.cpp \
 						srcs/objects/BlockOverlay.cpp \

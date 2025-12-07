@@ -47,7 +47,7 @@ void dispatchCommand(char * buffer, Player * player)
 	else if (args.size() == 4 && command.rfind("tp ", 0) == 0)
 	{
 		player->teleport(Location(atof(args[1].c_str()), atof(args[2].c_str()), atof(args[3].c_str())));
-		player->getWorld()->generateProcedurally(true);
+		player->getWorld()->generateProcedurally();
 		player->checkFogChange();
 	}
 	else if (command.rfind("cw") == 0 && args.size() == 2)

@@ -28,12 +28,13 @@ bool ChunkWorker::queue(const std::vector<Chunk * > & chunkQueue)
 	if (chunkQueue.empty())
 		return false;
 
-	_chunkQueue.reserve(chunkQueue.size());
+	_chunkQueue.reserve(_chunkQueue.size() + chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 	{
 		if (chunk && chunk->getState() <= DIRTY)
 			_chunkQueue.push_back(chunk);
 	}
+	_chunkQueue.shrink_to_fit();
 	return true;
 }
 
@@ -47,6 +48,8 @@ void ChunkWorker::_process()
 	_working = true;
 	for (Chunk * chunk : _chunkQueue)
 	{
+		if (chunk && chunk->hasPriority())
+			continue;
 		if (chunk->getState() == IDLE)
 			chunk->generateBlocks(_environment);
 		else

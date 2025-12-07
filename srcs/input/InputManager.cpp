@@ -59,7 +59,7 @@ void InputManager::interceptKeyboard(Scene * scene, float deltaTime)
 			return;
 		player->teleport(finalLocation);
 		if (lastVisitedChunk != player->getChunk())
-			world->generateProcedurally(false);
+			world->generateProcedurally();
 		player->checkFogChange();
 		lastVisitedChunk = player->getChunk();
 	}
@@ -116,6 +116,8 @@ void InputManager::interceptOneTimeKeys(GLFWwindow * window, int key, int scanco
 			glfwSetWindowShouldClose(window, true);
 		if (key == GLFW_KEY_F1)
 			scene->togglePureViewMode();
+		if (key == GLFW_KEY_V)
+			scene->getPlayer()->getWorld()->generateProcedurally();
 	}
 }
 

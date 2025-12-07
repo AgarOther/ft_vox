@@ -125,7 +125,7 @@ void showImGui(const ImGuiIO & io, float deltaTime, Scene * scene)
 	if (renderDistance != camera->getRenderDistance())
 	{
 		camera->setRenderDistance(static_cast<float>(renderDistance));
-		scene->getPlayer()->getWorld()->generateProcedurally(true);
+		scene->getPlayer()->getWorld()->generateProcedurally();
 	}
 
 	// VSync

@@ -588,6 +588,7 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 	int localX = (static_cast<int>(std::floor(loc.getX())) % CHUNK_WIDTH + CHUNK_WIDTH) % CHUNK_WIDTH;
 	int localY = static_cast<int>(std::floor(loc.getY()));
 	int localZ = (static_cast<int>(std::floor(loc.getZ())) % CHUNK_DEPTH + CHUNK_DEPTH) % CHUNK_DEPTH;
+
 	if (localX < 0 || localX >= CHUNK_WIDTH
 		|| localY < 0 || localY >= CHUNK_HEIGHT
 		|| localZ < 0 || localZ >= CHUNK_DEPTH)
@@ -596,19 +597,20 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 			<< loc << " for Chunk(" << _chunkX * CHUNK_WIDTH << ", " << _chunkZ * CHUNK_DEPTH << "), returning air.\n";
 		return ;
 	}
+	std::vector<Chunk *> chunksToUpdate;
 	_blocks[localX][localY][localZ] = newMaterial;
 	if (localX == 0)
-		_world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ)->setState(DIRTY);
+		chunksToUpdate.push_back(_world->getChunkAt(_chunkX - 1, _chunkZ));
 	if (localX == CHUNK_WIDTH - 1)
-		_world->getChunkAtChunkLocation(_chunkX + 1, _chunkZ)->setState(DIRTY);
+		chunksToUpdate.push_back(_world->getChunkAt(_chunkX + 1, _chunkZ));
 	if (localZ == 0)
-		_world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1)->setState(DIRTY);
+		chunksToUpdate.push_back(_world->getChunkAt(_chunkX, _chunkZ - 1));
 	if (localZ == CHUNK_DEPTH - 1)
-		_world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1)->setState(DIRTY);
+		chunksToUpdate.push_back(_world->getChunkAt(_chunkX, _chunkZ + 1));
 	if (localY > _highestY)
 		_highestY = localY;
-	setState(DIRTY);
-	_world->generateProcedurally();
+	chunksToUpdate.push_back(this);
+	_world->sendToPriorityWorker(chunksToUpdate);
 }
 
 BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
@@ -629,6 +631,12 @@ BlockType Chunk::getBlockAtChunkLocation(const Location & loc)
 		[static_cast<int>(std::floor(loc.getY()))]
 		[static_cast<int>(std::floor(loc.getZ()))]
 	);
+}
+
+void Chunk::addToPriorityMeshing()
+{
+	setState(DIRTY);
+	_hasWorkerPriority = true;
 }
 
 std::ostream & operator<<(std::ostream & os, Chunk & chunk)

@@ -15,14 +15,19 @@ void ChunkMonitor::start()
 	if (_workers.empty())
 	{
 		const int threadCount = (std::thread::hardware_concurrency() - 2); // minus main & this one
-		if (threadCount <= 0)
+		if (threadCount - 2 <= 0) // minus at least a worker and a priority
 			handleExit(FAILURE_THREAD);
-		for (int i = 0; i < threadCount; ++i)
+		for (int i = 0; i < threadCount - 1; ++i)
 			_workers.push_back(new ChunkWorker(_environment));
 	}
+	_priorityWorker = new PriorityWorker(_environment);
+
 	_active = true;
+
 	for (ChunkWorker * worker : _workers)
 		worker->start();
+	_priorityWorker->start();
+
 	_thread = std::thread(&ChunkMonitor::_loop, this);
 }
 
@@ -33,12 +38,26 @@ void ChunkMonitor::queue(std::vector<Chunk * > & chunkQueue)
 
 	const std::lock_guard<std::mutex> lg(_queueMutex);
 
-	_chunkQueue.reserve(chunkQueue.size());
+	_chunkQueue.reserve(_chunkQueue.size() + chunkQueue.size());
 	for (Chunk * chunk : chunkQueue)
 	{
-		if (chunk && chunk->getState() <= DIRTY)
-			_chunkQueue.push_back(chunk);
+		if (!chunk)
+			continue;
+		_chunkQueue.push_back(chunk);
 	}
+	_chunkQueue.shrink_to_fit();
+}
+
+void ChunkMonitor::queuePriority(std::vector<Chunk * > & chunkQueue)
+{
+	if (chunkQueue.empty())
+		return;
+
+	const std::lock_guard<std::mutex> lg(_queueMutex);
+
+	for (Chunk * chunk : chunkQueue)
+		chunk->addToPriorityMeshing();
+	_priorityWorker->queue(chunkQueue);
 }
 
 bool ChunkMonitor::areWorkersWorking() const
@@ -54,10 +73,12 @@ bool ChunkMonitor::areWorkersWorking() const
 void ChunkMonitor::_process()
 {
 	const std::lock_guard<std::mutex> lg(_queueMutex);
+
+	if (_chunkQueue.empty()|| areWorkersWorking())
+		return;
+
 	uint8_t	chunksToQueue;
 
-	if (_chunkQueue.empty())
-		return;
 	for (ChunkWorker * worker : _workers)
 	{
 		chunksToQueue = std::min(_chunkQueue.size(), static_cast<size_t>(CHUNKS_PER_THREAD));

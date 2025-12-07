@@ -22,7 +22,7 @@ void World::load()
 	}
 	_monitor.start();
 	_loaded = true;
-	generateProcedurally(true);
+	generateProcedurally();
 }
 
 void World::render(const Shader & shader)
@@ -221,6 +221,11 @@ void World::applyGravity(float deltaTime)
 	}
 }
 
+void World::sendToPriorityWorker(std::vector<Chunk * > & chunks)
+{
+	_monitor.queuePriority(chunks);
+}
+
 void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 {
 	for (Chunk * chunk : chunks)
@@ -233,72 +238,127 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 	_monitor.queue(chunks);
 }
 
-void World::generateProcedurally(bool firstLoad)
+void World::generateProcedurally()
 {
 	if (!_loaded || !_procedural || !_player)
 		return;
+
+	std::vector<Chunk * > tmpQueue;
+	std::vector<Chunk * > generateQueue;
+	std::vector<Chunk * > meshQueue;
 
 	const Location & center = _player->getLocation();
 	const int centerX = std::floor(center.getX() / CHUNK_WIDTH);
 	const int centerZ = std::floor(center.getZ() / CHUNK_DEPTH);
 	const uint8_t renderDistance = _player->getCamera()->getRenderDistance();
-	std::vector<Chunk * > queue;
 
 	for (int x = centerX - renderDistance; x < centerX + renderDistance; x++)
 	{
 		for (int z = centerZ - renderDistance; z < centerZ + renderDistance; z++)
 		{
-			Chunk * tmp = getChunkAtChunkLocation(x, z);
-			if (tmp)
+			Chunk * chunk = getChunkAtChunkLocation(x, z);
+			if (!chunk)
 			{
-				ChunkState state = tmp->getState();
-				if (state == GENERATED)
-				{
-					for (Chunk * chunk : tmp->getNeighborChunks())
-					{
-						if (chunk && chunk->getState() >= MESHED)
-						{
-							chunk->setState(DIRTY);
-							queue.push_back(chunk);
-						}
-					}
-				}
-				else if (state == DIRTY)
-					queue.push_back(tmp);
+				chunk = new Chunk(x, z, this);
+				generateQueue.push_back(chunk);
+				meshQueue.push_back(chunk);
 			}
-			queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
+			else if (chunk && chunk->getState() == DIRTY)
+				meshQueue.push_back(chunk);
+			tmpQueue.push_back(chunk);
 		}
 	}
-	// Pregenerating chunks that are far from the player when workers aren't active
-	if (queue.empty() && !_monitor.areWorkersWorking())
+	_sendToWorkers(generateQueue);
+	for (Chunk * chunk : tmpQueue)
 	{
-		for (int x = centerX - (renderDistance * 1.5); x < centerX + (renderDistance * 1.5); x++)
+		if (!chunk)
+			continue;
+		for (Chunk * neighborChunk : chunk->getNeighborChunks())
 		{
-			for (int z = centerZ - (renderDistance * 1.5); z < centerZ + (renderDistance * 1.5); z++)
+			if (neighborChunk && neighborChunk->getState() >= MESHED)
 			{
-				if (x >= centerX - renderDistance && x < centerX + renderDistance &&
-						z >= centerZ - renderDistance && z < centerZ + renderDistance)
-					continue;
-				Chunk * tmp = getChunkAtChunkLocation(x, z);
-				if (!tmp)
-					queue.push_back(new Chunk(x, z, this));
+				neighborChunk->setState(DIRTY);
+				meshQueue.push_back(neighborChunk);
 			}
 		}
 	}
-	if (!queue.empty())
+	if (!meshQueue.empty())
 	{
 		Location pLoc = _player->getLocation();
-		std::sort(queue.begin(), queue.end(), [pLoc](Chunk * c1, Chunk * c2) {
+		std::sort(meshQueue.begin(), meshQueue.end(), [pLoc](Chunk * c1, Chunk * c2) {
 			Location c1loc = Location(c1->getChunkX(), static_cast<int>(std::floor(pLoc.getY())), c1->getChunkZ());
 			Location c2loc = Location(c2->getChunkX(), static_cast<int>(std::floor(pLoc.getY())), c2->getChunkZ());
 			return pLoc.distanceSquared(c1loc) < pLoc.distanceSquared(c2loc);
 		});
-		_sendToWorkers(queue);
+		_sendToWorkers(meshQueue);
 	}
-	if (firstLoad)
-		generateProcedurally();
 	_checkForChunkDeletion();
 }
+
+// void World::generateProcedurally()
+// {
+// 	if (!_loaded || !_procedural || !_player)
+// 		return;
+
+// 	const Location & center = _player->getLocation();
+// 	const int centerX = std::floor(center.getX() / CHUNK_WIDTH);
+// 	const int centerZ = std::floor(center.getZ() / CHUNK_DEPTH);
+// 	const uint8_t renderDistance = _player->getCamera()->getRenderDistance();
+// 	std::vector<Chunk * > queue;
+
+// 	for (int x = centerX - renderDistance; x < centerX + renderDistance; x++)
+// 	{
+// 		for (int z = centerZ - renderDistance; z < centerZ + renderDistance; z++)
+// 		{
+// 			Chunk * tmp = getChunkAtChunkLocation(x, z);
+// 			if (tmp)
+// 			{
+// 				ChunkState state = tmp->getState();
+// 				if (state == GENERATED)
+// 				{
+// 					for (Chunk * chunk : tmp->getNeighborChunks())
+// 					{
+// 						if (chunk && chunk->getState() >= MESHED)
+// 						{
+// 							chunk->setState(DIRTY);
+// 							queue.push_back(chunk);
+// 						}
+// 					}
+// 				}
+// 				else if (state == DIRTY)
+// 					queue.push_back(tmp);
+// 			}
+// 			queue.push_back(!tmp ? new Chunk(x, z, this) : tmp);
+// 		}
+// 	}
+// 	// Pregenerating chunks that are far from the player when workers aren't active
+// 	if (queue.empty() && !_monitor.areWorkersWorking())
+// 	{
+// 		for (int x = centerX - (renderDistance * 1.5); x < centerX + (renderDistance * 1.5); x++)
+// 		{
+// 			for (int z = centerZ - (renderDistance * 1.5); z < centerZ + (renderDistance * 1.5); z++)
+// 			{
+// 				if (x >= centerX - renderDistance && x < centerX + renderDistance &&
+// 						z >= centerZ - renderDistance && z < centerZ + renderDistance)
+// 					continue;
+// 				Chunk * tmp = getChunkAtChunkLocation(x, z);
+// 				if (!tmp)
+// 					queue.push_back(new Chunk(x, z, this));
+// 			}
+// 		}
+// 	}
+// 	if (!queue.empty())
+// 	{
+// 		Location pLoc = _player->getLocation();
+// 		std::sort(queue.begin(), queue.end(), [pLoc](Chunk * c1, Chunk * c2) {
+// 			Location c1loc = Location(c1->getChunkX(), static_cast<int>(std::floor(pLoc.getY())), c1->getChunkZ());
+// 			Location c2loc = Location(c2->getChunkX(), static_cast<int>(std::floor(pLoc.getY())), c2->getChunkZ());
+// 			return pLoc.distanceSquared(c1loc) < pLoc.distanceSquared(c2loc);
+// 		});
+// 		_sendToWorkers(queue);
+// 	}
+// 	_checkForChunkDeletion();
+// }
 
 void World::shutdown()
 {

@@ -44,11 +44,12 @@ class World
 
 		void					applyGravity(float deltaTime);
 		void					deleteChunk(Chunk * chunk);
-		void					generateProcedurally(bool firstLoad = false); // wow!
+		void					generateProcedurally(); // wow!
 		void					render(const Shader & shader);
 		
 		void					load();
 		void					shutdown();
+		void					sendToPriorityWorker(std::vector<Chunk * > & chunks);
 	private:
 		typedef std::unordered_map<glm::ivec2, Chunk * , IVec2Hash>	ChunkMap;
 		typedef std::pair<float, Chunk *>							ChunkSquaredDistance;

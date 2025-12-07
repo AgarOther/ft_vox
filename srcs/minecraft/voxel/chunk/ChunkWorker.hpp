@@ -10,14 +10,15 @@ class ChunkWorker
 {
 	public:
 		ChunkWorker(Environment environment);
+		virtual ~ChunkWorker() {};
 
 		void					start();
-		bool					queue(const std::vector<Chunk * > & chunkQueue);
+		virtual bool			queue(const std::vector<Chunk * > & chunkQueue);
 		bool					isWorking() { return _working; }
 		void					stop();
-	private:
+	protected:
 		void					_loop();
-		void					_process();
+		virtual void			_process();
 
 		static uint8_t			_count;
 		uint8_t					_id;
