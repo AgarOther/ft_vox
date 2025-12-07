@@ -18,6 +18,12 @@ enum Gamemode
 	SURVIVAL
 };
 
+struct HitBlock
+{
+	Block		block;
+	BlockFace	face;
+};
+
 class Player
 {
 	public:
@@ -39,7 +45,7 @@ class Player
 		float				getVelocityY() const { return _velocity.y; }
 		float				getVelocityZ() const { return _velocity.z; }
 		World *				getWorld() const { return _world; }
-		Block				getTargetedBlock() const;
+		HitBlock			getTargetedBlock() const;
 		BlockType			getBlockUnder(int xOffset = 0, int yOffset = 0, int zOffset = 0) const;
 		BlockType			getBlockAtEyeLocation() const;
 		Material			getBlockInHand() const { return _blockInHand; }

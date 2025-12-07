@@ -49,71 +49,76 @@ void Player::teleport(const Location & location)
 	_camera->setPosition(location.clone().add(0.0, CAMERA_OFFSET_Y, 0.0).clone().getVec3());
 }
 
-Block Player::getTargetedBlock() const
+HitBlock Player::getTargetedBlock() const
 {
 	// GPT-Generated
-    const float maxDist = 4.5f;
-    const glm::vec3 rayOrigin = _camera->getPosition();
-    const glm::vec3 rayDir = glm::normalize(_camera->getOrientation());
-    glm::ivec3 voxel = glm::floor(rayOrigin);
-    const glm::ivec3 step(
-        (rayDir.x > 0) ? 1 : -1,
-        (rayDir.y > 0) ? 1 : -1,
-        (rayDir.z > 0) ? 1 : -1
-    );
-    const glm::vec3 invRayDir(
-        rayDir.x == 0 ? 1e30f : 1.0f / rayDir.x,
-        rayDir.y == 0 ? 1e30f : 1.0f / rayDir.y,
-        rayDir.z == 0 ? 1e30f : 1.0f / rayDir.z
-    );
-    const glm::vec3 nextBoundary(
-        voxel.x + (step.x > 0 ? 1.0f : 0.0f),
-        voxel.y + (step.y > 0 ? 1.0f : 0.0f),
-        voxel.z + (step.z > 0 ? 1.0f : 0.0f)
-    );
-    const glm::vec3 tDelta = glm::abs(invRayDir);
-    glm::vec3 tMax = (nextBoundary - rayOrigin) * invRayDir;
-    float dist = 0.0f;
+	const float maxDist = 4.5f;
+	const glm::vec3 rayOrigin = _camera->getPosition();
+	const glm::vec3 rayDir = glm::normalize(_camera->getOrientation());
+	glm::ivec3 voxel = glm::floor(rayOrigin);
+	const glm::ivec3 step(
+		(rayDir.x > 0) ? 1 : -1,
+		(rayDir.y > 0) ? 1 : -1,
+		(rayDir.z > 0) ? 1 : -1
+	);
+	const glm::vec3 invRayDir(
+		rayDir.x == 0 ? 1e30f : 1.0f / rayDir.x,
+		rayDir.y == 0 ? 1e30f : 1.0f / rayDir.y,
+		rayDir.z == 0 ? 1e30f : 1.0f / rayDir.z
+	);
+	const glm::vec3 nextBoundary(
+		voxel.x + (step.x > 0 ? 1.0f : 0.0f),
+		voxel.y + (step.y > 0 ? 1.0f : 0.0f),
+		voxel.z + (step.z > 0 ? 1.0f : 0.0f)
+	);
+	const glm::vec3 tDelta = glm::abs(invRayDir);
+	glm::vec3 tMax = (nextBoundary - rayOrigin) * invRayDir;
+	float dist = 0.0f;
 	BlockType hit;
 
-    while (dist <= maxDist)
-    {
+	while (dist <= maxDist)
+	{
 		hit = _world->getBlockAt(Location(voxel));
-        if (hit.isSolid && !hit.isLiquid)
-            return Block{ Location(voxel), hit };
-        if (tMax.x < tMax.y)
-        {
-            if (tMax.x < tMax.z)
-            {
-                voxel.x += step.x;
-                dist = tMax.x;
-                tMax.x += tDelta.x;
-            }
-            else
-            {
-                voxel.z += step.z;
-                dist = tMax.z;
-                tMax.z += tDelta.z;
-            }
-        }
-        else
-        {
-            if (tMax.y < tMax.z)
-            {
-                voxel.y += step.y;
-                dist = tMax.y;
-                tMax.y += tDelta.y;
-            }
-            else
-            {
-                voxel.z += step.z;
-                dist = tMax.z;
-                tMax.z += tDelta.z;
-            }
-        }
-    }
+		if (hit.isSolid && !hit.isLiquid)
+		{
+			HitBlock hitBlock;
+			hitBlock.block = Block{ Location(voxel), hit };
+			hitBlock.face = FACE_TOP;
+			return hitBlock;
+		}
+		if (tMax.x < tMax.y)
+		{
+			if (tMax.x < tMax.z)
+			{
+				voxel.x += step.x;
+				dist = tMax.x;
+				tMax.x += tDelta.x;
+			}
+			else
+			{
+				voxel.z += step.z;
+				dist = tMax.z;
+				tMax.z += tDelta.z;
+			}
+		}
+		else
+		{
+			if (tMax.y < tMax.z)
+			{
+				voxel.y += step.y;
+				dist = tMax.y;
+				tMax.y += tDelta.y;
+			}
+			else
+			{
+				voxel.z += step.z;
+				dist = tMax.z;
+				tMax.z += tDelta.z;
+			}
+		}
+	}
 
-    return Block{ Location(voxel), hit };
+	return HitBlock{ Block{ Location(voxel), hit }, FACE_BACK };
 }
 
 BlockType Player::getBlockAtEyeLocation() const

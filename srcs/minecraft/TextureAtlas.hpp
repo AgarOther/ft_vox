@@ -11,7 +11,7 @@
 #define TILE_SIZE 16
 #define COLOR_CHANNELS 4
 
-typedef std::vector<std::pair<BlockFace, std::string>> TextureBuffer;
+typedef std::unordered_map<uint8_t, std::string> TextureBuffer;
 typedef glm::vec2 BlockUV;
 
 struct UVMapHash

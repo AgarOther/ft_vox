@@ -24,7 +24,7 @@ void main()
 	// Calculate lighting
 	vec3 norm = normalize(normal);
 	vec3 light = normalize(-lightDir);
-	float diff = max(dot(norm, light), 0.2);
+	float diff = max(dot(norm, light), 0.3);
 	vec4 lightColor = vec4(texColor.rgb * diff, texColor.a);
 
 	float fogFactor = 1;

@@ -22,7 +22,7 @@ void TextureAtlas::destroy()
 		glDeleteTextures(1, &_id);
 }
 
-void TextureAtlas::_loadTextures(const std::unordered_map<Material, std::vector<std::pair<BlockFace, std::string>>> & texturePaths)
+void TextureAtlas::_loadTextures(const TextureMap & texturePaths)
 {
 	static const std::string prefix = "assets/block/";
 	static int texCount = 0;
@@ -36,10 +36,10 @@ void TextureAtlas::_loadTextures(const std::unordered_map<Material, std::vector<
 	stbi_set_flip_vertically_on_load(true);
 	for (size_t material = UNKNOWN; material < texturePaths.size(); material++)
 	{
-		auto it = texturePaths.find(static_cast<Material>(material));
+		TextureMap::const_iterator it = texturePaths.find(static_cast<Material>(material));
 		if (it == texturePaths.end())
 			handleExit(FAILURE_ATLAS_LOAD);
-		std::vector<std::pair<BlockFace, std::string>> textureContainer = it->second;
+		std::unordered_map<uint8_t, std::string> textureContainer = it->second;
 		if (textureContainer.size() != 6)
 		{
 			std::cout << YELLOW << "Warning: Sent texturePaths of wrong size." << RESET << std::endl;
@@ -53,8 +53,8 @@ void TextureAtlas::_loadTextures(const std::unordered_map<Material, std::vector<
 			int yOffset = yIndex * TILE_SIZE;
 			int width, height, channels;
 
-			BlockFace textureFace = textureContainer[face].first;
-			std::string texturePath = textureContainer[face].second;
+			BlockFace textureFace = static_cast<BlockFace>(face);
+			std::string texturePath = textureContainer[face];
 			if (_textureCache.find(texturePath) != _textureCache.end())
 			{
 				_uvMap[std::pair<Material, BlockFace>(static_cast<Material>(material), textureFace)]= _textureCache[texturePath];
@@ -134,12 +134,12 @@ void TextureAtlas::init()
 	textureMap[CHERRY_LOG]			= loadSideTop("cherry_log.png", "cherry_log_top.png");
 
 	TextureBuffer cartography;
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_FRONT), "cartography_table_side1.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BACK), "cartography_table_side3.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_LEFT), "cartography_table_side2.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_RIGHT), "cartography_table_side3.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_TOP), "cartography_table_top.png"));
-	cartography.push_back(std::pair<BlockFace, std::string>((FACE_BOTTOM), "dark_oak_planks.png"));
+	cartography[FACE_FRONT]			= "cartography_table_side1.png";
+	cartography[FACE_BACK]			= "cartography_table_side3.png";
+	cartography[FACE_LEFT]			= "cartography_table_side2.png";
+	cartography[FACE_RIGHT]			= "cartography_table_side3.png";
+	cartography[FACE_TOP]			= "cartography_table_top.png";
+	cartography[FACE_BOTTOM]		= "dark_oak_planks.png";
 	textureMap[CARTOGRAPHY_TABLE]	= cartography;
 
 	textureMap[GRASS_BLOCK]			= loadSideTopBottom("grass_block_side.png", "grass_block_top.png", "dirt.png");

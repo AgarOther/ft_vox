@@ -47,7 +47,7 @@ void BlockOverlay::draw(Player * player, float deltaTime)
 	const float speed = 0.4f;
 	static float direction = 1.0f;
 	static float opacity = 0.2f;
-	Block targetedBlock = player->getTargetedBlock();
+	Block targetedBlock = player->getTargetedBlock().block;
 	Camera * camera = player->getCamera();
 
 	if (!targetedBlock.blockType.isSolid)

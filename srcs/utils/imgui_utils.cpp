@@ -92,7 +92,7 @@ void showImGui(const ImGuiIO & io, float deltaTime, Scene * scene)
 	ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.9f, 1.0f), "Blocks: %ld | Draw calls: %ld | Triangles: %ld",
 		g_DEBUG_INFO.blocks, g_DEBUG_INFO.drawCalls, g_DEBUG_INFO.triangles);
 
-	ImGui::TextColored(ImVec4(0.4f, 0.84f, 1.0f, 1.0f), "Targeted block: %s", player->getTargetedBlock().blockType.name.c_str());
+	ImGui::TextColored(ImVec4(0.4f, 0.84f, 1.0f, 1.0f), "Targeted block: %s", player->getTargetedBlock().block.blockType.name.c_str());
 	ImGui::TextColored(ImVec4(0.4f, 0.54f, 1.0f, 1.0f), "Block in hand: %s", BlockTypeRegistry::getBlockType(player->getBlockInHand()).name.c_str());
 
 	// FPS
