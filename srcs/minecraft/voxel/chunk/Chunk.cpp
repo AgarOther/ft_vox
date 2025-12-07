@@ -600,13 +600,13 @@ void Chunk::changeBlockAt(const Location & loc, Material newMaterial)
 	std::vector<Chunk *> chunksToUpdate;
 	_blocks[localX][localY][localZ] = newMaterial;
 	if (localX == 0)
-		chunksToUpdate.push_back(_world->getChunkAt(_chunkX - 1, _chunkZ));
+		chunksToUpdate.push_back(_world->getChunkAtChunkLocation(_chunkX - 1, _chunkZ));
 	if (localX == CHUNK_WIDTH - 1)
-		chunksToUpdate.push_back(_world->getChunkAt(_chunkX + 1, _chunkZ));
+		chunksToUpdate.push_back(_world->getChunkAtChunkLocation(_chunkX + 1, _chunkZ));
 	if (localZ == 0)
-		chunksToUpdate.push_back(_world->getChunkAt(_chunkX, _chunkZ - 1));
+		chunksToUpdate.push_back(_world->getChunkAtChunkLocation(_chunkX, _chunkZ - 1));
 	if (localZ == CHUNK_DEPTH - 1)
-		chunksToUpdate.push_back(_world->getChunkAt(_chunkX, _chunkZ + 1));
+		chunksToUpdate.push_back(_world->getChunkAtChunkLocation(_chunkX, _chunkZ + 1));
 	if (localY > _highestY)
 		_highestY = localY;
 	chunksToUpdate.push_back(this);
