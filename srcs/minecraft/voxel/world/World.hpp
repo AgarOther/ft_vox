@@ -31,13 +31,14 @@ class World
 		Chunk *					getChunkAtChunkLocation(int x, int z) const;
 		BlockType				getBlockAt(const Location & loc) const;
 		const Player *			getPlayer() const;
-		int						getHighestYAtChunkLocation(int x, int z) const;
+		int						getHighestY(int x, int z) const;
 		const Noise &			getNoise() const { return _noise; }
 		Environment				getEnvironment() const { return _environment; }
 		const std::string &		getName() const { return _name; }
 
 		bool					isProcedural() const { return _procedural; }
 		bool					isLoaded() const { return _loaded; }
+		bool					isValidTeleportLocation(const Location & location) const;
 
 		void					setProcedural(bool procedural) { _procedural = procedural; }
 		void					setPlayer(Player * player);

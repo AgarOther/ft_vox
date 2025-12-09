@@ -137,7 +137,7 @@ Chunk * World::getChunkAtChunkLocation(int x, int z) const
 	return nullptr;
 }
 
-int World::getHighestYAtChunkLocation(int x, int z) const
+int World::getHighestY(int x, int z) const
 {
 	const int chunkX = x - (x % CHUNK_WIDTH);
 	const int chunkZ = z - (z % CHUNK_DEPTH);
@@ -196,6 +196,14 @@ void World::applyGravity(float deltaTime)
 
 	if (_player->getGamemode() == SURVIVAL && (_player->getVelocityY() != 0 || !_player->getBlockUnder().isSolid))
 	{
+		if (_player->getLocation().getY() < -50.0f)
+		{
+			_player->setVelocityY(0.0f);
+			if (!isValidTeleportLocation(_player->getSpawnLocation()))
+				_player->setGamemode(SPECTATOR);
+			_player->teleport(_player->getSpawnLocation());
+			return;
+		}
 		verticalPosition = _player->getLocation().getY() + _player->getVelocityY() * deltaTime;
 		_player->setVelocityY(_player->getVelocityY() + gravity * liquidModifier * deltaTime);
 		teleportLocation = Location(
@@ -236,6 +244,16 @@ void World::_sendToWorkers(std::vector<Chunk * > & chunks)
 		_chunks[glm::ivec2(chunk->getChunkX(), chunk->getChunkZ())] = chunk;
 	}
 	_monitor.queue(chunks);
+}
+
+bool World::isValidTeleportLocation(const Location & location) const
+{
+	for (int y = 0; y < CHUNK_HEIGHT; ++y)
+	{
+		if (getBlockAt(location.clone().setY(y)).isSolid)
+			return true;
+	}
+	return false;
 }
 
 // void World::generateProcedurally()

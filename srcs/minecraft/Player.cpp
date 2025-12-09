@@ -33,7 +33,7 @@ void Player::checkIfSpawned()
 		Chunk * spawnChunk = _world->getChunkAt(_spawnLocation.getX(), _spawnLocation.getZ());
 		if (spawnChunk && spawnChunk->getState() >= GENERATED)
 		{
-			_spawnLocation.setY(_world->getHighestYAtChunkLocation(_spawnLocation.getX(), _spawnLocation.getZ())); // make a function to chunkalize coords
+			_spawnLocation.setY(_world->getHighestY(_spawnLocation.getX(), _spawnLocation.getZ())); // make a function to chunkalize coords
 			teleport(_spawnLocation);
 			checkFogChange();
 			_spawned = true;
