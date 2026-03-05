@@ -1,0 +1,9 @@
+Diagnostics:
+  UnusedIncludes: None
+
+InlayHints:
+  Enabled: false
+
+CompileFlags:
+  Add: 
+    - -ferror-limit=0

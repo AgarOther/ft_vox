@@ -1,0 +1,535 @@
+#include "Chunk.hpp"
+#include "TextureAtlas.hpp"
+#include "Logger.hpp"
+#include "BlockData.hpp"
+#include "Profiler.hpp"
+
+ChunkAsset Chunk::_generateQuadMesh(float width, float height, float depth, int face)
+{
+	ChunkAsset asset;
+	asset.vertices.reserve(4);
+	asset.indices.reserve(6);
+
+	ChunkVertex v[4];
+
+	v[0].texCoord = {0.0f, 0.005f / height};
+	v[1].texCoord = {1.0f, 0.005f / height};
+	v[2].texCoord = {1.0f, 1.0f};
+	v[3].texCoord = {0.0f, 1.0f};
+
+	//     Y
+	//     ↑
+	//     |
+	//     |
+	//     o──────→ X
+	//    /
+	//   /
+	//  Z
+
+	// Front face (NORTH)
+	// y ↑
+	//   |
+	// 1 | v3 ───── v2
+	//   |  |        |
+	//   |  |        |
+	//   |  |        |
+	// 0 | v0 ───── v1
+	//   +----------------→ x
+	//      0        1
+
+	// 	Indices :
+	// 3 ── 2
+	// |  ╱ |
+	// | ╱  |
+	// 0 ── 1
+
+
+	switch (face)
+	{
+		case NORTH:
+		{
+			v[0].position = { 1 - depth, 0, width };
+			v[1].position = { 1 - depth, 0, 0 };
+			v[2].position = { 1 - depth, height, 0 };
+			v[3].position = { 1 - depth, height, width };
+			v[0].normal = { 1, 0, 0 };
+			v[1].normal = { 1, 0, 0 };
+			v[2].normal = { 1, 0, 0 };
+			v[3].normal = { 1, 0, 0 };
+			break;
+		}
+		case SOUTH:
+		{
+			v[0].position = { depth, 0, 0 };
+			v[1].position = { depth, 0, width };
+			v[2].position = { depth, height, width };
+			v[3].position = { depth, height, 0 };
+			v[0].normal = { -1, 0, 0 };
+			v[1].normal = { -1, 0, 0 };
+			v[2].normal = { -1, 0, 0 };
+			v[3].normal = { -1, 0, 0 };
+			break;
+		}
+		case WEST:
+		{
+			v[0].position = { width, 0, depth };
+			v[1].position = { 0,0, depth };
+			v[2].position = { 0,height, depth };
+			v[3].position = { width, height, depth };
+			v[0].normal = { 0, 0, -1 };
+			v[1].normal = { 0, 0, -1 };
+			v[2].normal = { 0, 0, -1 };
+			v[3].normal = { 0, 0, -1 };
+			break;
+		}
+		case EAST:
+		{
+			v[0].position = { 0, 0, 1 - depth };
+			v[1].position = { width, 0,  1 - depth };
+			v[2].position = { width, height, 1 - depth };
+			v[3].position = { 0, height, 1 - depth };
+			v[0].normal = { 0, 0, 1 };
+			v[1].normal = { 0, 0, 1 };
+			v[2].normal = { 0, 0, 1 };
+			v[3].normal = { 0, 0, 1 };
+			break;
+		}
+		case BOTTOM:
+		{
+			v[0].position = { 0, depth, 0 };
+			v[1].position = { width,  depth, 0 };
+			v[2].position = { width,  depth, height };
+			v[3].position = { 0, depth, height };
+			v[0].normal = { 0, -1, 0 };
+			v[1].normal = { 0, -1, 0 };
+			v[2].normal = { 0, -1, 0 };
+			v[3].normal = { 0, -1, 0 };
+			break;
+		}
+		case TOP:
+		{
+			v[0].position = { width, 1 - depth, 0 };
+			v[1].position = { 0,1 - depth, 0 };
+			v[2].position = { 0,1 - depth, height };
+			v[3].position = { width, 1 - depth, height };
+			v[0].normal = { 0, 1, 0 };
+			v[1].normal = { 0, 1, 0 };
+			v[2].normal = { 0, 1, 0 };
+			v[3].normal = { 0, 1, 0 };
+			break;
+		}
+	}
+
+	asset.vertices.insert(asset.vertices.end(), { v[0], v[1], v[2], v[3] });
+	asset.indices = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	return asset;
+}
+
+inline glm::ivec3 Chunk::_sliceToWorld(int axis, int sliceIndex, int u, int v)
+{
+	if (axis == 0)
+		return glm::ivec3(sliceIndex, u, v);
+	if (axis == 1)
+		return glm::ivec3(u, sliceIndex, v);
+	return glm::ivec3(u, v, sliceIndex);
+}
+
+uint8_t Chunk::_getNeighborBlock(const glm::ivec3 & pos, const glm::ivec3 & normal)
+{
+	int x = pos.x + normal.x;
+	int y = pos.y + normal.y;
+	int z = pos.z + normal.z;
+
+	std::shared_ptr<Chunk> northChunk = _northChunk.lock();
+	std::shared_ptr<Chunk> southChunk = _southChunk.lock();
+	std::shared_ptr<Chunk> topChunk = _topChunk.lock();
+	std::shared_ptr<Chunk> bottomChunk = _bottomChunk.lock();
+	std::shared_ptr<Chunk> eastChunk = _eastChunk.lock();
+	std::shared_ptr<Chunk> westChunk = _westChunk.lock();
+
+	if (x < 0 || x >= CHUNK_WIDTH)
+	{
+		if (normal.x == -1 && southChunk && southChunk->getState() >= BUILT)
+			return southChunk->getBlock(CHUNK_WIDTH - 1, y, z);
+		else if (normal.x == 1 && northChunk && northChunk->getState() >= BUILT)
+			return northChunk->getBlock(0, y, z);
+		else
+			return 0;
+	}
+	if (y < 0 || y >= CHUNK_HEIGHT)
+	{
+		if (normal.y == -1 && bottomChunk && bottomChunk->getState() >= BUILT)
+			return bottomChunk->getBlock(x, CHUNK_HEIGHT - 1, z);
+		else if (normal.y == 1 && topChunk && topChunk->getState() >= BUILT)
+			return topChunk->getBlock(x, 0, z);
+		else
+			return 0;
+	}
+	if (z < 0 || z >= CHUNK_LENGTH)
+	{
+		if (normal.z == -1 && westChunk && westChunk->getState() >= BUILT)
+			return westChunk->getBlock(x, y, CHUNK_LENGTH - 1);
+		else if (normal.z == 1 && eastChunk && eastChunk->getState() >= BUILT)
+			return eastChunk->getBlock(x, y, 0);
+		else
+			return 0;
+	}
+	return _blocks[x][y][z];
+}
+
+glm::vec3 Chunk::_computeQuadSize(const glm::ivec3 & pos, int face)
+{
+	glm::vec3 state(0.0f);
+
+	if (_blocks[pos.x][pos.y][pos.z] != BlockType::WATER)
+		return state;
+	else if (face == TOP)
+		return glm::vec3(0.0f, 0.0f, 0.2f);
+	else if (face != BOTTOM && _getNeighborBlock(pos, glm::vec3(0.0, 1.0, 0.0)) != BlockType::WATER)
+		return glm::vec3(0.0f, 0.2f, 0.0f);
+	else
+		return state;
+}
+
+void Chunk::_emitBlocksFace(const glm::ivec3 & pos, int countBlockWidth, int countBlockHeight, int face, int axis, int sliceIndex)
+{
+	glm::vec3 state = _computeQuadSize(pos, face);
+	ChunkAsset quad;
+	quad = _generateQuadMesh(countBlockWidth - state.x, countBlockHeight - state.y, state.z, face);
+
+	uint32_t verticesAddedO = _chunkOpaqueAsset[axis][sliceIndex].vertices.size();
+	uint32_t verticesAddedT = _chunkTransparencyAsset[axis][sliceIndex].vertices.size();
+	for (ChunkVertex & vertex : quad.vertices)
+	{
+		ChunkVertex tmp = vertex;
+		tmp.position += glm::vec3(pos.x, pos.y, pos.z);
+
+		const std::string & texPath = BlockData::getBlockData(_blocks[pos.x][pos.y][pos.z]).getTexturePath(face);
+		Texture * texture = TextureAtlas::getTexture(texPath);
+		if (!texture)
+			return;
+		if (_blocks[pos.x][pos.y][pos.z] == BlockType::WATER)
+			tmp.alpha = 0.75f;
+		else
+			tmp.alpha = 1.0f;
+		tmp.uvMin = texture->uvMin;
+		tmp.uvMax = texture->uvMax;
+		tmp.uvRepeat = { static_cast<float>(countBlockWidth), static_cast<float>(countBlockHeight) };
+
+		if (_blocks[pos.x][pos.y][pos.z] == BlockType::WATER)
+			_chunkTransparencyAsset[axis][sliceIndex].vertices.push_back(tmp);
+		else
+			_chunkOpaqueAsset[axis][sliceIndex].vertices.push_back(tmp);
+	}
+	if (_blocks[pos.x][pos.y][pos.z] == BlockType::WATER)
+	{
+		for (uint32_t indice : quad.indices)
+			_chunkTransparencyAsset[axis][sliceIndex].indices.push_back(indice + verticesAddedT);
+	}
+	else
+	{
+		for (uint32_t indice : quad.indices)
+			_chunkOpaqueAsset[axis][sliceIndex].indices.push_back(indice + verticesAddedO);
+	}
+}
+
+inline static glm::ivec3 getFaceDir(int axis, FaceDirection faceDir)
+{
+	switch (axis)
+	{
+		case 0: return (faceDir == FaceDirection::FORWARD ? glm::ivec3(1,0,0) : glm::ivec3(-1,0,0));
+		case 1: return (faceDir == FaceDirection::FORWARD ? glm::ivec3(0,1,0) : glm::ivec3(0,-1,0));
+		case 2: return (faceDir == FaceDirection::FORWARD ? glm::ivec3(0,0,1) : glm::ivec3(0,0,-1));
+	}
+	return glm::ivec3(0);
+}
+
+inline static BlockFace getBlockFace(int axis, FaceDirection faceDir)
+{
+	switch (axis)
+	{
+		case 0: return (faceDir == FaceDirection::FORWARD ? NORTH : SOUTH);
+		case 1: return (faceDir == FaceDirection::FORWARD ? TOP : BOTTOM);
+		case 2: return (faceDir == FaceDirection::FORWARD ? EAST : WEST);
+	}
+	return NORTH;
+}
+
+inline static int getProcessedIndex(FaceDirection faceDir)
+{
+	return (faceDir == FaceDirection::FORWARD ? 0 : 1);
+}
+
+void Chunk::_processFace(int u, int v, std::vector<std::array<bool,2>> & processed, FaceDirection faceDir, int axis, int sliceIndex, int uMax, int vMax)
+{
+	int pIndex = getProcessedIndex(faceDir);
+	glm::ivec3 dir = getFaceDir(axis, faceDir);
+	BlockFace face = getBlockFace(axis, faceDir);
+
+	glm::ivec3 pos = _sliceToWorld(axis, sliceIndex, u, v);
+	uint8_t block = _blocks[pos.x][pos.y][pos.z];
+	if (block == 0 || processed[u + v * uMax][pIndex])
+		return;
+
+	uint8_t neighbor = _getNeighborBlock(pos, dir);
+	BlockData blockData = BlockData::getBlockData(neighbor);
+
+	if (blockData.isVisible() && (!blockData.isLiquid() || (blockData.isLiquid() && (block == neighbor))))
+		return;
+
+	int width = 1;
+	int uNext = u + 1;
+	while (uNext < uMax)
+	{
+		glm::ivec3 nextPos = _sliceToWorld(axis, sliceIndex, uNext, v);
+		uint8_t nextBlock = _blocks[nextPos.x][nextPos.y][nextPos.z];
+		uint8_t nextNeighbor = _getNeighborBlock(nextPos, dir);
+		blockData = BlockData::getBlockData(nextNeighbor);
+		if (nextBlock != block || (blockData.isVisible() && (!blockData.isLiquid() || (blockData.isLiquid() && (nextBlock != neighbor)))) || processed[uNext + v * uMax][pIndex])
+			break;
+		width++;
+		uNext++;
+	}
+
+	int height = 1;
+	int oldHeight = 0;
+	for (int i = u; i < u + width; ++i)
+	{
+		int vNext = v + 1;
+		height = 1;
+		while (vNext < vMax)
+		{
+			glm::ivec3 nextPos = _sliceToWorld(axis, sliceIndex, i, vNext);
+			uint8_t nextBlock = _blocks[nextPos.x][nextPos.y][nextPos.z];
+			uint8_t nextNeighbor = _getNeighborBlock(nextPos, dir);
+			blockData = BlockData::getBlockData(nextNeighbor);
+			if (nextBlock != block || (blockData.isVisible() && (!blockData.isLiquid() || (blockData.isLiquid() && (nextBlock != neighbor)))) || processed[i + vNext * uMax][pIndex])
+				break;
+			height++;
+			vNext++;
+		}
+		if (oldHeight == 0 || height < oldHeight)
+			oldHeight = height;
+	}
+	if (oldHeight != 0)
+		height = oldHeight;
+
+	if (axis == 0)
+		_emitBlocksFace(pos, height, width, face, axis, sliceIndex);
+	else
+		_emitBlocksFace(pos, width, height, face, axis, sliceIndex);
+
+	for (int i = u; i < u + width; ++i)
+		for (int j = v; j < v + height; ++j)
+			processed[i + j * uMax][pIndex] = true;
+}
+
+void Chunk::_generateSliceMeshing(int axis, int sliceIndex)
+{
+	int uMax;
+	int vMax;
+	if (axis == 0)
+	{
+		uMax = CHUNK_HEIGHT;
+		vMax = CHUNK_LENGTH;
+	}
+	else if (axis == 1)
+	{
+		uMax = CHUNK_WIDTH;
+		vMax = CHUNK_LENGTH;
+	}
+	else 
+	{
+		uMax = CHUNK_WIDTH;
+		vMax = CHUNK_HEIGHT;
+	}
+
+	std::vector<std::array<bool,2>> processed(uMax * vMax, {false, false});
+
+	for (int u = 0; u < uMax; ++u)
+	{
+		for (int v = 0; v < vMax; ++v)
+		{
+			_processFace(u, v, processed, FaceDirection::FORWARD, axis, sliceIndex, uMax, vMax);
+			_processFace(u, v, processed, FaceDirection::BACKWARD, axis, sliceIndex, uMax, vMax);
+		}
+	}
+}
+
+void Chunk::_generateFrameMesh()
+{
+	if (!_asset.vertices.data)
+		return;
+	glm::vec3 pos[24];
+
+	pos[0] = glm::vec3(0.0f);
+	pos[1] = {0, 1, 0};
+
+	pos[2] = glm::vec3(0.0f);
+	pos[3] = {0, 0, 1};
+
+	pos[4] = glm::vec3(0.0f);
+	pos[5] = {1, 0, 0};
+
+
+	pos[6] = {1, 1, 1};
+	pos[7] = {1, 0, 1};
+
+	pos[8] = {1, 1, 1};
+	pos[9] = {1, 1, 0};
+
+	pos[10] = {1, 1, 1};
+	pos[11] = {0, 1, 1};
+
+//=========================================
+
+	pos[12] = {0, 1, 0};
+	pos[13] = {0, 1, 1};
+
+	pos[14] = {0, 1, 0};
+	pos[15] = {1, 1, 0};
+
+
+	pos[16] = {1, 0, 1};
+	pos[17] = {0, 0, 1};
+
+	pos[18] = {1, 0, 1};
+	pos[19] = {1, 0, 0};
+
+
+	pos[20] = {1, 0, 0};
+	pos[21] = {1, 1, 0};
+
+	pos[22] = {0, 0, 1};
+	pos[23] = {0, 1, 1};
+
+	_linesPos.reserve(24);
+	for (int i = 0; i < 24; ++i)
+	{
+		pos[i].x *= CHUNK_WIDTH;
+		pos[i].y *= CHUNK_HEIGHT;
+		pos[i].z *= CHUNK_LENGTH;
+
+		_linesPos.push_back(pos[i]);
+	}
+	_assetFrame.vertices.data = _linesPos.data();
+	_assetFrame.vertices.vertexCount = _linesPos.size();
+	_assetFrame.vertices.size = _linesPos.size() * sizeof(glm::vec3);
+	_assetFrame.vertices.stride = sizeof(glm::vec3);
+}
+
+void Chunk::_buildAsset()
+{
+	_chunkFinalAsset.vertices = {};
+	_chunkFinalAsset.indices = {};
+
+	for (int axis = 0; axis < 3; ++axis)
+	{
+		for (size_t slice = 0; slice < _chunkOpaqueAsset[axis].size(); ++slice)
+		{
+			ChunkAsset & opaque = _chunkOpaqueAsset[axis][slice];
+			if (!opaque.vertices.empty())
+			{
+				uint32_t offset = _chunkFinalAsset.vertices.size();
+				for (uint32_t idx : opaque.indices)
+					_chunkFinalAsset.indices.push_back(idx + offset);
+				_chunkFinalAsset.vertices.insert(_chunkFinalAsset.vertices.end(), opaque.vertices.begin(), opaque.vertices.end());
+			}
+		}
+	}
+
+	for (int axis = 0; axis < 3; ++axis)
+	{
+		for (size_t slice = 0; slice < _chunkTransparencyAsset[axis].size(); ++slice)
+		{
+			ChunkAsset & transp = _chunkTransparencyAsset[axis][slice];
+			if (!transp.vertices.empty())
+			{
+				uint32_t offset = _chunkFinalAsset.vertices.size();
+				for (uint32_t idx : transp.indices)
+					_chunkFinalAsset.indices.push_back(idx + offset);
+				_chunkFinalAsset.vertices.insert(_chunkFinalAsset.vertices.end(), transp.vertices.begin(), transp.vertices.end());
+			}
+		}
+	}
+
+	if (_chunkFinalAsset.vertices.empty() || _chunkFinalAsset.indices.empty())
+		return;
+	_asset.vertices.data = _chunkFinalAsset.vertices.data();
+	_asset.vertices.vertexCount = _chunkFinalAsset.vertices.size();
+	_asset.indices = _chunkFinalAsset.indices;
+	_asset.vertices.size = _chunkFinalAsset.vertices.size() * sizeof(ChunkVertex);
+	_chunkFinalAsset.indices = {};
+	_asset.vertices.stride = sizeof(ChunkVertex);
+}
+
+void Chunk::updateMesh(const glm::vec3 & pos)
+{
+	if (_chunkFinalAsset.vertices.empty())
+	{
+		_generateGreedyMesh();
+		setState(MESHED);
+		return;
+	}
+	glm::vec3 newPos = pos;
+	newPos = posToChunkPos(newPos);
+	for (int axis = 0; axis < 3; ++axis)
+	{
+		int sliceIndex = (axis == 0 ? newPos.x : (axis == 1 ? newPos.y : newPos.z));
+		_chunkOpaqueAsset[axis][sliceIndex].vertices = {};
+		_chunkOpaqueAsset[axis][sliceIndex].indices = {};
+		_chunkTransparencyAsset[axis][sliceIndex].vertices = {};
+		_chunkTransparencyAsset[axis][sliceIndex].indices = {};
+		_generateSliceMeshing(axis, (axis == 0 ? newPos.x : (axis == 1 ? newPos.y : newPos.z)));
+		if (sliceIndex + 1 < (axis == 0 ? CHUNK_WIDTH : (axis == 1 ? CHUNK_HEIGHT : CHUNK_LENGTH)))
+		{
+			_chunkOpaqueAsset[axis][sliceIndex + 1].vertices = {};
+			_chunkOpaqueAsset[axis][sliceIndex + 1].indices = {};
+			_chunkTransparencyAsset[axis][sliceIndex + 1].vertices = {};
+			_chunkTransparencyAsset[axis][sliceIndex + 1].indices = {};
+			_generateSliceMeshing(axis, (axis == 0 ? newPos.x + 1 : (axis == 1 ? newPos.y + 1 : newPos.z + 1)));
+		}
+		if (sliceIndex - 1 >= 0 && sliceIndex - 1 < (axis == 0 ? CHUNK_WIDTH : (axis == 1 ? CHUNK_HEIGHT : CHUNK_LENGTH)))
+		{
+			_chunkOpaqueAsset[axis][sliceIndex - 1].vertices = {};
+			_chunkOpaqueAsset[axis][sliceIndex - 1].indices = {};
+			_chunkTransparencyAsset[axis][sliceIndex - 1].vertices = {};
+			_chunkTransparencyAsset[axis][sliceIndex - 1].indices = {};
+			_generateSliceMeshing(axis, (axis == 0 ? newPos.x - 1 : (axis == 1 ? newPos.y - 1 : newPos.z - 1)));
+		}
+	}
+	_buildAsset();
+	if (_chunkFinalAsset.vertices.empty())
+	{
+		setState(MESHED_EMPTY);
+		_deleted.store(true);
+	}
+	else
+		_deleted.store(false);
+}
+
+void Chunk::_generateGreedyMesh()
+{
+	Profiler p("Chunk::generateGreedyMesh");
+	_chunkOpaqueAsset = {};
+	_chunkTransparencyAsset = {};
+	_chunkOpaqueAsset[0].resize(CHUNK_WIDTH);
+	_chunkOpaqueAsset[1].resize(CHUNK_HEIGHT);
+	_chunkOpaqueAsset[2].resize(CHUNK_LENGTH);
+
+	_chunkTransparencyAsset[0].resize(CHUNK_WIDTH);
+	_chunkTransparencyAsset[1].resize(CHUNK_HEIGHT);
+	_chunkTransparencyAsset[2].resize(CHUNK_LENGTH);
+
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int sliceIndex = 0; sliceIndex < (i == 0 ? CHUNK_WIDTH : (i == 1 ? CHUNK_HEIGHT : CHUNK_LENGTH)); ++sliceIndex)
+			_generateSliceMeshing(i, sliceIndex);
+	}
+	_buildAsset();
+	_generateFrameMesh();
+}

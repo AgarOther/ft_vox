@@ -1,0 +1,1138 @@
+# =============================================================================
+# Valgrind suppression file for ft_vox (NVIDIA 570.211.01 / X11 / GLFW / dbus / LLVM-15)
+# Generated 2026-03-04 — deduplicated across all provided logs.
+#
+# Usage:
+#   valgrind --suppressions=./ft_vox.supp --leak-check=full --show-leak-kinds=all ./ft_vox -gl
+# =============================================================================
+
+
+# =============================================================================
+# 1. NVIDIA driver: uninitialised-value errors during GL/GLX init
+#    (all inside proprietary blobs — nothing you can fix)
+# =============================================================================
+
+# --- Generic nvidia-glcore Cond through call_init / dl_open ---
+{
+   nvidia_glcore_cond_call_init
+   Memcheck:Cond
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.*
+   ...
+   fun:call_init*
+   ...
+}
+
+# --- rindex called from nvidia-glcore ---
+{
+   nvidia_glcore_cond_rindex
+   Memcheck:Cond
+   fun:rindex
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.*
+   ...
+}
+
+# --- sscanf / __vfscanf_internal called from nvidia-glcore (Cond) ---
+{
+   nvidia_glcore_cond_vfscanf_sscanf
+   Memcheck:Cond
+   fun:__vfscanf_internal
+   fun:sscanf
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+# --- sscanf / __vfscanf_internal called from nvidia-glcore (Value8) ---
+{
+   nvidia_glcore_value8_vfscanf_sscanf
+   Memcheck:Value8
+   fun:__vfscanf_internal
+   fun:sscanf
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+# --- rawmemchr → _IO_str_init → sscanf from nvidia-glcore (Value8) ---
+{
+   nvidia_glcore_value8_rawmemchr_sscanf
+   Memcheck:Value8
+   fun:rawmemchr
+   fun:_IO_str_init_static_internal
+   fun:_IO_strfile_read
+   fun:sscanf
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+# --- rawmemchr → _IO_str_init → sscanf from nvidia-glcore (Cond) ---
+{
+   nvidia_glcore_cond_rawmemchr_sscanf
+   Memcheck:Cond
+   fun:rawmemchr
+   fun:_IO_str_init_static_internal
+   fun:_IO_strfile_read
+   fun:sscanf
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+# --- _IO_sputbackc → __vfscanf_internal → sscanf from nvidia-glcore (Cond) ---
+{
+   nvidia_glcore_cond_sputbackc_vfscanf_sscanf
+   Memcheck:Cond
+   fun:_IO_sputbackc
+   fun:__vfscanf_internal
+   fun:sscanf
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+# --- _IO_sputbackc → __vfscanf_internal → sscanf from nvidia-glcore (Value8) ---
+{
+   nvidia_glcore_value8_sputbackc_vfscanf_sscanf
+   Memcheck:Value8
+   fun:_IO_sputbackc
+   fun:__vfscanf_internal
+   fun:sscanf
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+# --- __uflow → __vfscanf_internal → sscanf from nvidia-glcore (Cond) ---
+{
+   nvidia_glcore_cond_uflow_vfscanf_sscanf
+   Memcheck:Cond
+   fun:__uflow
+   fun:__vfscanf_internal
+   fun:sscanf
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+# --- _IO_str_underflow from nvidia-glcore sscanf path (Cond) ---
+{
+   nvidia_glcore_cond_str_underflow_sscanf
+   Memcheck:Cond
+   fun:_IO_str_underflow
+   fun:_IO_default_uflow
+   fun:__vfscanf_internal
+   fun:sscanf
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+
+# =============================================================================
+# 2. Dynamic linker (ld.so) reachable allocations
+# =============================================================================
+
+{
+   glibc_dl_find_object_update_definite
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:malloc
+   fun:_dl_find_object_update
+   ...
+}
+
+{
+   glibc_dl_load_cache_lookup_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:malloc
+   fun:strdup
+   fun:_dl_load_cache_lookup
+   ...
+}
+
+{
+   glibc_dl_new_object_reachable_malloc
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:malloc
+   fun:_dl_new_object
+   ...
+}
+
+{
+   glibc_dl_new_object_reachable_calloc
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:calloc
+   fun:_dl_new_object
+   ...
+}
+
+{
+   glibc_dl_check_map_versions_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:calloc
+   fun:_dl_check_map_versions
+   ...
+}
+
+{
+   glibc_add_to_global_resize_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:malloc
+   fun:add_to_global_resize
+   ...
+}
+
+{
+   glibc_tls_get_addr_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:malloc
+   fun:allocate_dtv_entry
+   fun:allocate_and_init
+   fun:tls_get_addr_tail
+   fun:__tls_get_addr
+   ...
+}
+
+{
+   glibc_dl_close_worker_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:malloc
+   fun:_dl_close_worker*
+   ...
+}
+
+
+# =============================================================================
+# 3. LLVM-15 reachable leaks (static constructors during dlopen)
+# =============================================================================
+
+{
+   llvm15_cl_option_addArgument
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   fun:_ZN4llvm2cl6Option11addArgumentEv
+   ...
+}
+
+{
+   llvm15_rbtree_emplace_hint
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   fun:_ZNSt8_Rb_tree*_M_emplace_hint_unique*
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   ...
+}
+
+{
+   llvm15_misc_init_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   ...
+   fun:call_init*
+   ...
+}
+
+{
+   llvm15_managed_static_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   fun:_ZNK4llvm17ManagedStaticBase21RegisterManagedStaticE*
+   ...
+}
+
+{
+   llvm15_vector_realloc_insert_string
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   fun:_ZNSt6vectorINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESaIS5_EE17_M_realloc_insert*
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   ...
+}
+
+{
+   llvm15_basic_string_assign
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   fun:_ZNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEE9_M_assignERKS4_
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   ...
+}
+
+{
+   llvm15_stringmap_rehash
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   fun:_ZN4llvm12StringMapImpl11RehashTableEj
+   ...
+}
+
+{
+   llvm15_mc_register_target_options_flags
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:_Znwm
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   ...
+   fun:_ZN4llvm2mc28RegisterMCTargetOptionsFlagsC1Ev
+   ...
+}
+
+
+# =============================================================================
+# 4. X11 / Xlib locale, charset, atom cache, and XRM reachable leaks
+# =============================================================================
+
+{
+   x11_xlc_create_lc_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XlcCreateLC
+   fun:_XlcUtf8Loader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   ...
+}
+
+{
+   x11_xlc_create_default_charset_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XlcCreateDefaultCharSet
+   ...
+}
+
+{
+   x11_xlc_add_charset_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XlcAddCharSet
+   ...
+}
+
+{
+   x11_xlc_add_ct_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XlcAddCT
+   fun:_XlcInitCTInfo
+   ...
+}
+
+{
+   x11_xlc_set_converter_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XlcSetConverter
+   fun:_XlcInitCTInfo
+   ...
+}
+
+{
+   x11_xlc_create_locale_database_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XlcCreateLocaleDataBase
+   ...
+}
+
+{
+   x11_xlc_get_locale_database_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XlcGetLocaleDataBase
+   ...
+}
+
+{
+   x11_xlc_resolve_locale_name_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_XlcResolveLocaleName
+   ...
+}
+
+{
+   x11_xlc_open_converter_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XlcOpenConverter
+   ...
+}
+
+{
+   x11_xupdate_atom_cache_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XUpdateAtomCache
+   fun:XInternAtom
+   ...
+}
+
+{
+   x11_xrm_internal_string_to_quark_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XrmInternalStringToQuark
+   ...
+}
+
+{
+   x11_xrm_default_init_parse_info_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XrmDefaultInitParseInfo
+   ...
+}
+
+{
+   x11_xrm_get_string_database_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:XrmGetStringDatabase
+   ...
+}
+
+{
+   x11_xopen_display_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:XOpenDisplay
+   ...
+   fun:glfwInit
+   ...
+}
+
+{
+   x11_xconnect_xcb_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XConnectXCB
+   fun:XOpenDisplay
+   ...
+}
+
+{
+   x11_xkb_use_extension_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:XkbUseExtension
+   fun:XOpenDisplay
+   ...
+}
+
+{
+   x11_xreply_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   fun:_XReply
+   ...
+}
+
+{
+   x11_xsave_context_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:XSaveContext
+   ...
+}
+
+{
+   x11_xim_open_im_definite
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:_XimOpenIM
+   ...
+}
+
+{
+   x11_xim_proto_open_im_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XimProtoOpenIM
+   fun:_XimOpenIM
+   ...
+}
+
+{
+   x11_xim_register_callback_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XimRegisterIMInstantiateCallback
+   fun:XRegisterIMInstantiateCallback
+   ...
+}
+
+{
+   x11_xim_xconf_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_XimXConf
+   fun:_XimProtoOpenIM
+   ...
+}
+
+{
+   x11_xim_extension_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XimExtension
+   ...
+}
+
+{
+   x11_xim_proto_create_ic_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XimProtoCreateIC
+   fun:XCreateIC
+   ...
+}
+
+{
+   x11_locale_strdup_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+   fun:_XlcCreateLC
+   ...
+}
+
+{
+   x11_locale_data_strdup_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+   fun:_XlcCreateLocaleDataBase
+   ...
+}
+
+{
+   x11_locale_data_malloc_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+   fun:_XlcCreateLocaleDataBase
+   ...
+}
+
+{
+   x11_locale_data_realloc_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+   fun:_XlcCreateLocaleDataBase
+   ...
+}
+
+{
+   x11_locale_data_calloc_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+   fun:_XlcCreateLocaleDataBase
+   ...
+}
+
+{
+   x11_charset_converter_calloc_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   ...
+   fun:_XlcCreateLC
+   ...
+}
+
+{
+   x11_charset_converter_realloc_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libX11.so.*
+   fun:_XlcCreateLC
+   ...
+}
+
+
+# =============================================================================
+# 5. Xcursor reachable leaks (hidden cursor creation)
+# =============================================================================
+
+{
+   xcursor_get_display_info_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorSupportsARGB
+   fun:XcursorImageLoadCursor
+   ...
+}
+
+
+# =============================================================================
+# 6. XCB reachable leaks
+# =============================================================================
+
+{
+   xcb_get_extension_data_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.*
+   fun:xcb_wait_for_reply
+   fun:xcb_get_extension_data
+   ...
+}
+
+{
+   xcb_reachable_realloc
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib/x86_64-linux-gnu/libxcb.so.*
+   fun:xcb_get_extension_data
+   ...
+}
+
+
+# =============================================================================
+# 7. GLX / Xext reachable leaks
+# =============================================================================
+
+{
+   glx_xext_add_display_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:XextAddDisplay
+   ...
+}
+
+{
+   glx_xext_strdup_init_extension_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:XInitExtension
+   fun:XextAddDisplay
+   ...
+}
+
+{
+   glx_extension_supported_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:*
+   obj:*
+   fun:extensionSupportedGLX
+   ...
+}
+
+{
+   glx_query_version_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:XAddExtension
+   obj:/usr/lib/x86_64-linux-gnu/libGLX.so.*
+   fun:glXQueryVersion
+   ...
+}
+
+
+# =============================================================================
+# 8. GLFW reachable leaks (window manager, monitors, etc.)
+# =============================================================================
+
+{
+   glfw_calloc_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:defaultAllocate
+   fun:_glfw_calloc
+   ...
+}
+
+{
+   glfw_strdup_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:defaultAllocate
+   fun:_glfw_calloc
+   fun:_glfw_strdup
+   ...
+}
+
+{
+   glfw_init_reachable_catchall
+   Memcheck:Leak
+   match-leak-kinds: reachable,possible
+   ...
+   fun:glfwInit
+   ...
+}
+
+{
+   glfw_init_definite_catchall
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect
+   ...
+   fun:glfwInit
+   ...
+}
+
+{
+   glfw_create_window_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:glfwCreateWindow
+   ...
+}
+
+
+# =============================================================================
+# 9. DBus reachable / indirect leaks (called from nvidia-glcore)
+# =============================================================================
+
+{
+   dbus_generic_reachable_from_nvidia
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libdbus-1.so.*
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+{
+   dbus_generic_reachable_chain
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libdbus-1.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libdbus-1.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libdbus-1.so.*
+   ...
+}
+
+{
+   dbus_threads_init_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:dbus_threads_init
+   ...
+}
+
+{
+   dbus_register_shutdown_func_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_dbus_register_shutdown_func
+   ...
+}
+
+{
+   dbus_strdup_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_dbus_strdup
+   ...
+}
+
+{
+   dbus_string_init_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_dbus_string_init
+   ...
+}
+
+{
+   dbus_string_append_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib/x86_64-linux-gnu/libdbus-1.so.*
+   fun:_dbus_string_append
+   ...
+}
+
+{
+   dbus_string_copy_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib/x86_64-linux-gnu/libdbus-1.so.*
+   fun:_dbus_string_copy
+   ...
+}
+
+{
+   dbus_string_copy_len_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib/x86_64-linux-gnu/libdbus-1.so.*
+   fun:_dbus_string_copy_len
+   ...
+}
+
+{
+   dbus_string_copy_data_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_dbus_string_copy_data
+   ...
+}
+
+{
+   dbus_credentials_new_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_dbus_credentials_new
+   ...
+}
+
+{
+   dbus_auth_client_new_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dbus_auth_client_new
+   ...
+}
+
+{
+   dbus_bus_register_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_bus_register
+   ...
+}
+
+{
+   dbus_connection_add_filter_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:dbus_connection_add_filter
+   ...
+}
+
+{
+   dbus_connection_set_data_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_connection_set_data
+   ...
+}
+
+{
+   dbus_message_new_signal_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_message_new_signal
+   ...
+}
+
+{
+   dbus_message_unref_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_message_unref
+   ...
+}
+
+{
+   dbus_message_loader_new_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_dbus_message_loader_new
+   ...
+}
+
+{
+   dbus_message_loader_queue_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dbus_message_loader_queue_messages
+   ...
+}
+
+{
+   dbus_hash_table_new_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_dbus_hash_table_new
+   ...
+}
+
+{
+   dbus_pending_call_block_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_pending_call_block
+   fun:dbus_connection_send_with_reply_and_block
+   ...
+}
+
+{
+   dbus_type_writer_recurse_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dbus_type_writer_recurse
+   ...
+}
+
+{
+   dbus_type_writer_write_basic_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:_dbus_type_writer_write_basic
+   ...
+}
+
+{
+   dbus_message_iter_append_basic_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_message_iter_append_basic
+   ...
+}
+
+{
+   dbus_message_new_error_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:dbus_message_new_error
+   ...
+}
+
+{
+   dbus_send_with_reply_and_block_definite
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect
+   ...
+   fun:dbus_connection_send_with_reply_and_block
+   ...
+}
+
+{
+   dbus_message_loader_queue_indirect
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:_dbus_message_loader_queue_messages
+   ...
+}
+
+{
+   dbus_message_loader_definite
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:_dbus_message_loader_queue_messages
+   ...
+}
+
+
+# =============================================================================
+# 10. NVIDIA gpu-comp / glcore reachable leaks
+# =============================================================================
+
+{
+   nvidia_gpucomp_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-gpucomp.so.*
+   ...
+}
+
+{
+   nvidia_glcore_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   obj:/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.*
+   ...
+}
+
+
+# =============================================================================
+# 11. Misc exit handler reachable
+# =============================================================================
+
+{
+   glibc_exit_handlers_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:__run_exit_handlers
+   fun:exit
+   fun:(below main)
+}
+
+
+# =============================================================================
+# 12. ImGui OpenGL3 shutdown dlclose reachable
+# =============================================================================
+
+{
+   imgui_opengl3_shutdown_dlclose_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:malloc
+   fun:_dl_close_worker*
+   ...
+   fun:dlclose*
+   fun:_Z26ImGui_ImplOpenGL3_Shutdownv
+   ...
+}
+
+{
+   bref
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   fun:_ZN4llvm13StringMapImpl11RehashTableEj
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   fun:_ZN4llvm2cl6Option11addArgumentEv
+   obj:/usr/lib/x86_64-linux-gnu/libLLVM-15.so.1
+   fun:call_init.part.0
+   fun:call_init
+   fun:_dl_init
+   fun:_dl_catch_exception
+   fun:dl_open_worker
+   fun:dl_open_worker
+   fun:_dl_catch_exception
+}
+
+{
+   glibc_dl_dst_count_strncmp_invalid_read
+   Memcheck:Addr8
+   fun:strncmp
+   fun:is_dst
+   fun:_dl_dst_count
+   fun:expand_dynamic_string_token
+   fun:fillin_rpath.isra.0
+   fun:decompose_rpath
+   fun:cache_rpath
+   fun:cache_rpath
+   fun:_dl_map_object
+}
+
+# Suppression for invalid read in strncmp called from _dl_dst_substitute -> is_dst
+# during dynamic linker RPATH decomposition. Same root cause as above.
+{
+   glibc_dl_dst_substitute_strncmp_invalid_read
+   Memcheck:Addr8
+   fun:strncmp
+   fun:is_dst
+   fun:_dl_dst_substitute
+   fun:fillin_rpath.isra.0
+   fun:decompose_rpath
+   fun:cache_rpath
+   fun:cache_rpath
+   fun:_dl_map_object
+}

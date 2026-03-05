@@ -1,0 +1,43 @@
+#pragma once
+
+#include "HeightMap.hpp"
+#include <iterator>
+
+struct BiomePaintingInfo
+{
+	HeightMap *	heightMap;
+	HeightMap *	biomeMap;
+	int			x;
+	int			z;
+	int			worldX;
+	int			worldY;
+	int			worldZ;
+	double		slope;
+	double		temperature;
+};
+
+class ABiome
+{
+	public:
+		ABiome(uint32_t seed, std::vector<std::pair<float, float>> temperatureRange, std::vector<std::pair<float, float>> heightRange, int terrainHeightOffset, int y1, int y2) :
+			_seed(seed), _temperatureRange(temperatureRange), _heightRange(heightRange), _terrainHeightOffset(terrainHeightOffset),
+			_chunkHeightClamp(std::pair<int, int>(y1, y2)) {}
+		virtual ~ABiome() = default;
+
+		inline bool											isWithinRange(int y) const { return (y >= _chunkHeightClamp.first && y <= _chunkHeightClamp.second); }
+
+		virtual double										computeBiomeHeight(const BiomePaintingInfo & paintingInfo) const = 0;
+		virtual uint8_t										paintSurface(const BiomePaintingInfo & paintingInfo) const = 0;
+		virtual uint8_t										splitSkyFromSea(const BiomePaintingInfo & paintingInfo) const = 0;
+		virtual uint8_t										fillWorld(const BiomePaintingInfo & paintingInfo) const = 0;
+
+		const std::vector<std::pair<float, float>> &		getTemperatureRange() const { return _temperatureRange; }
+		const std::vector<std::pair<float, float>> &		getHeightRange() const { return _heightRange; }
+
+	protected:
+		uint32_t											_seed;
+		std::vector<std::pair<float, float>>				_temperatureRange;
+		std::vector<std::pair<float, float>>				_heightRange;
+		int													_terrainHeightOffset;
+		std::pair<int, int>									_chunkHeightClamp;
+};
